@@ -21,8 +21,8 @@ public class OrderRequest {
 		@NotNull
 		private Integer totalPrice;
 
-		private String deliverAddress;
-		private String deliverRequest;
+		private String deliveryAddress;
+		private String deliveryRequest;
 		private OrderType orderType;
 	}
 
