@@ -22,7 +22,7 @@ public class OrderService {
 	private final OrderRepository orderRepository;
 
 	@Transactional
-	public void createOrder(OrderRequest.Create request) {
+	public UUID createOrder(OrderRequest.Create request) {
 		// 주문 객체 생성
 		Order order = Order.builder()
 			.id(UUID.randomUUID())
@@ -46,5 +46,6 @@ public class OrderService {
 		});
 
 		orderRepository.save(order);
+		return order.getId();
 	}
 }

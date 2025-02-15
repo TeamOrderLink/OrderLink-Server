@@ -34,5 +34,4 @@ public class OrderController {
 	public ResponseEntity<?> createOrder(@RequestBody OrderRequest.Create request) {
 		return ResponseEntity.ok(orderService.createOrder(request));
 	}
-
 }
