@@ -1,26 +1,17 @@
 package com.order.orderlink.user.domain;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
+@AllArgsConstructor
 public enum UserRoleEnum {
 
-	USER(Authority.USER),
-	OWNER(Authority.OWNER),
-	MANAGER(Authority.MANAGER),
-	MASTER(Authority.MASTER);
+	USER("ROLE_USER"),
+	OWNER("ROLE_OWNER"),
+	MANAGER("ROLE_MANAGER"),
+	MASTER("ROLE_MASTER");
 
 	private final String authority;
-
-	UserRoleEnum(String authority) {
-		this.authority = authority;
-	}
-
-	public static class Authority {
-		public static final String USER = "ROLE_USER";
-		public static final String OWNER = "ROLE_ONWER";
-		public static final String MANAGER = "ROLE_MANAGER";
-		public static final String MASTER = "ROLE_MASTER";
-	}
 
 }
