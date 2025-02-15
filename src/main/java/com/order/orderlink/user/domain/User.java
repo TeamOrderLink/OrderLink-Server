@@ -15,6 +15,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -40,20 +41,28 @@ public class User extends BaseTimeEntity {
 	@Column(name = "email", unique = true, nullable = false)
 	private String email;
 
+	@Column(name = "phone", unique = true, nullable = false)
+	private String phone;
+
 	@Column(name = "password", nullable = false)
 	private String password;
+
+	@Column(name = "is_public", nullable = false, columnDefinition = "boolean default true")
+	private Boolean isPublic;
 
 	@Column(name = "role", nullable = false)
 	@Enumerated(value = EnumType.STRING)
 	private UserRoleEnum role;
 
-	public User(UUID id, String username, String nickname, String email, String password, UserRoleEnum role) {
-		this.id = id;
+	@Builder
+	public User(String username, String nickname, String email, String phone, String password, UserRoleEnum role) {
 		this.username = username;
 		this.nickname = nickname;
 		this.email = email;
+		this.phone = phone;
 		this.password = password;
 		this.role = role;
+		this.isPublic = true;
 	}
 
 }
