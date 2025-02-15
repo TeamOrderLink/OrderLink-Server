@@ -1,10 +1,10 @@
 package com.order.orderlink.common.exception;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.Setter;
 
 @Getter
-@Setter
+@AllArgsConstructor
 public class RestApiException {
 
 	private int statusCode;

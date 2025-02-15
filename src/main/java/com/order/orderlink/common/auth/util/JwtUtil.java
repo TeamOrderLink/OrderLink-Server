@@ -44,7 +44,7 @@ public class JwtUtil {
 		Date now = new Date();
 		Date accessExpiration = new Date(now.getTime() + this.EXPIRATION_TIME);
 
-		return Jwts.builder()
+		return "Bearer " + Jwts.builder()
 			.subject(((UserDetailsImpl)authentication.getPrincipal()).getUsername())
 			.claim("auth", ((UserDetailsImpl)authentication.getPrincipal()).getUser().getRole()) // TODO: role 추가
 			.claim("userId", ((UserDetailsImpl)authentication.getPrincipal()).getUser().getId())

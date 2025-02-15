@@ -12,6 +12,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.order.orderlink.common.auth.UserDetailsServiceImpl;
 import com.order.orderlink.common.auth.util.JwtUtil;
+import com.order.orderlink.common.exception.TokenNotValidException;
 
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
@@ -37,8 +38,8 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 		if (StringUtils.hasText(tokenValue)) {
 
 			if (!jwtUtil.validateToken(tokenValue)) {
-				log.error("Token Error");
-				return;
+				log.error("토큰이 유효하지 않습니다.");
+				throw new TokenNotValidException("토큰이 유효하지 않습니다.");
 			}
 
 			Claims info = jwtUtil.getUserInfoFromToken(tokenValue);
