@@ -1,51 +1,53 @@
 package com.order.orderlink.order.application;
 
+import java.util.ArrayList;
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.order.orderlink.common.client.FoodClient;
 import com.order.orderlink.order.application.dtos.OrderRequest;
+import com.order.orderlink.order.application.dtos.OrderResponse;
 import com.order.orderlink.order.domain.Order;
 import com.order.orderlink.order.domain.OrderStatus;
 import com.order.orderlink.order.domain.repository.OrderRepository;
 import com.order.orderlink.orderitem.domain.OrderItem;
 
+import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class OrderService {
 
-	private final FoodClient foodClient;
 	private final OrderRepository orderRepository;
+	private final EntityManager entityManager; // Flush를 위해 추가
 
-	@Transactional
-	public UUID createOrder(OrderRequest.Create request) {
-		// 주문 객체 생성
+	public OrderResponse.Create createOrder(UUID userId, OrderRequest.Create request) {
 		Order order = Order.builder()
-			.id(UUID.randomUUID())
+			.userId(userId)
 			.restaurantId(request.getRestaurantId())
-			.orderType(request.getOrderType())
-			.totalPrice(request.getTotalPrice())
 			.deliveryAddress(request.getDeliveryAddress())
 			.deliveryRequest(request.getDeliveryRequest())
+			.totalPrice(request.getTotalPrice())
 			.status(OrderStatus.NEW)
+			.orderType(request.getOrderType())
+			.orderItems(new ArrayList<>())
 			.build();
 
-		request.getFoods().forEach(food -> {
-			OrderItem orderItem = OrderItem.builder()
-				.id(UUID.randomUUID())
+		request.getFoods().forEach(food -> order.addOrderItem(
+			OrderItem.builder()
 				.order(order)
 				.foodName(food.getFoodName())
-				.quantity(food.getFoodCount())
-				.price(food.getFoodPrice())
-				.build();
-			order.addOrderItem(orderItem);
-		});
+				.price(food.getPrice())
+				.quantity(food.getCount())
+				.build()
+		));
 
 		orderRepository.save(order);
-		return order.getId();
+
+		return new OrderResponse.Create(order.getId());
 	}
 }
+
