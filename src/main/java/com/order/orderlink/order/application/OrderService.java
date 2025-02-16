@@ -29,6 +29,7 @@ public class OrderService {
 			.userId(userId)
 			.restaurantId(request.getRestaurantId())
 			.deliveryAddress(request.getDeliveryAddress())
+			.deliveryRequest(request.getDeliveryRequest())
 			.totalPrice(request.getTotalPrice())
 			.status(OrderStatus.NEW)
 			.orderType(request.getOrderType())
