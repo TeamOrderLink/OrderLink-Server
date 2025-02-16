@@ -22,7 +22,6 @@ public class OrderRequest {
 		private Integer totalPrice;
 
 		private String deliveryAddress;
-		private String deliveryRequest;
 		private OrderType orderType;
 	}
 

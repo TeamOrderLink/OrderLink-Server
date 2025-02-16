@@ -46,8 +46,6 @@ public class Order extends BaseTimeEntity {
 	@NotNull
 	private String deliveryAddress;
 
-	private String deliveryRequest;
-
 	@NotNull
 	private Integer totalPrice;
 
