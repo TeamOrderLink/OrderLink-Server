@@ -1,21 +1,15 @@
 package com.order.orderlink.orderitem.domain;
 
-import java.time.LocalDateTime;
 import java.util.UUID;
 
 import org.hibernate.annotations.UuidGenerator;
-import org.springframework.data.annotation.CreatedBy;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedBy;
-import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import com.order.orderlink.common.entity.BaseTimeEntity;
 import com.order.orderlink.order.domain.Order;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -32,15 +26,15 @@ import lombok.NoArgsConstructor;
 @Builder
 @Entity
 @EntityListeners(AuditingEntityListener.class)
-@Table(name = "order_items")
-public class OrderItem {
+@Table(name = "p_order_items")
+public class OrderItem extends BaseTimeEntity {
 
 	@Id
-	@UuidGenerator
+	@UuidGenerator(style = UuidGenerator.Style.AUTO)
 	private UUID id;
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "order_id", nullable = false)
+	@ManyToOne
+	@JoinColumn(name = "order_id")
 	private Order order;
 
 	@NotNull
@@ -52,20 +46,7 @@ public class OrderItem {
 	@NotNull
 	private Integer price;
 
-	@CreatedDate
-	@Column(updatable = false)
-	private LocalDateTime createdAt;
-
-	@LastModifiedDate
-	private LocalDateTime updatedAt;
-
-	@CreatedBy
-	@Column(updatable = false)
-	private UUID createdBy;
-
-	@LastModifiedBy
-	private UUID updatedBy;
-
-	private LocalDateTime deletedAt;
-	private UUID deletedBy;
+	public void setOrder(Order order) {
+		this.order = order;
+	}
 }
