@@ -1,24 +1,27 @@
 package com.order.orderlink.common.config;
 
 import java.util.Optional;
-import java.util.UUID;
 
+import org.springframework.data.domain.AuditorAware;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
+import com.order.orderlink.common.auth.UserDetailsImpl;
+
 @Component
-public class AuditorAwareImpl implements AuditorAware<UUID> {
+public class AuditorAwareImpl implements AuditorAware<String> {
 
 	@Override
-	public Optional<UUID> getCurrentAuditor() {
-		// 현재 로그인한 사용자의 ID 가져오기
+	public Optional<String> getCurrentAuditor() {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
 		if (authentication == null || !authentication.isAuthenticated()) {
 			return Optional.empty();
 		}
 
-		// UserDetails에서 UUID 가져오기 (예제에서는 String을 UUID로 변환)
-		String userId = authentication.getName();
-		return Optional.of(UUID.fromString(userId));
+		// UserDetails에서 이름 가져오기
+		UserDetailsImpl userDetails = (UserDetailsImpl)authentication.getPrincipal();
+		return Optional.of(userDetails.getUsername());
 	}
 }
