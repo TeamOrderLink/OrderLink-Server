@@ -11,8 +11,6 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.MappedSuperclass;
-import jakarta.persistence.Temporal;
-import jakarta.persistence.TemporalType;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -23,7 +21,6 @@ public abstract class BaseTimeEntity {
 
 	@CreatedDate
 	@Column(name = "created_at", updatable = false)
-	@Temporal(TemporalType.TIMESTAMP)
 	private LocalDateTime createdAt;
 
 	@CreatedBy
@@ -32,7 +29,6 @@ public abstract class BaseTimeEntity {
 
 	@LastModifiedDate
 	@Column(name = "updated_at")
-	@Temporal(TemporalType.TIMESTAMP)
 	private LocalDateTime updatedAt;
 
 	@LastModifiedBy
@@ -42,7 +38,6 @@ public abstract class BaseTimeEntity {
 	// Soft Delete를 위한 필드
 	@Setter
 	@Column(name = "deleted_at")
-	@Temporal(TemporalType.TIMESTAMP)
 	private LocalDateTime deletedAt;
 
 	@Setter

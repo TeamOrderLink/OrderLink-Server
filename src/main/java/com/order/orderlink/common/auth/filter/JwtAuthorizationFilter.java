@@ -12,8 +12,8 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.order.orderlink.common.auth.UserDetailsServiceImpl;
 import com.order.orderlink.common.auth.util.JwtUtil;
+import com.order.orderlink.common.enums.ErrorCode;
 import com.order.orderlink.common.exception.AuthException;
-import com.order.orderlink.common.exception.ErrorCode;
 
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;

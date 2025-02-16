@@ -1,4 +1,4 @@
-package com.order.orderlink.common.exception;
+package com.order.orderlink.common.enums;
 
 import org.springframework.http.HttpStatus;
 
