@@ -1,5 +1,6 @@
 package com.order.orderlink.common.exception;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -20,7 +21,7 @@ public class GlobalExceptionHandler {
 	@ExceptionHandler(Exception.class) //일반적인 예외 처리
 	public ResponseEntity<ErrorResponse> handleException(Exception ex) {
 		return ResponseEntity
-			.status(500)
+			.status(HttpStatus.INTERNAL_SERVER_ERROR)
 			.body(new ErrorResponse(500, "서버 내부 오류가 발생했습니다."));
 	}
 
