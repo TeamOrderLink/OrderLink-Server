@@ -1,7 +1,5 @@
 package com.order.orderlink.common.dtos;
 
-import org.springframework.http.HttpStatus;
-
 import com.order.orderlink.common.enums.ErrorCode;
 
 import lombok.AccessLevel;
@@ -12,16 +10,12 @@ import lombok.ToString;
 @Getter
 @ToString
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public class ErrorResponse {
+public class ErrorDataResponse<T> {
 	private final int code;
 	private final String message;
+	private final T data;
 
-	public static ErrorResponse error(ErrorCode errorCode) {
-		return new ErrorResponse(errorCode.getStatus().value(), errorCode.getMessage());
-	}
-
-	public static ErrorResponse badRequestError(final String errorMessage) {
-		return new ErrorResponse(HttpStatus.BAD_REQUEST.value(), errorMessage);
+	public static <T> ErrorDataResponse<T> error(ErrorCode errorCode, T data) {
+		return new ErrorDataResponse<>(errorCode.getStatus().value(), errorCode.getMessage(), data);
 	}
 }
-
