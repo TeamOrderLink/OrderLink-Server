@@ -12,16 +12,16 @@ import lombok.ToString;
 @Getter
 @ToString
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public class ErrorResponse {
+public class ErrorNonDataResponse {
 	private final int code;
 	private final String message;
 
-	public static ErrorResponse error(ErrorCode errorCode) {
-		return new ErrorResponse(errorCode.getStatus().value(), errorCode.getMessage());
+	public static ErrorNonDataResponse error(ErrorCode errorCode) {
+		return new ErrorNonDataResponse(errorCode.getStatus().value(), errorCode.getMessage());
 	}
 
-	public static ErrorResponse badRequestError(final String errorMessage) {
-		return new ErrorResponse(HttpStatus.BAD_REQUEST.value(), errorMessage);
+	public static ErrorNonDataResponse badRequestError(final String errorMessage) {
+		return new ErrorNonDataResponse(HttpStatus.BAD_REQUEST.value(), errorMessage);
 	}
 }
 
