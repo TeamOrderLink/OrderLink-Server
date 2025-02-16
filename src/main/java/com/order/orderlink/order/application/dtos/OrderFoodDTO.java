@@ -9,6 +9,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class OrderFoodDTO {
 	private String foodName;
-	private Integer foodPrice;
-	private Integer foodCount;
+	private Integer price;
+	private Integer count;
 }
