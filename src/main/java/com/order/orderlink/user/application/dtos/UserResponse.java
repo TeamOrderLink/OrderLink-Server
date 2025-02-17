@@ -41,4 +41,11 @@ public class UserResponse {
 		private LocalDateTime updatedAt;
 	}
 
+	@Getter
+	@AllArgsConstructor
+	public static class Delete {
+		private UUID id;
+		private String username;
+	}
+
 }

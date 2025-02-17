@@ -23,6 +23,7 @@ public class UserService {
 	private final UserRepository userRepository;
 	private final PasswordEncoder passwordEncoder;
 
+	// 회원가입
 	@Transactional
 	public UserResponse.Create signup(UserRequest.Create request) {
 		// 중복 체크
@@ -41,6 +42,7 @@ public class UserService {
 		return new UserResponse.Create(user.getId());
 	}
 
+	// 내 정보 조회
 	@Transactional(readOnly = true)
 	public UserResponse.Read getMyInfo(UUID userId) {
 		User user = userRepository.findById(userId)
@@ -49,6 +51,8 @@ public class UserService {
 			user.getNickname(), user.getRole().name(), user.getIsPublic(), user.getCreatedAt());
 	}
 
+	// 사용자 정보 수정
+	@Transactional
 	public UserResponse.Update updateInfo(UUID userId, UserRequest.Update request) {
 		User user = userRepository.findById(userId)
 			.orElseThrow(() -> new UserException(ErrorCode.USER_NOT_FOUND));
@@ -58,5 +62,22 @@ public class UserService {
 
 		return new UserResponse.Update(user.getId(), user.getUsername(), user.getEmail(), user.getPhone(),
 			user.getNickname(), user.getIsPublic(), user.getUpdatedAt());
+	}
+
+	// 사용자 탈퇴
+	@Transactional
+	public UserResponse.Delete softDeleteUser(UUID userId, String username, String password) {
+		User user = userRepository.findById(userId)
+			.orElseThrow(() -> new UserException(ErrorCode.USER_NOT_FOUND));
+
+		// 입력한 비밀번호가 일치하는지 확인
+		if (!passwordEncoder.matches(password, user.getPassword())) {
+			throw new UserException(ErrorCode.USER_PASSWORD_NOT_MATCH);
+		}
+
+		user.softDelete(username);  // BaseTimeEntity에 구현한 softDelete 메서드
+		userRepository.save(user);
+
+		return new UserResponse.Delete(user.getId(), user.getUsername());
 	}
 }
