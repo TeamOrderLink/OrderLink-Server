@@ -1,6 +1,7 @@
 package com.order.orderlink.order.presentation;
 
-import org.springframework.http.ResponseEntity;
+import java.util.UUID;
+
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -36,9 +37,12 @@ public class OrderController {
 			orderService.getMyOrders(userDetails, page, size));
 	}
 
-	@GetMapping("/{id}")
-	public ResponseEntity<?> getOrder(@PathVariable("id") String id) {
-		return ResponseEntity.ok("getOrder(id) has been called!");
+	@GetMapping("/{orderId}")
+	public SuccessResponse<OrderResponse.GetOrderDetail> getOrderDetail(
+		@PathVariable("orderId") UUID orderId,
+		@AuthenticationPrincipal UserDetailsImpl userDetails) {
+		return SuccessResponse.success(SuccessCode.ORDER_GET_DETAIL_SUCCESS,
+			orderService.getOrderDetail(userDetails, orderId));
 	}
 
 	@PostMapping
