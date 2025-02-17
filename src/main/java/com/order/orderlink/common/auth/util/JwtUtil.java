@@ -36,7 +36,6 @@ public class JwtUtil {
 
 	public JwtUtil(@Value("${jwt.secret.key}") String secretKey) {
 		this.secretKey = Keys.hmacShaKeyFor(Decoders.BASE64URL.decode(secretKey));
-
 	}
 
 	// JWT 토큰 생성
@@ -45,6 +44,7 @@ public class JwtUtil {
 		Date accessExpiration = new Date(now.getTime() + this.EXPIRATION_TIME);
 
 		return "Bearer " + Jwts.builder()
+			.header().add("typ", "JWT").and()
 			.subject(((UserDetailsImpl)authentication.getPrincipal()).getUsername())
 			.claim("auth", ((UserDetailsImpl)authentication.getPrincipal()).getUser().getRole()) // TODO: role 추가
 			.claim("userId", ((UserDetailsImpl)authentication.getPrincipal()).getUser().getId())

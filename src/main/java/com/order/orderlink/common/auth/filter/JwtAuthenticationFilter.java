@@ -10,7 +10,10 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.order.orderlink.common.auth.util.JwtUtil;
-import com.order.orderlink.user.application.dtos.LoginRequestDto;
+import com.order.orderlink.common.dtos.AuthRequest;
+import com.order.orderlink.common.dtos.AuthResponse;
+import com.order.orderlink.common.dtos.SuccessResponse;
+import com.order.orderlink.common.enums.SuccessCode;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
@@ -31,7 +34,8 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 	public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws
 		AuthenticationException {
 		try {
-			LoginRequestDto requestDto = new ObjectMapper().readValue(request.getInputStream(), LoginRequestDto.class);
+			AuthRequest.Login requestDto = new ObjectMapper().readValue(request.getInputStream(),
+				AuthRequest.Login.class);
 
 			return getAuthenticationManager().authenticate(
 				new UsernamePasswordAuthenticationToken(
@@ -42,15 +46,31 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 			);
 		} catch (IOException e) {
 			log.error(e.getMessage());
-			throw new RuntimeException("로그인 요청 정보를 읽어오는데 실패했습니다.");
+			throw new RuntimeException("로그인 요청 정보를 읽어오는데 실패했습니다.", e);
 		}
 	}
 
 	@Override
 	protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain,
-		Authentication authResult) {
+		Authentication authResult) throws IOException {
+
+		// JWT 토큰 생성
 		String token = jwtUtil.createToken(authResult);
-		response.addHeader("Authorization", token);
+
+		// 응답 본문에 토큰을 담아서 반환
+		AuthResponse.Login authResponse = new AuthResponse.Login(token);
+		SuccessResponse<AuthResponse.Login> successResponse = SuccessResponse.success(SuccessCode.LOGIN_SUCCESS,
+			authResponse);
+
+		// JSON 형태로 직렬화해서 응답 본문에 추가
+		response.setContentType("application/json");
+		response.setCharacterEncoding("UTF-8");
+
+		String responseBody = new ObjectMapper().writeValueAsString(successResponse);
+		response.getWriter().write(responseBody);
+		response.getWriter().flush();
+
+		// response.addHeader("Authorization", token);
 	}
 
 	@Override
