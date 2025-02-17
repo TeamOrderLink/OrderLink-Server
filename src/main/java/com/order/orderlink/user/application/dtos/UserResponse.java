@@ -29,4 +29,16 @@ public class UserResponse {
 		private LocalDateTime createdAt;
 	}
 
+	@Getter
+	@AllArgsConstructor
+	public static class Update {
+		private UUID id;
+		private String username;
+		private String email;
+		private String phone;
+		private String nickname;
+		private Boolean isPublic;
+		private LocalDateTime updatedAt;
+	}
+
 }

@@ -62,6 +62,8 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 		SuccessResponse<AuthResponse.Login> successResponse = SuccessResponse.success(SuccessCode.LOGIN_SUCCESS,
 			authResponse);
 
+		response.addHeader("Authorization", token);
+
 		// JSON 형태로 직렬화해서 응답 본문에 추가
 		response.setContentType("application/json");
 		response.setCharacterEncoding("UTF-8");
@@ -69,8 +71,6 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 		String responseBody = new ObjectMapper().writeValueAsString(successResponse);
 		response.getWriter().write(responseBody);
 		response.getWriter().flush();
-
-		// response.addHeader("Authorization", token);
 	}
 
 	@Override

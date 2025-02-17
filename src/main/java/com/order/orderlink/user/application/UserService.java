@@ -49,4 +49,14 @@ public class UserService {
 			user.getNickname(), user.getRole().name(), user.getIsPublic(), user.getCreatedAt());
 	}
 
+	public UserResponse.Update updateInfo(UUID userId, UserRequest.Update request) {
+		User user = userRepository.findById(userId)
+			.orElseThrow(() -> new UserException(ErrorCode.USER_NOT_FOUND));
+
+		user.updateInfo(request.getEmail(), request.getPhone(), request.getNickname(), request.getIsPublic());
+		userRepository.save(user);
+
+		return new UserResponse.Update(user.getId(), user.getUsername(), user.getEmail(), user.getPhone(),
+			user.getNickname(), user.getIsPublic(), user.getUpdatedAt());
+	}
 }

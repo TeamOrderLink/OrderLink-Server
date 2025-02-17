@@ -5,6 +5,7 @@ import java.util.UUID;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -28,7 +29,7 @@ public class UserController {
 
 	/**
 	 * 회원가입
-	 * @param request SignupRequest
+	 * @param request UserRequest.Create
 	 * @return SuccessResponse<UserResponse.Create>
 	 * @see UserRequest.Create
 	 * @see UserResponse.Create
@@ -51,4 +52,21 @@ public class UserController {
 		UUID userId = userDetails.getUser().getId();
 		return SuccessResponse.success(SuccessCode.USER_READ_SUCCESS, userService.getMyInfo(userId));
 	}
+
+	/**
+	 * 사용자 정보 수정
+	 * @param userDetails 인증된 사용자 정보
+	 * @param request UserRequest.Update
+	 * @return SuccessResponse<UserResponse.Update>
+	 * @see UserRequest.Update
+	 * @see UserResponse.Update
+	 * @author Jihwan
+	 */
+	@PutMapping("/me")
+	public SuccessResponse<UserResponse.Update> updateInfo(@AuthenticationPrincipal UserDetailsImpl userDetails,
+		@Valid @RequestBody UserRequest.Update request) {
+		UUID userId = userDetails.getUser().getId();
+		return SuccessResponse.success(SuccessCode.USER_UPDATE_SUCCESS, userService.updateInfo(userId, request));
+	}
+
 }

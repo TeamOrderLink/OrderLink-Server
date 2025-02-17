@@ -47,13 +47,13 @@ public class UserRequest {
 	@Getter
 	public static class Update {
 
-		private String nickname;
-
-		@Email(message = "이메일 형식에 맞게 입력해주세요.")
+		@Email(message = "이메일 형식이 올바르지 않습니다.")
 		private String email;
 
 		@Pattern(regexp = "^[0-9]{10,11}$", message = "전화번호는 '-' 없이 10자리 또는 11자리 숫자로 입력해주세요.")
 		private String phone;
+
+		private String nickname;
 
 		private Boolean isPublic;
 	}
