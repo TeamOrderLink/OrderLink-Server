@@ -9,6 +9,7 @@ import com.order.orderlink.common.exception.UserException;
 import com.order.orderlink.user.application.dtos.UserRequest;
 import com.order.orderlink.user.application.dtos.UserResponse;
 import com.order.orderlink.user.domain.User;
+import com.order.orderlink.user.domain.UserRoleEnum;
 import com.order.orderlink.user.domain.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -31,7 +32,7 @@ public class UserService {
 		// 비밀번호 암호화 및 유저 생성
 		String encodedPassword = passwordEncoder.encode(request.getPassword());
 		User user = new User(request.getUsername(), request.getNickname(), request.getEmail(), request.getPhone(),
-			encodedPassword, request.getRole());
+			encodedPassword, UserRoleEnum.valueOf(request.getRole()));
 
 		userRepository.save(user);
 

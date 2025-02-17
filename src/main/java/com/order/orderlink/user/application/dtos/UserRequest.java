@@ -1,7 +1,5 @@
 package com.order.orderlink.user.application.dtos;
 
-import com.order.orderlink.user.domain.UserRoleEnum;
-
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -36,8 +34,9 @@ public class UserRequest {
 		@NotBlank(message = "닉네임은 필수 항목입니다.")
 		private String nickname;
 
-		@NotNull(message = "Role은 필수 항목입니다.")
-		private UserRoleEnum role;
+		@Pattern(regexp = "^(CUSTOMER|OWNER|MANAGER|MASTER)$", message = "Role은 CUSTOMER, OWNER, MANAGER, MASTER 중 하나여야 합니다.")
+		@NotBlank(message = "Role은 필수 항목입니다.")
+		private String role;
 	}
 
 	@Getter
