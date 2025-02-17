@@ -75,9 +75,9 @@ public class UserService {
 			throw new UserException(ErrorCode.USER_PASSWORD_NOT_MATCH);
 		}
 
-		user.softDelete(username);  // BaseTimeEntity에 구현한 softDelete 메서드
+		user.softDelete(username);  // BaseTimeEntity에 구현한 softDelete 메서드 (deletedBy, deletedAt 필드 업데이트)
 		userRepository.save(user);
 
-		return new UserResponse.Delete(user.getId(), user.getUsername());
+		return new UserResponse.Delete(user.getId(), user.getDeletedAt());
 	}
 }

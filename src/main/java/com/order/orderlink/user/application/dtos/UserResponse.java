@@ -45,7 +45,7 @@ public class UserResponse {
 	@AllArgsConstructor
 	public static class Delete {
 		private UUID id;
-		private String username;
+		private LocalDateTime deletedAt;
 	}
 
 }
