@@ -19,7 +19,7 @@ public class OrderRequest {
 		private List<OrderFoodDTO> foods;
 
 		@NotNull
-		private Integer totalPrice;
+		private int totalPrice;
 
 		private String deliveryAddress;
 		private String deliveryRequest;

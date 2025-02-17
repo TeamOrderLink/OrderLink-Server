@@ -1,5 +1,6 @@
 package com.order.orderlink.order.application.dtos;
 
+import java.util.List;
 import java.util.UUID;
 
 import lombok.AllArgsConstructor;
@@ -19,4 +20,12 @@ public class OrderResponse {
 		private final UUID orderId;
 	}
 
+	@Getter
+	@Builder
+	@AllArgsConstructor
+	public static class GetOrders {
+		private final List<OrderDTO> orders;
+		private final int totalPages;
+		private final int currentPage;
+	}
 }
