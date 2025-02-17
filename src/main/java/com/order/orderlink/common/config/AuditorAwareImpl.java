@@ -20,8 +20,12 @@ public class AuditorAwareImpl implements AuditorAware<String> {
 			return Optional.empty();
 		}
 
-		// UserDetails에서 이름 가져오기
-		UserDetailsImpl userDetails = (UserDetailsImpl)authentication.getPrincipal();
-		return Optional.of(userDetails.getUsername());
+		Object principal = authentication.getPrincipal();
+		if (principal instanceof UserDetailsImpl) {
+			// UserDetails에서 이름 가져오기
+			return Optional.of(((UserDetailsImpl)principal).getUsername());
+		} else {
+			return Optional.of(principal.toString());
+		}
 	}
 }
