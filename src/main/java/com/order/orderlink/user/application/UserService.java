@@ -1,5 +1,7 @@
 package com.order.orderlink.user.application;
 
+import java.util.UUID;
+
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,6 +39,14 @@ public class UserService {
 		userRepository.save(user);
 
 		return new UserResponse.Create(user.getId());
+	}
+
+	@Transactional(readOnly = true)
+	public UserResponse.Read getMyInfo(UUID userId) {
+		User user = userRepository.findById(userId)
+			.orElseThrow(() -> new UserException(ErrorCode.USER_NOT_FOUND));
+		return new UserResponse.Read(user.getId(), user.getUsername(), user.getEmail(), user.getPhone(),
+			user.getNickname(), user.getRole().name(), user.getIsPublic(), user.getCreatedAt());
 	}
 
 }
