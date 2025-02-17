@@ -84,4 +84,8 @@ public class User extends BaseTimeEntity {
 		}
 	}
 
+	public void updatePassword(String newEncodedPassword) {
+		this.password = newEncodedPassword;
+	}
+
 }

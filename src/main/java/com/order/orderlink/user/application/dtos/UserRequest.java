@@ -58,7 +58,7 @@ public class UserRequest {
 	}
 
 	@Getter
-	public static class ChangePassword {
+	public static class UpdatePassword {
 
 		@NotBlank(message = "현재 비밀번호를 입력해 주세요.")
 		private String currentPassword;
@@ -68,6 +68,9 @@ public class UserRequest {
 			message = "비밀번호는 영문, 숫자, 특수문자를 포함해야 합니다.")
 		@NotBlank(message = "새 비밀번호를 입력해 주세요.")
 		private String newPassword;
+
+		@NotBlank(message = "새 비밀번호 확인을 위해 다시 입력해 주세요.")
+		private String newPasswordConfirm;
 	}
 
 	@Getter

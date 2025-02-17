@@ -64,6 +64,29 @@ public class UserService {
 			user.getNickname(), user.getIsPublic(), user.getUpdatedAt());
 	}
 
+	// 비밀번호 변경
+	@Transactional
+	public UserResponse.UpdatePassword updatePassword(UUID userId, UserRequest.UpdatePassword request) {
+		User user = userRepository.findById(userId)
+			.orElseThrow(() -> new UserException(ErrorCode.USER_NOT_FOUND));
+
+		// 현재 비밀번호가 일치하는지 확인
+		if (!passwordEncoder.matches(request.getCurrentPassword(), user.getPassword())) {
+			throw new UserException(ErrorCode.USER_PASSWORD_NOT_MATCH);
+		}
+
+		// 새 비밀번호와 확인용 비밀번호가 일치하는지 확인
+		if (!request.getNewPassword().equals(request.getNewPasswordConfirm())) {
+			throw new UserException(ErrorCode.USER_CONFIRM_PASSWORD_NOT_MATCH);
+		}
+
+		// 새 비밀번호 암호화 및 변경
+		user.updatePassword(passwordEncoder.encode(request.getNewPassword()));
+		userRepository.save(user);
+
+		return new UserResponse.UpdatePassword(user.getId(), user.getUpdatedAt());
+	}
+
 	// 사용자 탈퇴
 	@Transactional
 	public UserResponse.Delete softDeleteUser(UUID userId, String username, String password) {

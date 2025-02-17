@@ -43,6 +43,13 @@ public class UserResponse {
 
 	@Getter
 	@AllArgsConstructor
+	public static class UpdatePassword {
+		private UUID id;
+		private LocalDateTime updatedAt;
+	}
+
+	@Getter
+	@AllArgsConstructor
 	public static class Delete {
 		private UUID id;
 		private LocalDateTime deletedAt;
