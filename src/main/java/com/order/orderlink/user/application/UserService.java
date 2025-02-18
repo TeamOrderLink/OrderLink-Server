@@ -92,7 +92,6 @@ public class UserService {
 		}
 
 		user.softDelete(username);  // BaseTimeEntity에 구현한 softDelete 메서드 (deletedBy, deletedAt 필드 업데이트)
-		userRepository.save(user);
 
 		return new UserResponse.Delete(user.getId(), user.getDeletedAt());
 	}
