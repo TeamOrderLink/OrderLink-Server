@@ -34,7 +34,7 @@ public class OrderController {
 	public SuccessResponse<OrderResponse.GetOrders> getMyOrders(
 		@AuthenticationPrincipal UserDetailsImpl userDetails,
 		@RequestParam(defaultValue = "1") int page,
-		@RequestParam(defaultValue = "5") int size
+		@RequestParam(defaultValue = "10") int size
 	) {
 		return SuccessResponse.success(SuccessCode.ORDER_GET_SUCCESS,
 			orderService.getMyOrders(userDetails, page, size));
@@ -66,10 +66,10 @@ public class OrderController {
 	}
 
 	@GetMapping
-	public SuccessResponse<OrderResponse.GetRestaurantOrders> getRestaurantOrderDetail(
+	public SuccessResponse<OrderResponse.GetRestaurantOrders> getRestaurantOrders(
 		@RequestParam UUID restaurantId,
 		@RequestParam(defaultValue = "1") int page,
-		@RequestParam(defaultValue = "5") int size,
+		@RequestParam(defaultValue = "10") int size,
 		@AuthenticationPrincipal UserDetailsImpl userDetails,
 		HttpServletRequest httpServletRequest
 	) {
