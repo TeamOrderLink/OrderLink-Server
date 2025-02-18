@@ -96,7 +96,7 @@ public class UserService {
 		return new UserResponse.Delete(user.getId(), user.getDeletedAt());
 	}
 
-	private User getUser(UUID userId) {
+	public User getUser(UUID userId) {
 		return userRepository.findById(userId)
 			.orElseThrow(() -> new UserException(ErrorCode.USER_NOT_FOUND));
 	}

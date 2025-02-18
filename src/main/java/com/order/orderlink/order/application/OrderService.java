@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.order.orderlink.common.auth.UserDetailsImpl;
+import com.order.orderlink.common.client.UserClient;
 import com.order.orderlink.common.enums.ErrorCode;
 import com.order.orderlink.common.exception.AuthException;
 import com.order.orderlink.common.exception.OrderException;
@@ -20,6 +21,7 @@ import com.order.orderlink.order.application.dtos.OrderDTO;
 import com.order.orderlink.order.application.dtos.OrderFoodDTO;
 import com.order.orderlink.order.application.dtos.OrderRequest;
 import com.order.orderlink.order.application.dtos.OrderResponse;
+import com.order.orderlink.order.application.dtos.RestaurantOrderDTO;
 import com.order.orderlink.order.domain.Order;
 import com.order.orderlink.order.domain.OrderStatus;
 import com.order.orderlink.order.domain.repository.OrderRepository;
@@ -27,8 +29,10 @@ import com.order.orderlink.orderitem.domain.OrderItem;
 import com.order.orderlink.payment.domain.Payment;
 import com.order.orderlink.restaurant.domain.Restaurant;
 import com.order.orderlink.restaurant.domain.repository.RestaurantRepository;
+import com.order.orderlink.user.domain.User;
 import com.order.orderlink.user.domain.UserRoleEnum;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -38,6 +42,7 @@ public class OrderService {
 
 	private final OrderRepository orderRepository;
 	private final RestaurantRepository restaurantRepository;
+	private final UserClient userClient;
 
 	public OrderResponse.Create createOrder(UserDetailsImpl userDetails, OrderRequest.Create request) {
 		UUID userId = getUserId(userDetails);
@@ -82,7 +87,7 @@ public class OrderService {
 		for (Order order : ordersPage.getContent()) {
 
 			List<OrderFoodDTO> foods = getFoods(order);
-			Restaurant restaurant = getRestaurant(order);
+			Restaurant restaurant = getRestaurant(order.getRestaurantId());
 
 			orders.add(OrderDTO.builder()
 				.orderId(order.getId())
@@ -107,8 +112,8 @@ public class OrderService {
 		return foods;
 	}
 
-	private Restaurant getRestaurant(Order order) {
-		Restaurant restaurant = restaurantRepository.findById(order.getRestaurantId())
+	private Restaurant getRestaurant(UUID restaurantId) {
+		Restaurant restaurant = restaurantRepository.findById(restaurantId)
 			.orElseThrow(() -> new RestaurantException(ErrorCode.RESTAURANT_NOT_FOUND));
 		return restaurant;
 	}
@@ -129,7 +134,7 @@ public class OrderService {
 
 		List<OrderFoodDTO> foods = getFoods(order);
 		Payment payment = order.getPayment();
-		Restaurant restaurant = getRestaurant(order);
+		Restaurant restaurant = getRestaurant(order.getRestaurantId());
 
 		return OrderResponse.GetOrderDetail.builder()
 			.orderId(orderId)
@@ -168,6 +173,37 @@ public class OrderService {
 			}
 			order.updateOrderStatus(request.getStatus());
 		}
+	}
+
+	@Transactional(readOnly = true)
+	public OrderResponse.GetRestaurantOrders getRestaurantOrders(UserDetailsImpl userDetails, UUID restaurantId,
+		int page, int size, HttpServletRequest httpServletRequest) {
+		UUID userId = validateRoleAndGetUserId(userDetails, Arrays.asList(UserRoleEnum.OWNER));
+		Restaurant restaurant = getRestaurant(restaurantId);
+		String accessToken = httpServletRequest.getHeader("Authorization");
+
+		Pageable pageable = PageRequest.of(page - 1, size);
+		Page<Order> ordersPage = orderRepository.findAllByRestaurantId(restaurantId, pageable);
+
+		List<RestaurantOrderDTO> orders = new ArrayList<>();
+		for (Order order : ordersPage.getContent()) {
+
+			List<OrderFoodDTO> foods = getFoods(order);
+			User user = userClient.getUser(order.getUserId(), accessToken);
+
+			orders.add(RestaurantOrderDTO.builder()
+				.orderId(order.getId())
+				.userNickName(user.getNickname())
+				.foods(foods)
+				.totalPrice(order.getTotalPrice())
+				.deliveryAddress(order.getDeliveryAddress())
+				.build());
+		}
+		return OrderResponse.GetRestaurantOrders.builder()
+			.orders(orders)
+			.totalPages(ordersPage.getTotalPages())
+			.currentPage(page)
+			.build();
 	}
 }
 
