@@ -4,9 +4,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
-import com.order.orderlink.order.domain.OrderStatus;
-import com.order.orderlink.payment.domain.PaymentStatus;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -42,12 +39,12 @@ public class OrderResponse {
 		private final int totalPrice;
 		private final String deliveryAddress;
 		private final List<OrderFoodDTO> foods;
-		private final OrderStatus status;
+		private final String status;
 		private final LocalDateTime createdAt;
 		private final int paymentPrice;
 		private final String paymentBank;
 		private final String cardNumber;
-		private final PaymentStatus paymentStatus;
+		private final String paymentStatus;
 	}
 
 }
