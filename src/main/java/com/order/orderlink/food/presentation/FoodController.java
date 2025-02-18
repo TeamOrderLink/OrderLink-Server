@@ -1,33 +1,27 @@
 package com.order.orderlink.food.presentation;
 
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.order.orderlink.common.dtos.SuccessResponse;
+import com.order.orderlink.common.enums.SuccessCode;
+import com.order.orderlink.food.application.FoodService;
+import com.order.orderlink.food.application.dtos.FoodRequest;
+import com.order.orderlink.food.application.dtos.FoodResponse;
+import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.*;
 
-import com.order.orderlink.food.application.dtos.FoodCreateRequest;
+import java.util.UUID;
 
 @RestController
-@RequestMapping("/foods")
+@RequestMapping("/api/foods")
+@RequiredArgsConstructor
 public class FoodController {
 
-	@GetMapping
-	public ResponseEntity<?> getProducts() {
-		return ResponseEntity.ok("getProducts() has been called!!");
-	}
+    private final FoodService foodService;
 
-	@PostMapping
-	public ResponseEntity<?> createProduct(@RequestBody FoodCreateRequest request) {
-		System.out.println("request.value() = " + request.value());
-		return ResponseEntity.ok(request.value());
-	}
-
-	@GetMapping("/{id}")
-	public ResponseEntity<?> getProduct(@PathVariable("id") String id) {
-		return ResponseEntity.ok("getProduct(%s) has been called!!".formatted(id));
-	}
+    @PostMapping
+    public SuccessResponse<FoodResponse.Create> createFood(
+            @RequestParam UUID restaurantId,
+            @RequestBody FoodRequest.Create request) {
+        return SuccessResponse.success(SuccessCode.FOOD_CREATE_SUCCESS, foodService.createFood(restaurantId, request));
+    }
 
 }
