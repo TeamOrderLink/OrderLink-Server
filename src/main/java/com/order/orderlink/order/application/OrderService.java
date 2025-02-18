@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.order.orderlink.common.auth.UserDetailsImpl;
-import com.order.orderlink.common.auth.util.JwtUtil;
 import com.order.orderlink.common.client.UserClient;
 import com.order.orderlink.common.enums.ErrorCode;
 import com.order.orderlink.common.exception.AuthException;
@@ -44,7 +43,6 @@ public class OrderService {
 	private final OrderRepository orderRepository;
 	private final RestaurantRepository restaurantRepository;
 	private final UserClient userClient;
-	private final JwtUtil jwtUtil;
 
 	public OrderResponse.Create createOrder(UserDetailsImpl userDetails, OrderRequest.Create request) {
 		UUID userId = getUserId(userDetails);
@@ -182,7 +180,7 @@ public class OrderService {
 		int page, int size, HttpServletRequest httpServletRequest) {
 		UUID userId = validateRoleAndGetUserId(userDetails, Arrays.asList(UserRoleEnum.OWNER));
 		Restaurant restaurant = getRestaurant(restaurantId);
-		String accessToken = jwtUtil.getJwtFromHeader(httpServletRequest);
+		String accessToken = httpServletRequest.getHeader("Authorization");
 
 		Pageable pageable = PageRequest.of(page - 1, size);
 		Page<Order> ordersPage = orderRepository.findAllByRestaurantId(restaurantId, pageable);

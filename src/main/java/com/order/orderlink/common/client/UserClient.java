@@ -20,7 +20,7 @@ public class UserClient {
 	public User getUser(UUID userId, String accessToken) {
 		return webClient.get()
 			.uri(uriBuilder -> uriBuilder.path(USERS_URL + "/{userId}").build(userId))
-			.header("Authorization", "Bearer " + accessToken)
+			.header("Authorization", accessToken)
 			.retrieve()
 			.bodyToMono(User.class)
 			.block();
