@@ -47,4 +47,13 @@ public class OrderResponse {
 		private final String paymentStatus;
 	}
 
+	@Getter
+	@Builder
+	@AllArgsConstructor
+	public static class GetRestaurantOrders {
+		private final List<RestaurantOrderDTO> orders;
+		private final int totalPages;
+		private final int currentPage;
+	}
+
 }
