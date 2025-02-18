@@ -18,13 +18,13 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class UserService {
 
 	private final UserRepository userRepository;
 	private final PasswordEncoder passwordEncoder;
 
 	// 회원가입
-	@Transactional
 	public UserResponse.Create signup(UserRequest.Create request) {
 		// 중복 체크
 		if (userRepository.existsByUsername(request.getUsername()) || userRepository.existsByEmail(request.getEmail())
@@ -52,7 +52,6 @@ public class UserService {
 	}
 
 	// 사용자 정보 수정
-	@Transactional
 	public UserResponse.Update updateInfo(UUID userId, UserRequest.Update request) {
 		User user = userRepository.findById(userId)
 			.orElseThrow(() -> new UserException(ErrorCode.USER_NOT_FOUND));
@@ -65,7 +64,6 @@ public class UserService {
 	}
 
 	// 비밀번호 변경
-	@Transactional
 	public UserResponse.UpdatePassword updatePassword(UUID userId, UserRequest.UpdatePassword request) {
 		User user = userRepository.findById(userId)
 			.orElseThrow(() -> new UserException(ErrorCode.USER_NOT_FOUND));
@@ -88,7 +86,6 @@ public class UserService {
 	}
 
 	// 사용자 탈퇴
-	@Transactional
 	public UserResponse.Delete softDeleteUser(UUID userId, String username, String password) {
 		User user = userRepository.findById(userId)
 			.orElseThrow(() -> new UserException(ErrorCode.USER_NOT_FOUND));
