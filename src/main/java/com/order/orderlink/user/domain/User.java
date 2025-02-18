@@ -68,4 +68,24 @@ public class User extends BaseTimeEntity {
 		this.isPublic = true;
 	}
 
+	public void updateInfo(String email, String phone, String nickname, Boolean isPublic) {
+
+		if (email != null && !email.trim().isEmpty()) {
+			this.email = email;
+		}
+		if (phone != null && !phone.trim().isEmpty()) {
+			this.phone = phone;
+		}
+		if (nickname != null && !nickname.trim().isEmpty()) {
+			this.nickname = nickname;
+		}
+		if (isPublic != null) {
+			this.isPublic = isPublic;
+		}
+	}
+
+	public void updatePassword(String newEncodedPassword) {
+		this.password = newEncodedPassword;
+	}
+
 }
