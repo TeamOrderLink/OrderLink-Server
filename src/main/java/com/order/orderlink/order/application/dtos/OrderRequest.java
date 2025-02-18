@@ -3,6 +3,7 @@ package com.order.orderlink.order.application.dtos;
 import java.util.List;
 import java.util.UUID;
 
+import com.order.orderlink.order.domain.OrderStatus;
 import com.order.orderlink.order.domain.OrderType;
 
 import jakarta.validation.constraints.NotNull;
@@ -30,8 +31,9 @@ public class OrderRequest {
 
 	}
 
-	public static class Update {
-
+	@Getter
+	public static class UpdateStatus {
+		private OrderStatus status;
 	}
 
 	public static class Delete {

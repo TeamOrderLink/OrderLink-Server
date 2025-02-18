@@ -137,12 +137,12 @@ public class OrderService {
 			.totalPrice(order.getTotalPrice())
 			.deliveryAddress(order.getDeliveryAddress())
 			.foods(foods)
-			.status(order.getStatus())
+			.status(order.getStatus().getValue())
 			.createdAt(order.getCreatedAt())
 			.paymentPrice(payment.getAmount())
 			.paymentBank(payment.getBank())
 			.cardNumber(maskCardNumber(payment.getCardNumber()))
-			.paymentStatus(payment.getStatus())
+			.paymentStatus(payment.getStatus().getValue())
 			.build();
 	}
 
@@ -154,6 +154,20 @@ public class OrderService {
 			return masked + last4Digits;
 		}
 		return cardNumber;
+	}
+
+	public void updateOrderStatus(UserDetailsImpl userDetails, UUID orderId, OrderRequest.UpdateStatus request) {
+		UUID userId = validateRoleAndGetUserId(userDetails, Arrays.asList(UserRoleEnum.OWNER, UserRoleEnum.CUSTOMER));
+		Order order = orderRepository.findById(orderId)
+			.orElseThrow(() -> new OrderException(ErrorCode.ORDER_NOT_FOUND));
+		if (request.getStatus().equals(OrderStatus.CANCELED)) {
+			order.updateOrderStatus(OrderStatus.CANCELED);
+		} else {
+			if (userDetails.getUser().getRole().equals(UserRoleEnum.CUSTOMER)) {
+				throw new AuthException(ErrorCode.USER_ACCESS_DENIED);
+			}
+			order.updateOrderStatus(request.getStatus());
+		}
 	}
 }
 
