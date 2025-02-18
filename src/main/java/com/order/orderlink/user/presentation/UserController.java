@@ -2,6 +2,7 @@ package com.order.orderlink.user.presentation;
 
 import java.util.UUID;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -32,7 +33,7 @@ public class UserController {
 	private final UserService userService;
 
 	/**
-	 * 회원가입
+	 * 회원 가입
 	 * @param request UserRequest.Create
 	 * @return SuccessResponse<UserResponse.Create>
 	 * @see UserRequest.Create
@@ -58,7 +59,20 @@ public class UserController {
 	}
 
 	/**
-	 * 사용자 정보 수정
+	 * 관리자 권한으로 특정 회원 정보 조회
+	 * @param userId 조회할 사용자의 UUID
+	 * @return SuccessResponse<UserResponse.Read>
+	 * @see UserResponse.Read
+	 * @author Jihwan
+	 */
+	@GetMapping("/{id}")
+	@PreAuthorize("hasAuthority('ROLE_MASTER')")
+	public SuccessResponse<UserResponse.Read> getUserInfoByAdmin(@PathVariable("id") UUID userId) {
+		return SuccessResponse.success(SuccessCode.USER_READ_SUCCESS, userService.getUserInfoByAdmin(userId));
+	}
+
+	/**
+	 * 회원 정보 수정
 	 * @param userDetails 인증된 사용자 정보
 	 * @param request UserRequest.Update
 	 * @return SuccessResponse<UserResponse.Update>
@@ -71,6 +85,22 @@ public class UserController {
 		@Valid @RequestBody UserRequest.Update request) {
 		UUID userId = userDetails.getUser().getId();
 		return SuccessResponse.success(SuccessCode.USER_UPDATE_SUCCESS, userService.updateInfo(userId, request));
+	}
+
+	/**
+	 * 관리자 권한으로 특정 회원 정보 수정
+	 * @param userId 수정할 사용자의 UUID
+	 * @param request UserRequest.UpdateByAdmin
+	 * @return SuccessResponse<UserResponse.UpdateByAdmin>
+	 * @see UserRequest.UpdateByAdmin
+	 * @see UserResponse.UpdateByAdmin
+	 * @author Jihwan
+	 */
+	@PutMapping("/{id}")
+	@PreAuthorize("hasAuthority('ROLE_MASTER')")
+	public SuccessResponse<UserResponse.UpdateByAdmin> updateInfoByAdmin(@PathVariable("id") UUID userId,
+		@Valid @RequestBody UserRequest.UpdateByAdmin request) {
+		return SuccessResponse.success(SuccessCode.USER_UPDATE_SUCCESS, userService.updateInfoByAdmin(userId, request));
 	}
 
 	/**
@@ -92,7 +122,7 @@ public class UserController {
 	}
 
 	/**
-	 * 사용자 탈퇴
+	 * 회원 삭제/탈퇴
 	 * @param userDetails 인증된 사용자 정보
 	 * @param request UserRequest.Delete
 	 * @return SuccessResponse<UserResponse.Delete>

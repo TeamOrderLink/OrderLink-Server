@@ -38,14 +38,24 @@ public class UserResponse {
 		private String phone;
 		private String nickname;
 		private Boolean isPublic;
-		private LocalDateTime updatedAt;
+	}
+
+	@Getter
+	@AllArgsConstructor
+	public static class UpdateByAdmin {
+		private UUID id;
+		private String username;
+		private String email;
+		private String phone;
+		private String nickname;
+		private Boolean isPublic;
+		private String role;
 	}
 
 	@Getter
 	@AllArgsConstructor
 	public static class UpdatePassword {
 		private UUID id;
-		private LocalDateTime updatedAt;
 	}
 
 	@Getter

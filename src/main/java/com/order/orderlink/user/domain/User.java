@@ -84,6 +84,13 @@ public class User extends BaseTimeEntity {
 		}
 	}
 
+	public void updateByAdmin(String email, String phone, String nickname, Boolean isPublic, UserRoleEnum role) {
+		updateInfo(email, phone, nickname, isPublic);
+		if (role != null) {
+			this.role = role;
+		}
+	}
+
 	public void updatePassword(String newEncodedPassword) {
 		this.password = newEncodedPassword;
 	}

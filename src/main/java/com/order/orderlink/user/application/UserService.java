@@ -50,15 +50,40 @@ public class UserService {
 			user.getNickname(), user.getRole().name(), user.getIsPublic(), user.getCreatedAt());
 	}
 
-	// 사용자 정보 수정
+	// 관리자 권한으로 특정 회원 정보 조회
+	@Transactional(readOnly = true)
+	public UserResponse.Read getUserInfoByAdmin(UUID userId) {
+		User user = getUser(userId);
+		return new UserResponse.Read(user.getId(), user.getUsername(), user.getEmail(), user.getPhone(),
+			user.getNickname(), user.getRole().name(), user.getIsPublic(), user.getCreatedAt());
+	}
+
+	// 회원 정보 수정
 	public UserResponse.Update updateInfo(UUID userId, UserRequest.Update request) {
 		User user = getUser(userId);
 
 		user.updateInfo(request.getEmail(), request.getPhone(), request.getNickname(), request.getIsPublic());
-		userRepository.save(user);
 
 		return new UserResponse.Update(user.getId(), user.getUsername(), user.getEmail(), user.getPhone(),
-			user.getNickname(), user.getIsPublic(), user.getUpdatedAt());
+			user.getNickname(), user.getIsPublic());
+	}
+
+	// 관리자 권한으로 특정 회원 정보 수정
+	public UserResponse.UpdateByAdmin updateInfoByAdmin(UUID userId, UserRequest.UpdateByAdmin request) {
+		User user = getUser(userId);
+
+		// role을 필수적으로 받지 않기 때문에, null일 경우에 NullPointException 방지를 위해 체크
+		if (request.getRole() == null) {
+			// role을 받지 않았을 경우, updateInfo 메서드로 roll을 제외한 정보 업데이트
+			user.updateInfo(request.getEmail(), request.getPhone(), request.getNickname(), request.getIsPublic());
+		} else {
+			// role을 받았을 경우, updateByAdmin 메서드로 모든 정보 업데이트
+			user.updateByAdmin(request.getEmail(), request.getPhone(), request.getNickname(), request.getIsPublic(),
+				UserRoleEnum.valueOf(request.getRole()));
+		}
+
+		return new UserResponse.UpdateByAdmin(user.getId(), user.getUsername(), user.getEmail(), user.getPhone(),
+			user.getNickname(), user.getIsPublic(), user.getRole().name());
 	}
 
 	// 비밀번호 변경
@@ -77,12 +102,11 @@ public class UserService {
 
 		// 새 비밀번호 암호화 및 변경
 		user.updatePassword(passwordEncoder.encode(request.getNewPassword()));
-		userRepository.save(user);
 
-		return new UserResponse.UpdatePassword(user.getId(), user.getUpdatedAt());
+		return new UserResponse.UpdatePassword(user.getId());
 	}
 
-	// 사용자 탈퇴
+	// 회원 삭제/탈퇴
 	public UserResponse.Delete softDeleteUser(UUID userId, String username, String password) {
 		User user = getUser(userId);
 
