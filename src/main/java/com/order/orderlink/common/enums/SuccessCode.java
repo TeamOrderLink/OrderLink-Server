@@ -17,7 +17,8 @@ public enum SuccessCode {
 	USER_DELETE_SUCCESS(HttpStatus.OK, "회원 삭제 성공입니다."),
 	ORDER_CREATE_SUCCESS(HttpStatus.OK, "주문 생성 성공입니다."),
 	ORDER_GET_SUCCESS(HttpStatus.OK, "주문 목록 조회 성공입니다."),
-	ORDER_GET_DETAIL_SUCCESS(HttpStatus.OK, "주문 상세 조회 성공입니다.");
+	ORDER_GET_DETAIL_SUCCESS(HttpStatus.OK, "주문 상세 조회 성공입니다."),
+	ORDER_UPDATE_STATUS_SUCCESS(HttpStatus.OK, "주문 상태 변경 성공입니다.");
 
 	private final HttpStatus status;
 	private final String message;
