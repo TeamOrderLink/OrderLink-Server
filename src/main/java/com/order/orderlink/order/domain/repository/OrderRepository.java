@@ -11,4 +11,6 @@ import com.order.orderlink.order.domain.Order;
 public interface OrderRepository extends JpaRepository<Order, UUID> {
 
 	Page<Order> findAllByUserId(UUID userId, Pageable pageable);
+
+	Page<Order> findAllByRestaurantId(UUID restaurantId, Pageable pageable);
 }

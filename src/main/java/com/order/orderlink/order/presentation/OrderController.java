@@ -32,8 +32,8 @@ public class OrderController {
 	@GetMapping("/my")
 	public SuccessResponse<OrderResponse.GetOrders> getMyOrders(
 		@AuthenticationPrincipal UserDetailsImpl userDetails,
-		@RequestParam int page,
-		@RequestParam int size
+		@RequestParam(defaultValue = "1") int page,
+		@RequestParam(defaultValue = "5") int size
 	) {
 		return SuccessResponse.success(SuccessCode.ORDER_GET_SUCCESS,
 			orderService.getMyOrders(userDetails, page, size));
@@ -63,4 +63,15 @@ public class OrderController {
 		orderService.updateOrderStatus(userDetails, orderId, request);
 		return SuccessNonDataResponse.success(SuccessCode.ORDER_UPDATE_STATUS_SUCCESS);
 	}
+
+	@GetMapping
+	public SuccessResponse<OrderResponse.GetRestaurantOrders> getRestaurantOrderDetail(
+		@RequestParam UUID restaurantId,
+		@RequestParam(defaultValue = "1") int page,
+		@RequestParam(defaultValue = "5") int size,
+		@AuthenticationPrincipal UserDetailsImpl userDetails) {
+		return SuccessResponse.success(SuccessCode.ORDERS_OWNER_GET_SUCESS,
+			orderService.getRestaurantOrders(userDetails, restaurantId, page, size));
+	}
+
 }

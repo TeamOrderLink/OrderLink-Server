@@ -20,6 +20,7 @@ import com.order.orderlink.order.application.dtos.OrderDTO;
 import com.order.orderlink.order.application.dtos.OrderFoodDTO;
 import com.order.orderlink.order.application.dtos.OrderRequest;
 import com.order.orderlink.order.application.dtos.OrderResponse;
+import com.order.orderlink.order.application.dtos.RestaurantOrderDTO;
 import com.order.orderlink.order.domain.Order;
 import com.order.orderlink.order.domain.OrderStatus;
 import com.order.orderlink.order.domain.repository.OrderRepository;
@@ -82,7 +83,7 @@ public class OrderService {
 		for (Order order : ordersPage.getContent()) {
 
 			List<OrderFoodDTO> foods = getFoods(order);
-			Restaurant restaurant = getRestaurant(order);
+			Restaurant restaurant = getRestaurant(order.getRestaurantId());
 
 			orders.add(OrderDTO.builder()
 				.orderId(order.getId())
@@ -107,8 +108,8 @@ public class OrderService {
 		return foods;
 	}
 
-	private Restaurant getRestaurant(Order order) {
-		Restaurant restaurant = restaurantRepository.findById(order.getRestaurantId())
+	private Restaurant getRestaurant(UUID restaurantId) {
+		Restaurant restaurant = restaurantRepository.findById(restaurantId)
 			.orElseThrow(() -> new RestaurantException(ErrorCode.RESTAURANT_NOT_FOUND));
 		return restaurant;
 	}
@@ -129,7 +130,7 @@ public class OrderService {
 
 		List<OrderFoodDTO> foods = getFoods(order);
 		Payment payment = order.getPayment();
-		Restaurant restaurant = getRestaurant(order);
+		Restaurant restaurant = getRestaurant(order.getRestaurantId());
 
 		return OrderResponse.GetOrderDetail.builder()
 			.orderId(orderId)
@@ -168,6 +169,35 @@ public class OrderService {
 			}
 			order.updateOrderStatus(request.getStatus());
 		}
+	}
+
+	@Transactional(readOnly = true)
+	public OrderResponse.GetRestaurantOrders getRestaurantOrders(UserDetailsImpl userDetails, UUID restaurantId,
+		int page, int size) {
+		UUID userId = validateRoleAndGetUserId(userDetails, Arrays.asList(UserRoleEnum.OWNER));
+		Restaurant restaurant = getRestaurant(restaurantId);
+		
+		Pageable pageable = PageRequest.of(page - 1, size);
+		Page<Order> ordersPage = orderRepository.findAllByRestaurantId(restaurantId, pageable);
+
+		List<RestaurantOrderDTO> orders = new ArrayList<>();
+		for (Order order : ordersPage.getContent()) {
+
+			List<OrderFoodDTO> foods = getFoods(order);
+
+			orders.add(RestaurantOrderDTO.builder()
+				.orderId(order.getId())
+				.userNickName(userDetails.getUser().getNickname())
+				.foods(foods)
+				.totalPrice(order.getTotalPrice())
+				.deliveryAddress(order.getDeliveryAddress())
+				.build());
+		}
+		return OrderResponse.GetRestaurantOrders.builder()
+			.orders(orders)
+			.totalPages(ordersPage.getTotalPages())
+			.currentPage(page)
+			.build();
 	}
 }
 
