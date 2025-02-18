@@ -26,7 +26,7 @@ public class Food extends BaseTimeEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "restaurant_id", nullable = false)
-    private Restaurant restaurant;
+    private Restaurant restaurantId;
 
     @Column(name = "name", nullable = false)
     private String name;
