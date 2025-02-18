@@ -12,7 +12,7 @@ public class FoodResponse {
     @Getter
     @Builder
     @AllArgsConstructor
-    public static class create {
+    public static class Create {
         private UUID id;
         private UUID restaurantId;
         private String name;
