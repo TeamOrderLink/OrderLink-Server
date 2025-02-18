@@ -2,9 +2,11 @@ package com.order.orderlink.user.presentation;
 
 import java.util.UUID;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,6 +19,7 @@ import com.order.orderlink.common.enums.SuccessCode;
 import com.order.orderlink.user.application.UserService;
 import com.order.orderlink.user.application.dtos.UserRequest;
 import com.order.orderlink.user.application.dtos.UserResponse;
+import com.order.orderlink.user.domain.User;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -104,6 +107,12 @@ public class UserController {
 		String username = userDetails.getUser().getUsername();
 		return SuccessResponse.success(SuccessCode.USER_DELETE_SUCCESS,
 			userService.softDeleteUser(userId, username, request.getPassword()));
+	}
+
+	@GetMapping("/{userId}")
+	public ResponseEntity<User> getUser(@PathVariable UUID userId) {
+		User user = userService.getUser(userId);
+		return ResponseEntity.ok(user);
 	}
 
 }
