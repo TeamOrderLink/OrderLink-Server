@@ -45,16 +45,14 @@ public class UserService {
 	// 내 정보 조회
 	@Transactional(readOnly = true)
 	public UserResponse.Read getMyInfo(UUID userId) {
-		User user = userRepository.findById(userId)
-			.orElseThrow(() -> new UserException(ErrorCode.USER_NOT_FOUND));
+		User user = getUser(userId);
 		return new UserResponse.Read(user.getId(), user.getUsername(), user.getEmail(), user.getPhone(),
 			user.getNickname(), user.getRole().name(), user.getIsPublic(), user.getCreatedAt());
 	}
 
 	// 사용자 정보 수정
 	public UserResponse.Update updateInfo(UUID userId, UserRequest.Update request) {
-		User user = userRepository.findById(userId)
-			.orElseThrow(() -> new UserException(ErrorCode.USER_NOT_FOUND));
+		User user = getUser(userId);
 
 		user.updateInfo(request.getEmail(), request.getPhone(), request.getNickname(), request.getIsPublic());
 		userRepository.save(user);
@@ -65,8 +63,7 @@ public class UserService {
 
 	// 비밀번호 변경
 	public UserResponse.UpdatePassword updatePassword(UUID userId, UserRequest.UpdatePassword request) {
-		User user = userRepository.findById(userId)
-			.orElseThrow(() -> new UserException(ErrorCode.USER_NOT_FOUND));
+		User user = getUser(userId);
 
 		// 현재 비밀번호가 일치하는지 확인
 		if (!passwordEncoder.matches(request.getCurrentPassword(), user.getPassword())) {
@@ -87,8 +84,7 @@ public class UserService {
 
 	// 사용자 탈퇴
 	public UserResponse.Delete softDeleteUser(UUID userId, String username, String password) {
-		User user = userRepository.findById(userId)
-			.orElseThrow(() -> new UserException(ErrorCode.USER_NOT_FOUND));
+		User user = getUser(userId);
 
 		// 입력한 비밀번호가 일치하는지 확인
 		if (!passwordEncoder.matches(password, user.getPassword())) {
@@ -99,5 +95,10 @@ public class UserService {
 		userRepository.save(user);
 
 		return new UserResponse.Delete(user.getId(), user.getDeletedAt());
+	}
+
+	private User getUser(UUID userId) {
+		return userRepository.findById(userId)
+			.orElseThrow(() -> new UserException(ErrorCode.USER_NOT_FOUND));
 	}
 }
