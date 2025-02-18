@@ -20,6 +20,7 @@ import com.order.orderlink.order.application.OrderService;
 import com.order.orderlink.order.application.dtos.OrderRequest;
 import com.order.orderlink.order.application.dtos.OrderResponse;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -69,9 +70,11 @@ public class OrderController {
 		@RequestParam UUID restaurantId,
 		@RequestParam(defaultValue = "1") int page,
 		@RequestParam(defaultValue = "5") int size,
-		@AuthenticationPrincipal UserDetailsImpl userDetails) {
+		@AuthenticationPrincipal UserDetailsImpl userDetails,
+		HttpServletRequest httpServletRequest
+	) {
 		return SuccessResponse.success(SuccessCode.ORDERS_OWNER_GET_SUCESS,
-			orderService.getRestaurantOrders(userDetails, restaurantId, page, size));
+			orderService.getRestaurantOrders(userDetails, restaurantId, page, size, httpServletRequest));
 	}
 
 }

@@ -12,6 +12,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.order.orderlink.common.auth.UserDetailsImpl;
+import com.order.orderlink.common.auth.util.JwtUtil;
+import com.order.orderlink.common.client.UserClient;
 import com.order.orderlink.common.enums.ErrorCode;
 import com.order.orderlink.common.exception.AuthException;
 import com.order.orderlink.common.exception.OrderException;
@@ -28,8 +30,10 @@ import com.order.orderlink.orderitem.domain.OrderItem;
 import com.order.orderlink.payment.domain.Payment;
 import com.order.orderlink.restaurant.domain.Restaurant;
 import com.order.orderlink.restaurant.domain.repository.RestaurantRepository;
+import com.order.orderlink.user.domain.User;
 import com.order.orderlink.user.domain.UserRoleEnum;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -39,6 +43,8 @@ public class OrderService {
 
 	private final OrderRepository orderRepository;
 	private final RestaurantRepository restaurantRepository;
+	private final UserClient userClient;
+	private final JwtUtil jwtUtil;
 
 	public OrderResponse.Create createOrder(UserDetailsImpl userDetails, OrderRequest.Create request) {
 		UUID userId = getUserId(userDetails);
@@ -173,10 +179,11 @@ public class OrderService {
 
 	@Transactional(readOnly = true)
 	public OrderResponse.GetRestaurantOrders getRestaurantOrders(UserDetailsImpl userDetails, UUID restaurantId,
-		int page, int size) {
+		int page, int size, HttpServletRequest httpServletRequest) {
 		UUID userId = validateRoleAndGetUserId(userDetails, Arrays.asList(UserRoleEnum.OWNER));
 		Restaurant restaurant = getRestaurant(restaurantId);
-		
+		String accessToken = jwtUtil.getJwtFromHeader(httpServletRequest);
+
 		Pageable pageable = PageRequest.of(page - 1, size);
 		Page<Order> ordersPage = orderRepository.findAllByRestaurantId(restaurantId, pageable);
 
@@ -184,10 +191,11 @@ public class OrderService {
 		for (Order order : ordersPage.getContent()) {
 
 			List<OrderFoodDTO> foods = getFoods(order);
+			User user = userClient.getUser(order.getUserId(), accessToken);
 
 			orders.add(RestaurantOrderDTO.builder()
 				.orderId(order.getId())
-				.userNickName(userDetails.getUser().getNickname())
+				.userNickName(user.getNickname())
 				.foods(foods)
 				.totalPrice(order.getTotalPrice())
 				.deliveryAddress(order.getDeliveryAddress())
