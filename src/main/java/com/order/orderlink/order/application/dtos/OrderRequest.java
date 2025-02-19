@@ -1,5 +1,6 @@
 package com.order.orderlink.order.application.dtos;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
@@ -27,17 +28,17 @@ public class OrderRequest {
 		private OrderType orderType;
 	}
 
-	public static class Read {
-
-	}
-
 	@Getter
 	public static class UpdateStatus {
 		private OrderStatus status;
 	}
 
-	public static class Delete {
-
+	@Getter
+	public static class Search {
+		private OrderStatus status;
+		private String restaurantName;
+		private String foodName;
+		private LocalDate startDate;
+		private LocalDate endDate;
 	}
-
 }
