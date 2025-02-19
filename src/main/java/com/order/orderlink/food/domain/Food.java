@@ -37,11 +37,11 @@ public class Food extends BaseTimeEntity {
     @Column(name = "price", nullable = false)
     private int price;
 
-    @Column(name = "image_url", nullable = false)
+    @Column(name = "image_url")
     private String imageUrl;
 
     @Column(name = "is_hidden", nullable = false)
-    private boolean isHidden;
+    private boolean isHidden = false;
 
 
 }
