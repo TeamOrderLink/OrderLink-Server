@@ -75,7 +75,7 @@ public class OrderController {
 		@AuthenticationPrincipal UserDetailsImpl userDetails,
 		HttpServletRequest httpServletRequest
 	) {
-		return SuccessResponse.success(SuccessCode.ORDERS_OWNER_GET_SUCESS,
+		return SuccessResponse.success(SuccessCode.ORDERS_OWNER_GET_SUCCESS,
 			orderService.getRestaurantOrders(userDetails, restaurantId, page, size, httpServletRequest));
 	}
 
@@ -83,6 +83,17 @@ public class OrderController {
 	public ResponseEntity<Order> getOrder(@PathVariable UUID orderId) {
 		Order order = orderService.getOrderById(orderId);
 		return ResponseEntity.ok(order);
+	}
+
+	@GetMapping("/search")
+	public SuccessResponse<OrderResponse.GetOrders> getSearchedOrders(
+		@RequestParam(defaultValue = "1") int page,
+		@RequestParam(defaultValue = "10") int size,
+		@AuthenticationPrincipal UserDetailsImpl userDetails,
+		@RequestBody OrderRequest.Search request
+	) {
+		return SuccessResponse.success(SuccessCode.ORDERS_SEARCH_SUCCESS,
+			orderService.getSearchedOrders(userDetails, request, page, size));
 	}
 
 }

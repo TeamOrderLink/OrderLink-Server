@@ -8,6 +8,7 @@ import java.util.UUID;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,6 +26,7 @@ import com.order.orderlink.order.application.dtos.RestaurantOrderDTO;
 import com.order.orderlink.order.domain.Order;
 import com.order.orderlink.order.domain.OrderStatus;
 import com.order.orderlink.order.domain.repository.OrderRepository;
+import com.order.orderlink.order.domain.repository.OrderRepositoryImpl;
 import com.order.orderlink.orderitem.domain.OrderItem;
 import com.order.orderlink.payment.domain.Payment;
 import com.order.orderlink.restaurant.domain.Restaurant;
@@ -43,9 +45,10 @@ public class OrderService {
 	private final OrderRepository orderRepository;
 	private final RestaurantRepository restaurantRepository;
 	private final UserClient userClient;
+	private final OrderRepositoryImpl orderRepositoryImpl;
 
 	public OrderResponse.Create createOrder(UserDetailsImpl userDetails, OrderRequest.Create request) {
-		UUID userId = getUserId(userDetails);
+		UUID userId = validateRoleAndGetUserId(userDetails, Arrays.asList(UserRoleEnum.CUSTOMER));
 		Order order = Order.builder()
 			.userId(userId)
 			.restaurantId(request.getRestaurantId())
@@ -78,18 +81,27 @@ public class OrderService {
 
 	@Transactional(readOnly = true)
 	public OrderResponse.GetOrders getMyOrders(UserDetailsImpl userDetails, int page, int size) {
-		UUID userId = validateRoleAndGetUserId(userDetails, Arrays.asList(UserRoleEnum.CUSTOMER));
+		UUID userId = getUserId(userDetails);
 
 		Pageable pageable = PageRequest.of(page - 1, size);
 		Page<Order> ordersPage = orderRepository.findAllByUserId(userId, pageable);
 
-		List<OrderDTO> orders = new ArrayList<>();
-		for (Order order : ordersPage.getContent()) {
+		List<OrderDTO> orders = getOrderDTOS(ordersPage);
+		return OrderResponse.GetOrders.builder()
+			.orders(orders)
+			.totalPages(ordersPage.getTotalPages())
+			.currentPage(page)
+			.build();
+	}
+
+	private List<OrderDTO> getOrderDTOS(Page<Order> searchedOrdersPage) {
+		List<OrderDTO> searchedOrders = new ArrayList<>();
+		for (Order order : searchedOrdersPage.getContent()) {
 
 			List<OrderFoodDTO> foods = getFoods(order);
 			Restaurant restaurant = getRestaurant(order.getRestaurantId());
 
-			orders.add(OrderDTO.builder()
+			searchedOrders.add(OrderDTO.builder()
 				.orderId(order.getId())
 				.restaurantName(restaurant.getName())
 				.foods(foods)
@@ -97,11 +109,7 @@ public class OrderService {
 				.deliveryAddress(order.getDeliveryAddress())
 				.build());
 		}
-		return OrderResponse.GetOrders.builder()
-			.orders(orders)
-			.totalPages(ordersPage.getTotalPages())
-			.currentPage(page)
-			.build();
+		return searchedOrders;
 	}
 
 	private static List<OrderFoodDTO> getFoods(Order order) {
@@ -190,7 +198,7 @@ public class OrderService {
 	@Transactional(readOnly = true)
 	public OrderResponse.GetRestaurantOrders getRestaurantOrders(UserDetailsImpl userDetails, UUID restaurantId,
 		int page, int size, HttpServletRequest httpServletRequest) {
-		UUID userId = validateRoleAndGetUserId(userDetails, Arrays.asList(UserRoleEnum.OWNER));
+		UUID userId = validateRoleAndGetUserId(userDetails, Arrays.asList(UserRoleEnum.OWNER, UserRoleEnum.MASTER));
 		Restaurant restaurant = getRestaurant(restaurantId);
 		String accessToken = httpServletRequest.getHeader("Authorization");
 
@@ -223,6 +231,27 @@ public class OrderService {
 		Order order = orderRepository.findById(orderId)
 			.orElseThrow(() -> new OrderException(ErrorCode.ORDER_NOT_FOUND));
 		return order;
+	}
+
+	public OrderResponse.GetOrders getSearchedOrders(UserDetailsImpl userDetails, OrderRequest.Search request, int page,
+		int size) {
+		UUID userId = getUserId(userDetails);
+		if (size != 10 && size != 30 && size != 50) {
+			size = 10;
+		}
+		Sort sort = Sort.by(Sort.Order.desc("createdAt"), Sort.Order.desc("updatedAt"));
+		Pageable pageable = PageRequest.of(page - 1, size, sort);
+
+		Page<Order> searchedOrdersPage = orderRepositoryImpl.searchOrdersWithItems(request.getStatus(),
+			request.getRestaurantName(), request.getFoodName(), request.getStartDate(), request.getEndDate(), pageable);
+
+		List<OrderDTO> searchedOrders = getOrderDTOS(searchedOrdersPage);
+		return OrderResponse.GetOrders.builder()
+			.orders(searchedOrders)
+			.totalPages(searchedOrdersPage.getTotalPages())
+			.currentPage(page)
+			.build();
+		
 	}
 }
 
