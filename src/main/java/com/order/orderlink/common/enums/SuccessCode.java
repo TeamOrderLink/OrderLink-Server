@@ -19,7 +19,8 @@ public enum SuccessCode {
 	ORDER_GET_SUCCESS(HttpStatus.OK, "주문 목록 조회 성공입니다."),
 	ORDER_GET_DETAIL_SUCCESS(HttpStatus.OK, "주문 상세 조회 성공입니다."),
 	ORDER_UPDATE_STATUS_SUCCESS(HttpStatus.OK, "주문 상태 변경 성공입니다."),
-	ORDERS_OWNER_GET_SUCESS(HttpStatus.OK, "음식점 주문 리스트 조회 성공입니다");
+	ORDERS_OWNER_GET_SUCESS(HttpStatus.OK, "음식점 주문 리스트 조회 성공입니다"),
+	PAYMENT_CREATE_SUCCESS(HttpStatus.OK, "결제내역 생성 성공입니다");
 
 	private final HttpStatus status;
 	private final String message;

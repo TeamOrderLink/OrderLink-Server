@@ -1,0 +1,28 @@
+package com.order.orderlink.payment.application.dtos;
+
+import java.util.UUID;
+
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import lombok.Getter;
+
+public class PaymentRequest {
+	@Getter
+	public static class Create {
+
+		@NotNull
+		private UUID orderId;
+
+		@NotBlank
+		private String cardNumber;
+
+		@NotBlank
+		private String bank;
+
+		@NotBlank
+		private String cardHolder;
+
+		private String expiryDate;
+		private int amount;
+	}
+}
