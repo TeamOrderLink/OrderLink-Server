@@ -1,0 +1,70 @@
+package com.order.orderlink.deliverydetail.domain;
+
+import java.util.UUID;
+
+import org.hibernate.annotations.UuidGenerator;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+import com.order.orderlink.common.entity.BaseTimeEntity;
+import com.order.orderlink.user.domain.User;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+@Getter
+@Entity
+@Table(name = "p_delivery_details")
+@EntityListeners(AuditingEntityListener.class)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+public class DeliveryDetail extends BaseTimeEntity {
+
+	@Id
+	@GeneratedValue
+	@UuidGenerator(style = UuidGenerator.Style.AUTO)
+	@Column(name = "id", updatable = false, nullable = false)
+	private UUID id;
+
+	@ManyToOne
+	@JoinColumn(name = "user_id", nullable = false)
+	private User user;
+
+	@Column(name = "address", nullable = false)
+	private String address;
+
+	@Column(name = "request")
+	private String request;
+
+	@Column(name = "is_default", nullable = false, columnDefinition = "boolean default false")
+	private Boolean isDefault;
+
+	@Builder
+	public DeliveryDetail(User user, String address, String request, Boolean isDefault) {
+		this.user = user;
+		this.address = address;
+		this.request = request;
+		this.isDefault = (isDefault != null) ? isDefault : false;
+	}
+
+	public void update(String address, String request, Boolean isDefault) {
+		if (address != null && !address.trim().isEmpty()) {
+			this.address = address;
+		}
+		if (request != null) {
+			this.request = request;
+		}
+		if (isDefault != null) {
+			this.isDefault = isDefault;
+		}
+	}
+
+}
