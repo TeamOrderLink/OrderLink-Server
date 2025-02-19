@@ -22,7 +22,9 @@ public class PaymentRequest {
 		@NotBlank
 		private String cardHolder;
 
+		@NotBlank
 		private String expiryDate;
+		@NotBlank
 		private int amount;
 	}
 }
