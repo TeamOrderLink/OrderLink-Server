@@ -129,12 +129,13 @@ public class OrderService {
 	@Transactional(readOnly = true)
 	public OrderResponse.GetOrderDetail getOrderDetail(UserDetailsImpl userDetails, UUID orderId) {
 		UUID userId = validateRoleAndGetUserId(userDetails, Arrays.asList(UserRoleEnum.CUSTOMER, UserRoleEnum.OWNER));
-		Order order = orderRepository.findById(orderId)
-			.orElseThrow(() -> new OrderException(ErrorCode.ORDER_NOT_FOUND));
+		Order order = getOrderById(orderId);
 
 		List<OrderFoodDTO> foods = getFoods(order);
 		Payment payment = order.getPayment();
 		Restaurant restaurant = getRestaurant(order.getRestaurantId());
+
+		Result paymentNullCheck = getPaymentNullCheck(payment);
 
 		return OrderResponse.GetOrderDetail.builder()
 			.orderId(orderId)
@@ -144,11 +145,23 @@ public class OrderService {
 			.foods(foods)
 			.status(order.getStatus().getValue())
 			.createdAt(order.getCreatedAt())
-			.paymentPrice(payment.getAmount())
-			.paymentBank(payment.getBank())
-			.cardNumber(maskCardNumber(payment.getCardNumber()))
-			.paymentStatus(payment.getStatus().getValue())
+			.paymentPrice(paymentNullCheck.paymentPrice())
+			.paymentBank(paymentNullCheck.paymentBank())
+			.cardNumber(paymentNullCheck.cardNumber())
+			.paymentStatus(paymentNullCheck.paymentStatus())
 			.build();
+	}
+
+	private Result getPaymentNullCheck(Payment payment) {
+		int paymentPrice = (payment != null) ? payment.getAmount() : 0;
+		String paymentBank = (payment != null) ? payment.getBank() : "N/A";
+		String cardNumber = (payment != null) ? maskCardNumber(payment.getCardNumber()) : "N/A";
+		String paymentStatus = (payment != null) ? payment.getStatus().getValue() : "N/A";
+		Result paymentNullCheck = new Result(paymentPrice, paymentBank, cardNumber, paymentStatus);
+		return paymentNullCheck;
+	}
+
+	private record Result(int paymentPrice, String paymentBank, String cardNumber, String paymentStatus) {
 	}
 
 	private String maskCardNumber(String cardNumber) {
@@ -163,8 +176,7 @@ public class OrderService {
 
 	public void updateOrderStatus(UserDetailsImpl userDetails, UUID orderId, OrderRequest.UpdateStatus request) {
 		UUID userId = validateRoleAndGetUserId(userDetails, Arrays.asList(UserRoleEnum.OWNER, UserRoleEnum.CUSTOMER));
-		Order order = orderRepository.findById(orderId)
-			.orElseThrow(() -> new OrderException(ErrorCode.ORDER_NOT_FOUND));
+		Order order = getOrderById(orderId);
 		if (request.getStatus().equals(OrderStatus.CANCELED)) {
 			order.updateOrderStatus(OrderStatus.CANCELED);
 		} else {
@@ -204,6 +216,13 @@ public class OrderService {
 			.totalPages(ordersPage.getTotalPages())
 			.currentPage(page)
 			.build();
+	}
+
+	@Transactional(readOnly = true)
+	public Order getOrderById(UUID orderId) {
+		Order order = orderRepository.findById(orderId)
+			.orElseThrow(() -> new OrderException(ErrorCode.ORDER_NOT_FOUND));
+		return order;
 	}
 }
 
