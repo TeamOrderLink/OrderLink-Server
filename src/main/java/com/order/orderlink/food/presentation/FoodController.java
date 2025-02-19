@@ -5,12 +5,10 @@ import com.order.orderlink.common.enums.SuccessCode;
 import com.order.orderlink.food.application.FoodService;
 import com.order.orderlink.food.application.dtos.FoodRequest;
 import com.order.orderlink.food.application.dtos.FoodResponse;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/foods")
@@ -21,8 +19,9 @@ public class FoodController {
 
     @PostMapping
     public SuccessResponse<FoodResponse.Create> createFood(
-            @Valid @RequestBody FoodRequest.Create request) {
-        return SuccessResponse.success(SuccessCode.FOOD_CREATE_SUCCESS, foodService.createFood(request));
+            @RequestParam UUID restaurantId,
+            @RequestBody FoodRequest.Create request) {
+        return SuccessResponse.success(SuccessCode.FOOD_CREATE_SUCCESS, foodService.createFood(restaurantId, request));
     }
 
 }

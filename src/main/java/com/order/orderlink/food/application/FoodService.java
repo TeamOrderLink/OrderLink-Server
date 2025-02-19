@@ -11,6 +11,8 @@ import com.order.orderlink.restaurant.domain.repository.RestaurantRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.UUID;
+
 @Service
 @RequiredArgsConstructor
 public class FoodService {
@@ -18,9 +20,9 @@ public class FoodService {
     private final FoodRepository foodRepository;
     private final RestaurantRepository restaurantRepository;
 
-    public FoodResponse.Create createFood(FoodRequest.Create request) {
+    public FoodResponse.Create createFood(UUID restaurantId, FoodRequest.Create request) {
 
-        Restaurant restaurant = restaurantRepository.findById(request.getRestaurantId())
+        Restaurant restaurant = restaurantRepository.findById(restaurantId)
                 .orElseThrow(() -> new RestaurantException(ErrorCode.RESTAURANT_NOT_FOUND));
         Food food = Food.builder()
                 .restaurant(restaurant)
