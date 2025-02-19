@@ -1,5 +1,6 @@
 package com.order.orderlink.payment.application.dtos;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 import lombok.AllArgsConstructor;
@@ -12,5 +13,17 @@ public class PaymentResponse {
 	@AllArgsConstructor
 	public static class Create {
 		private final UUID paymentId;
+	}
+
+	@Getter
+	@Builder
+	@AllArgsConstructor
+	public static class GetPayment {
+		private String cardHolder;
+		private String bank;
+		private String cardNumber;
+		private int amount;
+		private String status;
+		private LocalDateTime createdAt;
 	}
 }
