@@ -6,8 +6,6 @@ import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
 
 import java.time.LocalTime;
-import java.util.List;
-import java.util.UUID;
 
 public class RestaurantRequest {
 
@@ -49,8 +47,5 @@ public class RestaurantRequest {
         @NotBlank
         @Pattern(regexp = "^[가-힣]+$", message = "지역명은 한글만 입력 가능합니다.")
         private String region;
-
-        @NotBlank
-        private List<RestaurantFoodDto> foods;
     }
 }
