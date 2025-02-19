@@ -11,6 +11,7 @@ public enum SuccessCode {
 
 	LOGIN_SUCCESS(HttpStatus.OK, "로그인 성공입니다."),
 	USER_CREATE_SUCCESS(HttpStatus.OK, "회원 가입 성공입니다."),
+	USER_READ_ALL_SUCCESS(HttpStatus.OK, "전체 회원 조회 성공입니다."),
 	USER_READ_SUCCESS(HttpStatus.OK, "회원 정보 조회 성공입니다."),
 	USER_UPDATE_SUCCESS(HttpStatus.OK, "회원 정보 수정 성공입니다."),
 	USER_PASSWORD_UPDATE_SUCCESS(HttpStatus.OK, "비밀번호 변경 성공입니다."),

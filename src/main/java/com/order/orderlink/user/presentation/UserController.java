@@ -2,6 +2,10 @@ package com.order.orderlink.user.presentation;
 
 import java.util.UUID;
 
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -11,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.order.orderlink.common.auth.UserDetailsImpl;
@@ -32,7 +37,7 @@ public class UserController {
 	private final UserService userService;
 
 	/**
-	 * 회원가입
+	 * 회원 가입
 	 * @param request UserRequest.Create
 	 * @return SuccessResponse<UserResponse.Create>
 	 * @see UserRequest.Create
@@ -42,6 +47,56 @@ public class UserController {
 	@PostMapping
 	public SuccessResponse<UserResponse.Create> signup(@Valid @RequestBody UserRequest.Create request) {
 		return SuccessResponse.success(SuccessCode.USER_CREATE_SUCCESS, userService.signup(request));
+	}
+
+	/**
+	 * 관리자 권한으로 전체 회원 조회
+	 * @param page 1-based 페이지 번호
+	 * @param size 페이지 크기
+	 * @param sort 정렬 기준 (예: createdAt,asc or updatedAt,desc)
+	 * @return SuccessResponse<UserResponse.ReadUserList>
+	 * @see UserResponse.ReadUserList
+	 * @author Jihwan
+	 */
+	@GetMapping("/all")
+	@PreAuthorize("hasAuthority('ROLE_MASTER')")
+	public SuccessResponse<UserResponse.ReadUserList> getAllUsers(
+		@RequestParam(defaultValue = "1") int page,
+		@RequestParam(defaultValue = "10") int size,
+		@RequestParam(defaultValue = "createdAt,asc") String sort) {
+
+		if (page < 1) {
+			page = 1;
+		}
+
+		// 허용된 페이지 크기: 10, 30, 50
+		if (size != 10 && size != 30 && size != 50) {
+			size = 10;
+		}
+
+		Sort sortObj = null;
+		if (sort != null && !sort.trim().isEmpty()) {
+			String[] sortParts = sort.split(",");
+			if (sortParts.length == 2) {
+				String fieldInput = sortParts[0].trim();
+				String orderInput = sortParts[1].trim().toLowerCase();
+
+				if (!fieldInput.isEmpty() && (orderInput.equals("asc") || orderInput.equals("desc"))) {
+					sortObj = orderInput.equals("asc") ?
+						Sort.by(fieldInput).ascending() : Sort.by(fieldInput).descending();
+				}
+			}
+		}
+		if (sortObj == null) {
+			sortObj = Sort.by(
+				Sort.Order.desc("createdAt"),
+				Sort.Order.desc("updatedAt")
+			);
+		}
+
+		// 1-based로 받은 페이지 번호를 0-based 페이지 번호로 변환
+		Pageable pageable = PageRequest.of(page - 1, size, sortObj);
+		return SuccessResponse.success(SuccessCode.USER_READ_ALL_SUCCESS, userService.getAllUsers(pageable));
 	}
 
 	/**
@@ -58,7 +113,20 @@ public class UserController {
 	}
 
 	/**
-	 * 사용자 정보 수정
+	 * 관리자 권한으로 특정 회원 정보 조회
+	 * @param userId 조회할 사용자의 UUID
+	 * @return SuccessResponse<UserResponse.Read>
+	 * @see UserResponse.Read
+	 * @author Jihwan
+	 */
+	@GetMapping("/{id}")
+	@PreAuthorize("hasAuthority('ROLE_MASTER')")
+	public SuccessResponse<UserResponse.Read> getUserInfoByAdmin(@PathVariable("id") UUID userId) {
+		return SuccessResponse.success(SuccessCode.USER_READ_SUCCESS, userService.getUserInfoByAdmin(userId));
+	}
+
+	/**
+	 * 회원 정보 수정
 	 * @param userDetails 인증된 사용자 정보
 	 * @param request UserRequest.Update
 	 * @return SuccessResponse<UserResponse.Update>
@@ -71,6 +139,22 @@ public class UserController {
 		@Valid @RequestBody UserRequest.Update request) {
 		UUID userId = userDetails.getUser().getId();
 		return SuccessResponse.success(SuccessCode.USER_UPDATE_SUCCESS, userService.updateInfo(userId, request));
+	}
+
+	/**
+	 * 관리자 권한으로 특정 회원 정보 수정
+	 * @param userId 수정할 사용자의 UUID
+	 * @param request UserRequest.UpdateByAdmin
+	 * @return SuccessResponse<UserResponse.UpdateByAdmin>
+	 * @see UserRequest.UpdateByAdmin
+	 * @see UserResponse.UpdateByAdmin
+	 * @author Jihwan
+	 */
+	@PutMapping("/{id}")
+	@PreAuthorize("hasAuthority('ROLE_MASTER')")
+	public SuccessResponse<UserResponse.UpdateByAdmin> updateInfoByAdmin(@PathVariable("id") UUID userId,
+		@Valid @RequestBody UserRequest.UpdateByAdmin request) {
+		return SuccessResponse.success(SuccessCode.USER_UPDATE_SUCCESS, userService.updateInfoByAdmin(userId, request));
 	}
 
 	/**
@@ -92,7 +176,7 @@ public class UserController {
 	}
 
 	/**
-	 * 사용자 탈퇴
+	 * 회원 삭제/탈퇴
 	 * @param userDetails 인증된 사용자 정보
 	 * @param request UserRequest.Delete
 	 * @return SuccessResponse<UserResponse.Delete>

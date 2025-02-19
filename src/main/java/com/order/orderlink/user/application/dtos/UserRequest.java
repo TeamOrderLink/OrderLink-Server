@@ -58,6 +58,23 @@ public class UserRequest {
 	}
 
 	@Getter
+	public static class UpdateByAdmin {
+
+		@Email(message = "이메일 형식이 올바르지 않습니다.")
+		private String email;
+
+		@Pattern(regexp = "^[0-9]{10,11}$", message = "전화번호는 '-' 없이 10자리 또는 11자리 숫자로 입력해주세요.")
+		private String phone;
+
+		private String nickname;
+
+		private Boolean isPublic;
+
+		@Pattern(regexp = "^(CUSTOMER|OWNER|MANAGER|MASTER)$", message = "Role은 CUSTOMER, OWNER, MANAGER, MASTER 중 하나여야 합니다.")
+		private String role;
+	}
+
+	@Getter
 	public static class UpdatePassword {
 
 		@NotBlank(message = "현재 비밀번호를 입력해 주세요.")
