@@ -2,6 +2,7 @@ package com.order.orderlink.order.presentation;
 
 import java.util.UUID;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -19,6 +20,7 @@ import com.order.orderlink.common.enums.SuccessCode;
 import com.order.orderlink.order.application.OrderService;
 import com.order.orderlink.order.application.dtos.OrderRequest;
 import com.order.orderlink.order.application.dtos.OrderResponse;
+import com.order.orderlink.order.domain.Order;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -75,6 +77,12 @@ public class OrderController {
 	) {
 		return SuccessResponse.success(SuccessCode.ORDERS_OWNER_GET_SUCCESS,
 			orderService.getRestaurantOrders(userDetails, restaurantId, page, size, httpServletRequest));
+	}
+
+	@GetMapping("/{orderId}/getOrder")
+	public ResponseEntity<Order> getOrder(@PathVariable UUID orderId) {
+		Order order = orderService.getOrderById(orderId);
+		return ResponseEntity.ok(order);
 	}
 
 	@GetMapping("/search")

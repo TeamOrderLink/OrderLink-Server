@@ -7,6 +7,7 @@ import java.util.UUID;
 import org.hibernate.annotations.UuidGenerator;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.order.orderlink.common.entity.BaseTimeEntity;
 import com.order.orderlink.orderitem.domain.OrderItem;
 import com.order.orderlink.payment.domain.Payment;
@@ -63,9 +64,11 @@ public class Order extends BaseTimeEntity {
 
 	@Builder.Default
 	@OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
+	@JsonIgnore
 	private List<OrderItem> orderItems = new ArrayList<>();
 
 	@OneToOne(mappedBy = "order", cascade = CascadeType.ALL)
+	@JsonIgnore
 	private Payment payment;
 
 	public void addOrderItem(OrderItem orderItem) {
