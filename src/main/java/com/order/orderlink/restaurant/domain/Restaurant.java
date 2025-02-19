@@ -2,8 +2,8 @@ package com.order.orderlink.restaurant.domain;
 
 import com.order.orderlink.common.entity.BaseTimeEntity;
 import com.order.orderlink.food.domain.Food;
-import com.order.orderlink.restaurant.application.dtos.RestaurantFoodDto;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.UuidGenerator;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -40,8 +41,13 @@ public class Restaurant extends BaseTimeEntity {
 	@Column(name = "description")
 	private String description;
 
-	@Column(name = "business_hours",nullable = false)
-	private String businessHours;
+	@NotBlank
+	@Column(name = "open_Time", nullable = false)
+	private LocalTime openTime;
+
+	@NotBlank
+	@Column(name = "close_Time", nullable = false)
+	private LocalTime closeTime;
 
 	@Builder.Default
 	@Column(name = "business_status", nullable = false)
@@ -66,25 +72,25 @@ public class Restaurant extends BaseTimeEntity {
 	private Integer ratingCount = 0;
 
 	@Column(name = "region_id", nullable = false)
-	private UUID regionId;
+	private String regionId; // 추후 String -> UUID 변경 예정
 
-	// 클라이언트 요청 시 입력한 여러 Food 데이터를 requestDTO에 매핑됨
-	// Food와 연관관계를 양방향으로 안걸고 해당 음식점에서 판매하는 음식 리스트를 어떻게 담을 수 있을까?
-	@OneToMany
-	private List<Food> foods = new ArrayList<>();
+	@Column(name = "categories_id", nullable = false)
+	private String categoriesId; // 추후 String -> UUID 변경 예정
 
-	public Restaurant(String name, String address, String phone, String description, String businessHours, String ownerName, String businessRegNum, UUID regionId) {
+	@OneToMany(mappedBy = "restaurant")
+	private List<Food> foods = new ArrayList<>(); // set 메서드 추가 -> Food 연관관계 설정
+
+	public Restaurant(String name, String address, String phone, String description, LocalTime openTime, LocalTime closeTime, String ownerName, String businessRegNum, String regionId, String categoriesId) {
 		this.name = name;
 		this.address = address;
 		this.phone = phone;
 		this.description = description;
-		this.businessHours = businessHours;
+		this.openTime = openTime;
+		this.closeTime = closeTime;
 		this.businessStatus = true;
 		this.ownerName = ownerName;
 		this.businessRegNum = businessRegNum;
-//		this.avgRating = 0.0;
-//		this.ratingSum = 0.0;
-//		this.ratingCount = 0;
 		this.regionId = regionId;
+		this.categoriesId = categoriesId;
 	}
 }

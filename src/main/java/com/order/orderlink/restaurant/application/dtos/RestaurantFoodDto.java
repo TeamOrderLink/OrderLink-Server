@@ -10,6 +10,6 @@ import lombok.NoArgsConstructor;
 public class RestaurantFoodDto {
     private String foodName;
     private String foodDescription;
-    private Long price;
+    private int price;
     private String imageUrl;
 }

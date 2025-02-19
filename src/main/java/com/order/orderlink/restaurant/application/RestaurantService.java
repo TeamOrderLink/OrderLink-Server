@@ -3,6 +3,8 @@ package com.order.orderlink.restaurant.application;
 import com.order.orderlink.common.auth.UserDetailsImpl;
 import com.order.orderlink.common.enums.ErrorCode;
 import com.order.orderlink.common.exception.AuthException;
+import com.order.orderlink.food.domain.Food;
+import com.order.orderlink.restaurant.application.dtos.RestaurantFoodDto;
 import com.order.orderlink.restaurant.application.dtos.RestaurantRequest;
 import com.order.orderlink.restaurant.application.dtos.RestaurantResponse;
 import com.order.orderlink.restaurant.domain.Restaurant;
@@ -12,7 +14,9 @@ import com.order.orderlink.user.domain.UserRoleEnum;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -35,11 +39,13 @@ public class RestaurantService {
                 .address(request.getAddress())
                 .phone(request.getPhone())
                 .description(request.getDescription())
-                .businessHours(request.getBusinessHours())
+                .openTime(request.getOpenTime())
+                .closeTime(request.getCloseTime())
                 .ownerName(request.getOwnerName())
                 .businessRegNum(request.getBusinessRegNum())
-                .regionId(request.getRegionId())
-                // 음식점의 음식 데이터는??
+                .regionId(request.getCategories())
+                .categoriesId(request.getCategories())
+                .foods(mapToFoodList(request.getFoods()))
                 .build();
 
         // 음식점 repository 저장
@@ -47,6 +53,18 @@ public class RestaurantService {
 
         // 응답 결과 반환
         return new RestaurantResponse.Create(restaurant.getId());
+    }
+
+    // List<RestaurantFoodDto> -> List<Food> 매핑 메서드
+    private List<Food> mapToFoodList(List<RestaurantFoodDto> restaurantFoodDto) {
+        return restaurantFoodDto.stream()
+                .map(dto -> Food.builder()
+                        .name(dto.getFoodName())
+                        .description(dto.getFoodDescription())
+                        .price(dto.getPrice())
+                        .imageUrl(dto.getImageUrl())
+                        .build())
+                .collect(Collectors.toList());
     }
 
 
