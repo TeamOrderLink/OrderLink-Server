@@ -3,6 +3,7 @@ package com.order.orderlink.order.presentation;
 import java.util.UUID;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -51,6 +52,7 @@ public class OrderController {
 	}
 
 	@PostMapping
+	@PreAuthorize("hasAuthority('ROLE_CUSTOMER')")
 	public SuccessResponse<OrderResponse.Create> createOrder(
 		@AuthenticationPrincipal UserDetailsImpl userDetails,
 		@RequestBody OrderRequest.Create request) {
@@ -59,6 +61,7 @@ public class OrderController {
 	}
 
 	@PatchMapping("/{orderId}/status")
+	@PreAuthorize("hasAnyAuthority('ROLE_OWNER', 'ROLE_CUSTOMER')")
 	public SuccessNonDataResponse updateOrderStatus(
 		@AuthenticationPrincipal UserDetailsImpl userDetails,
 		@PathVariable("orderId") UUID orderId,
@@ -68,6 +71,7 @@ public class OrderController {
 	}
 
 	@GetMapping
+	@PreAuthorize("hasAnyAuthority('ROLE_MASTER', 'ROLE_OWNER')")
 	public SuccessResponse<OrderResponse.GetRestaurantOrders> getRestaurantOrders(
 		@RequestParam UUID restaurantId,
 		@RequestParam(defaultValue = "1") int page,

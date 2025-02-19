@@ -12,6 +12,8 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
+import com.order.orderlink.common.enums.ErrorCode;
+import com.order.orderlink.common.exception.OrderException;
 import com.order.orderlink.order.domain.Order;
 import com.order.orderlink.order.domain.OrderStatus;
 import com.querydsl.core.BooleanBuilder;
@@ -29,6 +31,11 @@ public class OrderRepositoryImpl implements OrderRepositoryCustom {
 	@Override
 	public Page<Order> searchOrdersWithItems(OrderStatus status, String restaurantName, String foodName,
 		LocalDate startDate, LocalDate endDate, Pageable pageable) {
+
+		if (status == null && (restaurantName == null || restaurantName.isEmpty())
+			&& (foodName == null || foodName.isEmpty()) && startDate == null && endDate == null) {
+			throw new OrderException(ErrorCode.ORDER_SEARCH_NOT_ALLOWED);
+		}
 
 		BooleanBuilder builder = new BooleanBuilder();
 

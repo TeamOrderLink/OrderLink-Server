@@ -23,7 +23,8 @@ public enum SuccessCode {
 	PAYMENT_CREATE_SUCCESS(HttpStatus.OK, "결제내역 생성 성공입니다"),
 	ORDERS_OWNER_GET_SUCCESS(HttpStatus.OK, "음식점 주문 리스트 조회 성공입니다"),
 	ORDERS_SEARCH_SUCCESS(HttpStatus.OK, "음식점 검색 성공입니다"),
-	FOOD_CREATE_SUCCESS(HttpStatus.OK, "음식 등록 성공입니다.");
+	FOOD_CREATE_SUCCESS(HttpStatus.OK, "음식 등록 성공입니다."),
+	PAYMENT_GET_SUCCESS(HttpStatus.OK, "결제내역 조회 성공입니다.");
 
 	private final HttpStatus status;
 	private final String message;

@@ -11,6 +11,7 @@ import com.order.orderlink.common.auth.UserDetailsImpl;
 import com.order.orderlink.common.client.OrderClient;
 import com.order.orderlink.common.enums.ErrorCode;
 import com.order.orderlink.common.exception.AuthException;
+import com.order.orderlink.common.exception.PaymentException;
 import com.order.orderlink.order.domain.Order;
 import com.order.orderlink.payment.application.dtos.PaymentRequest;
 import com.order.orderlink.payment.application.dtos.PaymentResponse;
@@ -58,5 +59,29 @@ public class PaymentService {
 		}
 		UUID userId = getUserId(userDetails);
 		return userId;
+	}
+
+	@Transactional(readOnly = true)
+	public PaymentResponse.GetPayment getPayment(UserDetailsImpl userDetails, UUID paymentId) {
+		Payment payment = paymentRepository.findById(paymentId)
+			.orElseThrow(() -> new PaymentException(ErrorCode.PAYMENT_NOT_FOUND));
+		return PaymentResponse.GetPayment.builder()
+			.amount(payment.getAmount())
+			.bank(payment.getBank())
+			.cardHolder(payment.getCardHolder())
+			.cardNumber(maskCardNumber(payment.getCardNumber()))
+			.createdAt(payment.getCreatedAt())
+			.status(payment.getStatus().getValue())
+			.build();
+	}
+
+	private String maskCardNumber(String cardNumber) {
+		if (cardNumber != null && cardNumber.length() > 4) {
+			// 카드 번호의 마지막 4자리 제외하고 '*'로 마스킹
+			String last4Digits = cardNumber.substring(cardNumber.length() - 4);
+			String masked = cardNumber.substring(0, cardNumber.length() - 4).replaceAll("[0-9]", "*");
+			return masked + last4Digits;
+		}
+		return cardNumber;
 	}
 }

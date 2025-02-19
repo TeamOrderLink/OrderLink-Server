@@ -1,7 +1,6 @@
 package com.order.orderlink.order.application;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -48,7 +47,7 @@ public class OrderService {
 	private final OrderRepositoryImpl orderRepositoryImpl;
 
 	public OrderResponse.Create createOrder(UserDetailsImpl userDetails, OrderRequest.Create request) {
-		UUID userId = validateRoleAndGetUserId(userDetails, Arrays.asList(UserRoleEnum.CUSTOMER));
+		UUID userId = getUserId(userDetails);
 		Order order = Order.builder()
 			.userId(userId)
 			.restaurantId(request.getRestaurantId())
@@ -102,6 +101,7 @@ public class OrderService {
 			Restaurant restaurant = getRestaurant(order.getRestaurantId());
 
 			searchedOrders.add(OrderDTO.builder()
+				.paymentId(order.getPayment().getId())
 				.orderId(order.getId())
 				.restaurantName(restaurant.getName())
 				.foods(foods)
@@ -126,17 +126,9 @@ public class OrderService {
 		return restaurant;
 	}
 
-	private static UUID validateRoleAndGetUserId(UserDetailsImpl userDetails, List<UserRoleEnum> roles) {
-		if (!roles.contains(userDetails.getUser().getRole())) {
-			throw new AuthException(ErrorCode.USER_ACCESS_DENIED);
-		}
-		UUID userId = getUserId(userDetails);
-		return userId;
-	}
-
 	@Transactional(readOnly = true)
 	public OrderResponse.GetOrderDetail getOrderDetail(UserDetailsImpl userDetails, UUID orderId) {
-		UUID userId = validateRoleAndGetUserId(userDetails, Arrays.asList(UserRoleEnum.CUSTOMER, UserRoleEnum.OWNER));
+		UUID userId = getUserId(userDetails);
 		Order order = getOrderById(orderId);
 
 		List<OrderFoodDTO> foods = getFoods(order);
@@ -183,7 +175,7 @@ public class OrderService {
 	}
 
 	public void updateOrderStatus(UserDetailsImpl userDetails, UUID orderId, OrderRequest.UpdateStatus request) {
-		UUID userId = validateRoleAndGetUserId(userDetails, Arrays.asList(UserRoleEnum.OWNER, UserRoleEnum.CUSTOMER));
+		UUID userId = getUserId(userDetails);
 		Order order = getOrderById(orderId);
 		if (request.getStatus().equals(OrderStatus.CANCELED)) {
 			order.updateOrderStatus(OrderStatus.CANCELED);
@@ -198,7 +190,7 @@ public class OrderService {
 	@Transactional(readOnly = true)
 	public OrderResponse.GetRestaurantOrders getRestaurantOrders(UserDetailsImpl userDetails, UUID restaurantId,
 		int page, int size, HttpServletRequest httpServletRequest) {
-		UUID userId = validateRoleAndGetUserId(userDetails, Arrays.asList(UserRoleEnum.OWNER, UserRoleEnum.MASTER));
+		UUID userId = getUserId(userDetails);
 		Restaurant restaurant = getRestaurant(restaurantId);
 		String accessToken = httpServletRequest.getHeader("Authorization");
 
@@ -212,6 +204,7 @@ public class OrderService {
 			User user = userClient.getUser(order.getUserId(), accessToken);
 
 			orders.add(RestaurantOrderDTO.builder()
+				.paymentId(order.getPayment().getId())
 				.orderId(order.getId())
 				.userNickName(user.getNickname())
 				.foods(foods)
@@ -251,7 +244,7 @@ public class OrderService {
 			.totalPages(searchedOrdersPage.getTotalPages())
 			.currentPage(page)
 			.build();
-		
+
 	}
 }
 
