@@ -14,6 +14,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class RestaurantOrderDTO {
 	private UUID orderId;
+	private UUID paymentId;
 	private String userNickName;
 	private int totalPrice;
 	private String deliveryAddress;
