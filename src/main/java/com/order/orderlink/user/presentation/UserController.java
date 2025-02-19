@@ -2,6 +2,9 @@ package com.order.orderlink.user.presentation;
 
 import java.util.UUID;
 
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -12,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.order.orderlink.common.auth.UserDetailsImpl;
@@ -43,6 +47,56 @@ public class UserController {
 	@PostMapping
 	public SuccessResponse<UserResponse.Create> signup(@Valid @RequestBody UserRequest.Create request) {
 		return SuccessResponse.success(SuccessCode.USER_CREATE_SUCCESS, userService.signup(request));
+	}
+
+	/**
+	 * 관리자 권한으로 전체 회원 조회
+	 * @param page 1-based 페이지 번호
+	 * @param size 페이지 크기
+	 * @param sort 정렬 기준 (예: createdAt,asc or updatedAt,desc)
+	 * @return SuccessResponse<UserResponse.ReadUserList>
+	 * @see UserResponse.ReadUserList
+	 * @author Jihwan
+	 */
+	@GetMapping("/all")
+	@PreAuthorize("hasAuthority('ROLE_MASTER')")
+	public SuccessResponse<UserResponse.ReadUserList> getAllUsers(
+		@RequestParam(defaultValue = "1") int page,
+		@RequestParam(defaultValue = "10") int size,
+		@RequestParam(defaultValue = "createdAt,asc") String sort) {
+
+		if (page < 1) {
+			page = 1;
+		}
+
+		// 허용된 페이지 크기: 10, 30, 50
+		if (size != 10 && size != 30 && size != 50) {
+			size = 10;
+		}
+
+		Sort sortObj = null;
+		if (sort != null && !sort.trim().isEmpty()) {
+			String[] sortParts = sort.split(",");
+			if (sortParts.length == 2) {
+				String fieldInput = sortParts[0].trim();
+				String orderInput = sortParts[1].trim().toLowerCase();
+
+				if (!fieldInput.isEmpty() && (orderInput.equals("asc") || orderInput.equals("desc"))) {
+					sortObj = orderInput.equals("asc") ?
+						Sort.by(fieldInput).ascending() : Sort.by(fieldInput).descending();
+				}
+			}
+		}
+		if (sortObj == null) {
+			sortObj = Sort.by(
+				Sort.Order.desc("createdAt"),
+				Sort.Order.desc("updatedAt")
+			);
+		}
+
+		// 1-based로 받은 페이지 번호를 0-based 페이지 번호로 변환
+		Pageable pageable = PageRequest.of(page - 1, size, sortObj);
+		return SuccessResponse.success(SuccessCode.USER_READ_ALL_SUCCESS, userService.getAllUsers(pageable));
 	}
 
 	/**

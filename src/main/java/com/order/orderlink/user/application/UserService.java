@@ -1,7 +1,10 @@
 package com.order.orderlink.user.application;
 
+import java.util.List;
 import java.util.UUID;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -40,6 +43,18 @@ public class UserService {
 		userRepository.save(user);
 
 		return new UserResponse.Create(user.getId());
+	}
+
+	// 전체 회원 조회
+	public UserResponse.ReadUserList getAllUsers(Pageable pageable) {
+		Page<User> page = userRepository.findAll(pageable);
+		List<UserResponse.Read> users = page.getContent()
+			.stream()
+			.map(user -> new UserResponse.Read(user.getId(), user.getUsername(), user.getEmail(), user.getPhone(),
+				user.getNickname(), user.getRole().name(), user.getIsPublic(), user.getCreatedAt()))
+			.toList();
+		return new UserResponse.ReadUserList(users, page.getNumber() + 1, page.getTotalPages(),
+			page.getTotalElements());
 	}
 
 	// 내 정보 조회

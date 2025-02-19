@@ -1,6 +1,7 @@
 package com.order.orderlink.user.application.dtos;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 import lombok.AllArgsConstructor;
@@ -27,6 +28,15 @@ public class UserResponse {
 		private String role;
 		private Boolean isPublic;
 		private LocalDateTime createdAt;
+	}
+
+	@Getter
+	@AllArgsConstructor
+	public static class ReadUserList {
+		private List<Read> users;
+		private int currentPage;
+		private int totalPages;
+		private long totalElements;
 	}
 
 	@Getter
