@@ -1,5 +1,6 @@
 package com.order.orderlink.restaurant.domain;
 
+import com.order.orderlink.common.auth.util.LocalTimeToStringConverter;
 import com.order.orderlink.common.entity.BaseTimeEntity;
 import com.order.orderlink.food.domain.Food;
 import jakarta.persistence.*;
@@ -42,10 +43,12 @@ public class Restaurant extends BaseTimeEntity {
     private String description;
 
     @NotNull
+    @Convert(converter = LocalTimeToStringConverter.class)
     @Column(name = "open_time", nullable = false)
     private LocalTime openTime;
 
     @NotNull
+    @Convert(converter = LocalTimeToStringConverter.class)
     @Column(name = "close_time", nullable = false)
     private LocalTime closeTime;
 

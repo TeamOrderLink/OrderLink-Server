@@ -1,12 +1,11 @@
 package com.order.orderlink.restaurant.application.dtos;
 
-import com.order.orderlink.food.domain.Food;
+import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -20,8 +19,13 @@ public class RestaurantDto {
     private String address;
     private String phone;
     private String description;
-    private LocalTime openTime;
-    private LocalTime closeTime;
+
+    @Pattern(regexp = "^([01]\\d|2[0-3]):[0-5]\\d$", message = "시간은 00:00 ~ 23:59 이내의 시간으로 HH:mm 형식에 맞게 입력해 주세요.")
+    private String openTime;
+
+    @Pattern(regexp = "^([01]\\d|2[0-3]):[0-5]\\d$", message = "시간은 00:00 ~ 23:59 이내의 시간으로 HH:mm 형식에 맞게 입력해 주세요.")
+    private String closeTime;
+
     private boolean businessStatus;
     private String ownerName;
     private String businessRegNum;
@@ -29,6 +33,5 @@ public class RestaurantDto {
     private Double ratingSum;
     private Integer ratingCount;
     private String region;
-    private String categories;
     private List<RestaurantFoodDto> foods;
 }
