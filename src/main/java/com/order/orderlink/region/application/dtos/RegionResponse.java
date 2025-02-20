@@ -21,4 +21,14 @@ public class RegionResponse {
 	public static class GetRegions {
 		private final List<RegionDTO> regions;
 	}
+
+	@Getter
+	@Builder
+	@AllArgsConstructor
+	public static class GetTreeRegions {
+		private final UUID regionId;
+		private final String name;
+		private final UUID parentId;
+		private final List<GetTreeRegions> regions;
+	}
 }
