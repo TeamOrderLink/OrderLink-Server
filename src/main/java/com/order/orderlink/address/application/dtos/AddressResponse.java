@@ -31,7 +31,6 @@ public class AddressResponse {
 	public static class Read {
 		private UUID id;
 		private String address;
-		private String request;
 		private Boolean isDefault;
 		private LocalDateTime createdAt;
 	}
@@ -41,7 +40,6 @@ public class AddressResponse {
 	public static class Update {
 		private UUID id;
 		private String address;
-		private String request;
 		private Boolean isDefault;
 	}
 

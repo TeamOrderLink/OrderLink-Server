@@ -31,7 +31,6 @@ public class AddressService {
 		Address address = Address.builder()
 			.user(user)
 			.address(request.getAddress())
-			.request(request.getRequest())
 			.isDefault(request.getIsDefault() != null ? request.getIsDefault() : false)
 			.build();
 		addressRepository.save(address);
@@ -46,7 +45,6 @@ public class AddressService {
 			.map(address -> new AddressResponse.Read(
 				address.getId(),
 				address.getAddress(),
-				address.getRequest(),
 				address.getIsDefault(),
 				address.getCreatedAt()
 			))
@@ -62,7 +60,6 @@ public class AddressService {
 		return new AddressResponse.Read(
 			address.getId(),
 			address.getAddress(),
-			address.getRequest(),
 			address.getIsDefault(),
 			address.getCreatedAt()
 		);
@@ -72,9 +69,8 @@ public class AddressService {
 	public AddressResponse.Update updateAddress(UUID addressId,
 		AddressRequest.Update request) {
 		Address address = getAddressInstance(addressId);
-		address.update(request.getAddress(), request.getRequest(), request.getIsDefault());
-		return new AddressResponse.Update(address.getId(), address.getAddress(),
-			address.getRequest(), address.getIsDefault());
+		address.update(request.getAddress(), request.getIsDefault());
+		return new AddressResponse.Update(address.getId(), address.getAddress(), address.getIsDefault());
 	}
 
 	// 배송지 삭제 (soft delete)

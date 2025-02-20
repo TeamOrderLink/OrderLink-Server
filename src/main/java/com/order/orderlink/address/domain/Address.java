@@ -11,6 +11,7 @@ import com.order.orderlink.user.domain.User;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
@@ -34,33 +35,26 @@ public class Address extends BaseTimeEntity {
 	@Column(name = "id", updatable = false, nullable = false)
 	private UUID id;
 
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "user_id", nullable = false)
 	private User user;
 
 	@Column(name = "address", nullable = false)
 	private String address;
 
-	@Column(name = "request")
-	private String request;
-
 	@Column(name = "is_default", nullable = false, columnDefinition = "boolean default false")
 	private Boolean isDefault;
 
 	@Builder
-	public Address(User user, String address, String request, Boolean isDefault) {
+	public Address(User user, String address, Boolean isDefault) {
 		this.user = user;
 		this.address = address;
-		this.request = request;
 		this.isDefault = (isDefault != null) ? isDefault : false;
 	}
 
-	public void update(String address, String request, Boolean isDefault) {
+	public void update(String address, Boolean isDefault) {
 		if (address != null && !address.trim().isEmpty()) {
 			this.address = address;
-		}
-		if (request != null) {
-			this.request = request;
 		}
 		if (isDefault != null) {
 			this.isDefault = isDefault;
