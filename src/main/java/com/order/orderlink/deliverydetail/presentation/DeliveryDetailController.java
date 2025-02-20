@@ -2,6 +2,9 @@ package com.order.orderlink.deliverydetail.presentation;
 
 import java.util.UUID;
 
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -11,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.order.orderlink.common.auth.UserDetailsImpl;
@@ -49,6 +53,60 @@ public class DeliveryDetailController {
 		User user = userDetails.getUser();
 		return SuccessResponse.success(SuccessCode.DELIVERY_DETAIL_CREATE_SUCCESS,
 			deliveryDetailService.createDeliveryDetail(user, request));
+	}
+
+	/**
+	 * 배송 상세 전체 목록 조회
+	 * @param userDetails 인증된 사용자 정보
+	 * @param page 1-based 페이지 번호
+	 * @param size 페이지 크기
+	 * @param sort 정렬 기준 (예: createdAt,asc or updatedAt,desc)
+	 * @return SuccessResponse<DeliveryDetailResponse.ReadAll>
+	 * @see DeliveryDetailResponse.ReadAll
+	 * @author Jihwan
+	 */
+	@GetMapping
+	@PreAuthorize("hasAuthority('ROLE_CUSTOMER')")
+	public SuccessResponse<DeliveryDetailResponse.ReadAll> getDeliveryDetails(
+		@AuthenticationPrincipal UserDetailsImpl userDetails,
+		@RequestParam(defaultValue = "1") int page,
+		@RequestParam(defaultValue = "10") int size,
+		@RequestParam(defaultValue = "createdAt,desc") String sort) {
+
+		if (page < 1) {
+			page = 1;
+		}
+
+		if (size != 10 && size != 30 && size != 50) {
+			size = 10;
+		}
+
+		Sort sortObj = null;
+		if (sort != null && !sort.trim().isEmpty()) {
+			String[] sortParts = sort.split(",");
+
+			if (sortParts.length == 2) {
+				String fieldInput = sortParts[0].trim();
+				String orderInput = sortParts[1].trim().toLowerCase();
+
+				if (!fieldInput.isEmpty() && (orderInput.equals("asc") || orderInput.equals("desc"))) {
+					sortObj = orderInput.equals("asc") ?
+						Sort.by(fieldInput).ascending() : Sort.by(fieldInput).descending();
+				}
+			}
+		}
+
+		if (sortObj == null) {
+			sortObj = Sort.by(
+				Sort.Order.desc("createdAt"),
+				Sort.Order.desc("updatedAt")
+			);
+		}
+
+		Pageable pageable = PageRequest.of(page - 1, size, sortObj);
+		UUID userId = userDetails.getUser().getId();
+		return SuccessResponse.success(SuccessCode.DELIVERY_DETAIL_READ_ALL_SUCCESS,
+			deliveryDetailService.getDeliveryDetails(userId, pageable));
 	}
 
 	/**

@@ -7,7 +7,7 @@ import lombok.Getter;
 @Getter
 public enum ErrorCode {
 
-	// AUTH,
+	// AUTH
 	TOKEN_INVALID(HttpStatus.UNAUTHORIZED, "토큰이 유효하지 않습니다."),
 
 	// USER

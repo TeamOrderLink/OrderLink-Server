@@ -38,6 +38,7 @@ public enum SuccessCode {
 
 	// DELIVERY DETAIL
 	DELIVERY_DETAIL_CREATE_SUCCESS(HttpStatus.OK, "배송지 등록 성공입니다."),
+	DELIVERY_DETAIL_READ_ALL_SUCCESS(HttpStatus.OK, "배송지 목록 조회 성공입니다."),
 	DELIVERY_DETAIL_READ_SUCCESS(HttpStatus.OK, "배송지 상세 조회 성공입니다."),
 	DELIVERY_DETAIL_UPDATE_SUCCESS(HttpStatus.OK, "배송지 수정 성공입니다."),
 	DELIVERY_DETAIL_DELETE_SUCCESS(HttpStatus.OK, "배송지 삭제 성공입니다."),
