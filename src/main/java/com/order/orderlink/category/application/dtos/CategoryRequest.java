@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.UUID;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.Getter;
 
 public class CategoryRequest {
@@ -17,7 +18,7 @@ public class CategoryRequest {
 
 	@Getter
 	public static class RegisterRestaurantCategory {
-
+		@NotEmpty
 		private List<UUID> categoryIds;
 	}
 
