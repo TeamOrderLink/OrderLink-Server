@@ -59,7 +59,7 @@ public class FoodService {
                 updatedFood.getDescription(),
                 updatedFood.getPrice(),
                 updatedFood.getImageUrl(),
-                updatedFood.isHidden(),
+                updatedFood.getIsHidden(),
                 updatedFood.getUpdatedAt(),
                 updatedFood.getUpdatedBy()
         );
