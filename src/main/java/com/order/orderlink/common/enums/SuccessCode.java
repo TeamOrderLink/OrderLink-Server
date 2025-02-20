@@ -34,6 +34,7 @@ public enum SuccessCode {
 
 	// FOOD
 	FOOD_CREATE_SUCCESS(HttpStatus.OK, "음식 등록 성공입니다."),
+    FOOD_UPDATE_SUCCESS(HttpStatus.OK, "음식 수정 성공입니다."),
 
 	// DELIVERY DETAIL
 	DELIVERY_DETAIL_CREATE_SUCCESS(HttpStatus.OK, "배송지 등록 성공입니다."),
