@@ -41,7 +41,7 @@ public class RestaurantController {
 
     // 음식점 조회 API
     @GetMapping("/{id}")
-    public SuccessResponse<RestaurantResponse.GetRestaurant> getRestaurant(@PathVariable("id") UUID restaurantId) {
+    public SuccessResponse<RestaurantResponse.RestaurantDto> getRestaurant(@PathVariable("id") UUID restaurantId) {
         return SuccessResponse.success(SuccessCode.RESTAURANT_GET_SUCCESS,
                 restaurantService.getRestaurant(restaurantId));
     }

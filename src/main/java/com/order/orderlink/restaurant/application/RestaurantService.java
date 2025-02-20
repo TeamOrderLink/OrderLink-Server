@@ -54,12 +54,12 @@ public class RestaurantService {
     /** restaurantRepository.findAll();로 가져온 리스트를 매핑이 끝날 때 까지 세션 유지하기 위해 트랜잭션 사용 **/
     // 음식점 조회 API
     @Transactional(readOnly = true)
-    public RestaurantResponse.GetRestaurant getRestaurant(UUID restaurantId) {
+    public RestaurantResponse.RestaurantDto getRestaurant(UUID restaurantId) {
         Restaurant restaurant = getRestaurantById(restaurantId);
 
         boolean isOpen = isOpen(restaurant.getOpenTime(), restaurant.getCloseTime());
 
-        RestaurantDto restaurantDto = RestaurantDto.builder()
+        return RestaurantDto.builder()
                 .restaurantId(restaurant.getId())
                 .name(restaurant.getName())
                 .address(restaurant.getAddress())
@@ -76,10 +76,6 @@ public class RestaurantService {
                 .foods(restaurant.getFoods().stream()
                         .map(this::convertToRestaurantFoodDto)
                         .collect(Collectors.toList()))
-                .build();
-
-        return RestaurantResponse.GetRestaurant.builder()
-                .restaurantDto(restaurantDto)
                 .build();
     }
 
