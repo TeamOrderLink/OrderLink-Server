@@ -37,8 +37,7 @@ public class CategoryService {
 	public void createRestaurantCategory(CategoryRequest.RegisterRestaurantCategory request, UUID restaurantId) {
 		List<UUID> categoryIds = request.getCategoryIds();
 		for (UUID categoryId : categoryIds) {
-			Category category = categoryRepository.findById(categoryId)
-				.orElseThrow(() -> new CategoryException(ErrorCode.CATEGORY_NOT_FOUND));
+			Category category = getCategory(categoryId);
 			RestaurantCategory restaurantCategory = RestaurantCategory.builder()
 				.categoryId(category.getId())
 				.restaurantId(restaurantId)
@@ -59,5 +58,22 @@ public class CategoryService {
 			categoryDTOS.add(categoryDTO);
 		}
 		return CategoryResponse.GetCateories.builder().categories(categoryDTOS).build();
+	}
+
+	public void deleteCategory(UUID categoryId) {
+		Category category = getCategory(categoryId);
+		restaurantCategoryRepository.deleteByCategoryId(category.getId());
+		categoryRepository.deleteById(categoryId);
+	}
+
+	private Category getCategory(UUID categoryId) {
+		Category category = categoryRepository.findById(categoryId)
+			.orElseThrow(() -> new CategoryException(ErrorCode.CATEGORY_NOT_FOUND));
+		return category;
+	}
+
+	public void updateCategory(UUID categoryId, CategoryRequest.UpdateCategory request) {
+		Category category = getCategory(categoryId);
+		category.updateName(request.getName());
 	}
 }
