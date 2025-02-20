@@ -28,4 +28,20 @@ public class FoodRequest {
 
         private boolean isHidden;
     }
+
+    @Getter
+    public static class Update {
+
+        private String name;
+
+        private String description;
+
+        @Positive(message = "가격은 0원 이상이여야 합니다.")
+        private int price;
+
+        private String imageUrl;
+
+        private boolean isHidden;
+
+    }
 }

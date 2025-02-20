@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 public class FoodResponse {
@@ -14,4 +15,20 @@ public class FoodResponse {
     public static class Create {
         private final UUID id;
     }
+
+    @Getter
+    @AllArgsConstructor
+    @Builder
+    public static class Update {
+        private final UUID id;
+        private final String name;
+        private final String description;
+        private final int price;
+        private final String imageUrl;
+        private final boolean isHidden;
+        private final LocalDateTime updatedAt;
+        private final String updatedBy;
+    }
+
+
 }
