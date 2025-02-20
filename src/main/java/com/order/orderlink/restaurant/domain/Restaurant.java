@@ -74,9 +74,6 @@ public class Restaurant extends BaseTimeEntity {
     @Column(name = "region", nullable = false)
     private String region; // 추후 String -> UUID 변경 예정
 
-    @Column(name = "categories", nullable = false)
-    private String categories; // 추후 String -> UUID 변경 예정
-
     @OneToMany(mappedBy = "restaurant")
     private List<Food> foods = new ArrayList<>();
 }

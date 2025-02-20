@@ -2,6 +2,7 @@ package com.order.orderlink.restaurant.application.dtos;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
 
@@ -23,12 +24,12 @@ public class RestaurantRequest {
 
         private String description;
 
-        @NotBlank
+        @NotNull
         @Pattern(regexp = "^([01]\\d|2[0-3]):[0-5]\\d$", message = "영업 시간은 00:00 ~ 23:59까지만 입력 가능합니다.")
         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm")
         private LocalTime openTime;
 
-        @NotBlank
+        @NotNull
         @Pattern(regexp = "^([01]\\d|2[0-3]):[0-5]\\d$", message = "영업 시간은 00:00 ~ 23:59까지만 입력 가능합니다.")
         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm")
         private LocalTime closeTime;
@@ -39,10 +40,6 @@ public class RestaurantRequest {
         @NotBlank
         @Pattern(regexp = "^\\d{3}-\\d{2}-\\d{5}$", message = "사업자 등록 번호는 '-'를 포함하여 000-00-00000 형식으로 입력해야 합니다.")
         private String businessRegNum;
-
-        @NotBlank
-        @Pattern(regexp = "^[가-힣]+$", message = "카테고리는 한글만 입력 가능합니다.")
-        private String categories;
 
         @NotBlank
         @Pattern(regexp = "^[가-힣]+$", message = "지역명은 한글만 입력 가능합니다.")

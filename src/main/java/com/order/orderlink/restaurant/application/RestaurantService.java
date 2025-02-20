@@ -46,12 +46,10 @@ public class RestaurantService {
                 .ownerName(request.getOwnerName())
                 .businessRegNum(request.getBusinessRegNum())
                 .region(request.getRegion())
-                .categories(request.getCategories())
                 .build();
 
         // 음식점 repository 저장
         restaurantRepository.save(restaurant);
-
 
         // 응답 결과 반환
         return new RestaurantResponse.Create(restaurant.getId());
