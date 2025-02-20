@@ -47,7 +47,6 @@ public class RestaurantService {
                 .closeTime(request.getCloseTime())
                 .ownerName(request.getOwnerName())
                 .businessRegNum(request.getBusinessRegNum())
-                .region(request.getRegion())
                 .build();
 
         // 음식점 repository 저장
@@ -78,7 +77,6 @@ public class RestaurantService {
                 .avgRating(restaurant.getAvgRating())
                 .ratingSum(restaurant.getRatingSum())
                 .ratingCount(restaurant.getRatingCount())
-                .region(restaurant.getRegion())
                 .foods(restaurant.getFoods().stream()
                         .map(this::convertToRestaurantFoodDto)
                         .collect(Collectors.toList()))

@@ -41,8 +41,5 @@ public class RestaurantRequest {
         @Pattern(regexp = "^\\d{3}-\\d{2}-\\d{5}$", message = "사업자 등록 번호는 '-'를 포함하여 000-00-00000 형식으로 입력해야 합니다.")
         private String businessRegNum;
 
-        @NotBlank
-        @Pattern(regexp = "^[가-힣]+$", message = "지역명은 한글만 입력 가능합니다.")
-        private String region;
     }
 }

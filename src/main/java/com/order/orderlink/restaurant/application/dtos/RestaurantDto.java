@@ -32,6 +32,5 @@ public class RestaurantDto {
     private Double avgRating;
     private Double ratingSum;
     private Integer ratingCount;
-    private String region;
     private List<RestaurantFoodDto> foods;
 }

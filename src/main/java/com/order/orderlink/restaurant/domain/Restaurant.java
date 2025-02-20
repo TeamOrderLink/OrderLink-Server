@@ -72,9 +72,6 @@ public class Restaurant extends BaseTimeEntity {
     @Column(name = "rating_count", nullable = false)
     private Integer ratingCount = 0;
 
-    @Column(name = "region", nullable = false)
-    private String region; // 추후 String -> UUID 변경 예정
-
     @OneToMany(mappedBy = "restaurant")
     private List<Food> foods = new ArrayList<>();
 }
