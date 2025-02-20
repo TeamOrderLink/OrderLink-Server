@@ -3,6 +3,7 @@ package com.order.orderlink.food.application;
 import com.order.orderlink.common.enums.ErrorCode;
 import com.order.orderlink.common.exception.FoodException;
 import com.order.orderlink.common.exception.RestaurantException;
+import com.order.orderlink.common.exception.UserException;
 import com.order.orderlink.food.application.dtos.FoodRequest;
 import com.order.orderlink.food.application.dtos.FoodResponse;
 import com.order.orderlink.food.domain.Food;
@@ -23,10 +24,10 @@ public class FoodService {
 
     public FoodResponse.Create createFood(FoodRequest.Create request) {
 
-        Restaurant restaurant = restaurantRepository.findById(request.getRestaurantId())
-                .orElseThrow(() -> new RestaurantException(ErrorCode.RESTAURANT_NOT_FOUND));
+        Restaurant restaurant = getRestaurant(request.getRestaurantId());
         Food food = Food.builder()
                 .restaurant(restaurant)
+                .userId(request.getUserId())
                 .name(request.getName())
                 .description(request.getDescription())
                 .price(request.getPrice())
@@ -40,8 +41,7 @@ public class FoodService {
     }
 
     public FoodResponse.Update updateFood(UUID foodId, FoodRequest.Update request) {
-        Food food = foodRepository.findById(foodId)
-                .orElseThrow(() -> new FoodException(ErrorCode.FOOD_NOT_FOUND));
+        Food food = getFood(foodId);
 
         food.updateFood(
                 request.getName(),
@@ -66,5 +66,29 @@ public class FoodService {
 
     }
 
+    public void deleteFood(UUID foodId, UUID userId) {
+        Food food = getFood(foodId);
+
+        // getId owner_name으로 변경 필요
+        if (!food.getUserId().equals(userId)) {
+            throw new UserException(ErrorCode.USER_ACCESS_DENIED);
+        }
+
+        foodRepository.deleteById(food.getId());
+    }
+
+
+    private Food getFood(UUID foodId) {
+        Food food = foodRepository.findById(foodId)
+                .orElseThrow(() -> new FoodException(ErrorCode.FOOD_NOT_FOUND));
+        return food;
+    }
+
+    private Restaurant getRestaurant(UUID restaurantId) {
+        Restaurant restaurant = restaurantRepository.findById(restaurantId)
+                .orElseThrow(() -> new RestaurantException(ErrorCode.RESTAURANT_NOT_FOUND));
+
+        return restaurant;
+    }
 
 }
