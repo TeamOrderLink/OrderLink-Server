@@ -40,7 +40,11 @@ public enum SuccessCode {
 	DELIVERY_DETAIL_READ_SUCCESS(HttpStatus.OK, "배송지 상세 조회 성공입니다."),
 	DELIVERY_DETAIL_UPDATE_SUCCESS(HttpStatus.OK, "배송지 수정 성공입니다."),
 	DELIVERY_DETAIL_DELETE_SUCCESS(HttpStatus.OK, "배송지 삭제 성공입니다."),
-	;
+
+	//Category
+	CATEGORY_CREATE_SUCCESS(HttpStatus.OK, "카테고리 새로 추가 성공입니다"),
+	CATEGORY_REGISTER_SUCCESS(HttpStatus.OK, "음식점 카테고리 등록 성공입니다"),
+	CATEGORY_GET_SUCCESS(HttpStatus.OK, "카테고리 리스트 조회 성공입니다");
 
 	private final HttpStatus status;
 	private final String message;
