@@ -1,5 +1,7 @@
 package com.order.orderlink.address.domain.repository;
 
+import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.data.domain.Page;
@@ -12,4 +14,7 @@ public interface AddressRepository extends JpaRepository<Address, UUID> {
 
 	Page<Address> findByUserIdAndDeletedAtIsNull(UUID userId, Pageable pageable);
 
+	Optional<Address> findByIdAndUserId(UUID addressId, UUID currentUserId);
+
+	List<Address> findByUserIdAndIsDefaultTrue(UUID userId);
 }

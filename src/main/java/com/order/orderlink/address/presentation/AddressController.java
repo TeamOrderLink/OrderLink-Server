@@ -118,9 +118,11 @@ public class AddressController {
 	 */
 	@GetMapping("/{id}")
 	@PreAuthorize("hasAuthority('ROLE_CUSTOMER')")
-	public SuccessResponse<AddressResponse.Read> getAddressInfo(@PathVariable("id") UUID id) {
+	public SuccessResponse<AddressResponse.Read> getAddressInfo(@PathVariable("id") UUID id,
+		@AuthenticationPrincipal UserDetailsImpl userDetails) {
+		UUID currentUserId = userDetails.getUser().getId();
 		return SuccessResponse.success(SuccessCode.ADDRESS_READ_SUCCESS,
-			addressService.getAddressInfo(id));
+			addressService.getAddressInfo(id, currentUserId));
 	}
 
 	/**
@@ -135,8 +137,11 @@ public class AddressController {
 	@PutMapping("/{id}")
 	@PreAuthorize("hasAuthority('ROLE_CUSTOMER')")
 	public SuccessResponse<AddressResponse.Update> updateAddress(@PathVariable("id") UUID id,
+		@AuthenticationPrincipal UserDetailsImpl userDetails,
 		@Valid @RequestBody AddressRequest.Update request) {
-		return SuccessResponse.success(SuccessCode.ADDRESS_UPDATE_SUCCESS, addressService.updateAddress(id, request));
+		UUID currentUserId = userDetails.getUser().getId();
+		return SuccessResponse.success(SuccessCode.ADDRESS_UPDATE_SUCCESS,
+			addressService.updateAddress(id, currentUserId, request));
 	}
 
 	/**
@@ -151,8 +156,9 @@ public class AddressController {
 	@PreAuthorize("hasAuthority('ROLE_CUSTOMER')")
 	public SuccessNonDataResponse deleteAddress(@PathVariable("id") UUID id,
 		@AuthenticationPrincipal UserDetailsImpl userDetails) {
+		UUID currentUserId = userDetails.getUser().getId();
 		String username = userDetails.getUser().getUsername();
-		addressService.deleteAddress(id, username);
+		addressService.deleteAddress(id, currentUserId, username);
 		return SuccessNonDataResponse.success(SuccessCode.ADDRESS_DELETE_SUCCESS);
 	}
 
