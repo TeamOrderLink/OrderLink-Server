@@ -5,6 +5,7 @@ import java.util.UUID;
 import org.hibernate.annotations.UuidGenerator;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.order.orderlink.common.entity.BaseTimeEntity;
 
 import jakarta.persistence.Entity;
@@ -37,6 +38,7 @@ public class Region extends BaseTimeEntity {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "parent_id")
+	@JsonIgnore
 	private Region parent; // 부모(상위) 지역
 
 	public void updateName(String name) {
@@ -45,6 +47,10 @@ public class Region extends BaseTimeEntity {
 
 	public void updateParent(Region parent) {
 		this.parent = parent;
+	}
+
+	public void softDelete(String deletedBy) {
+		super.softDelete(deletedBy);
 	}
 
 }
