@@ -1,4 +1,9 @@
 package com.order.orderlink.common.exception;
 
-public class CategoryException {
+import com.order.orderlink.common.enums.ErrorCode;
+
+public class CategoryException extends BaseException {
+	public CategoryException(ErrorCode errorCode) {
+		super(errorCode.getStatus(), errorCode.getMessage());
+	}
 }
