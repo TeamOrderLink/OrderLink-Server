@@ -1,6 +1,7 @@
 package com.order.orderlink.food.application;
 
 import com.order.orderlink.common.enums.ErrorCode;
+import com.order.orderlink.common.exception.FoodException;
 import com.order.orderlink.common.exception.RestaurantException;
 import com.order.orderlink.food.application.dtos.FoodRequest;
 import com.order.orderlink.food.application.dtos.FoodResponse;
@@ -10,6 +11,8 @@ import com.order.orderlink.restaurant.domain.Restaurant;
 import com.order.orderlink.restaurant.domain.repository.RestaurantRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -35,5 +38,33 @@ public class FoodService {
 
         return new FoodResponse.Create(savedFood.getId());
     }
+
+    public FoodResponse.Update updateFood(UUID foodId, FoodRequest.Update request) {
+        Food food = foodRepository.findById(foodId)
+                .orElseThrow(() -> new FoodException(ErrorCode.FOOD_NOT_FOUND));
+
+        food.updateFood(
+                request.getName(),
+                request.getDescription(),
+                request.getPrice(),
+                request.getImageUrl(),
+                request.isHidden()
+        );
+
+        Food updatedFood = foodRepository.save(food);
+
+        return new FoodResponse.Update(
+                updatedFood.getId(),
+                updatedFood.getName(),
+                updatedFood.getDescription(),
+                updatedFood.getPrice(),
+                updatedFood.getImageUrl(),
+                updatedFood.isHidden(),
+                updatedFood.getUpdatedAt(),
+                updatedFood.getUpdatedBy()
+        );
+
+    }
+
 
 }
