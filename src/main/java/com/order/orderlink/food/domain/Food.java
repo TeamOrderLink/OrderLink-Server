@@ -28,6 +28,9 @@ public class Food extends BaseTimeEntity {
     @JoinColumn(name = "restaurant_id", nullable = false)
     private Restaurant restaurant;
 
+    @Column(name = "user_id", nullable = false)
+    private UUID userId;
+
     @Column(name = "name", nullable = false)
     private String name;
 
