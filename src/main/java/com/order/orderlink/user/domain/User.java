@@ -1,13 +1,17 @@
 package com.order.orderlink.user.domain;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import org.hibernate.annotations.SQLRestriction;
 import org.hibernate.annotations.UuidGenerator;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import com.order.orderlink.address.domain.Address;
 import com.order.orderlink.common.entity.BaseTimeEntity;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
@@ -15,6 +19,7 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -57,6 +62,9 @@ public class User extends BaseTimeEntity {
 	@Enumerated(value = EnumType.STRING)
 	private UserRoleEnum role;
 
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<Address> addresses = new ArrayList<>();
+
 	@Builder
 	public User(String username, String nickname, String email, String phone, String password, UserRoleEnum role) {
 		this.username = username;
@@ -93,6 +101,11 @@ public class User extends BaseTimeEntity {
 
 	public void updatePassword(String newEncodedPassword) {
 		this.password = newEncodedPassword;
+	}
+
+	public void softDelete(String deletedBy) {
+		super.softDelete(deletedBy);
+		addresses.forEach(address -> address.softDelete(deletedBy));
 	}
 
 }
