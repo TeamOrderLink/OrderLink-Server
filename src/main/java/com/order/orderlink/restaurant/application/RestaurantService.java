@@ -58,7 +58,7 @@ public class RestaurantService {
     }
     /** restaurantRepository.findAll();로 가져온 리스트를 매핑이 끝날 때 까지 세션 유지하기 위해 트랜잭션 사용 **/
     // 음식점 조회 API
-    @Transactional
+    @Transactional(readOnly = true)
     public RestaurantResponse.GetRestaurant getRestaurant(UUID restaurantId) {
         Restaurant restaurant = getRestaurantById(restaurantId);
 
@@ -91,7 +91,7 @@ public class RestaurantService {
 
     /** restaurantRepository.findAll();로 가져온 리스트를 매핑이 끝날 때 까지 세션 유지하기 위해 트랜잭션 사용 **/
     // 전체 음식점 조회 API
-    @Transactional
+    @Transactional(readOnly = true)
     public RestaurantResponse.GetRestaurants getAllRestaurants() {
         List<Restaurant> restaurants = restaurantRepository.findAll();
 
