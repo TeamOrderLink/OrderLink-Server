@@ -1,4 +1,4 @@
-package com.order.orderlink.deliverydetail.application.dtos;
+package com.order.orderlink.address.application.dtos;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -9,7 +9,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class DeliveryDetailResponse {
+public class AddressResponse {
 
 	@Getter
 	@AllArgsConstructor
@@ -20,7 +20,7 @@ public class DeliveryDetailResponse {
 	@Getter
 	@AllArgsConstructor
 	public static class ReadAll {
-		private List<DeliveryDetailResponse.Read> deliveryDetails;
+		private List<AddressResponse.Read> addresses;
 		private int currentPage;
 		private int totalPages;
 		private long totalElements;

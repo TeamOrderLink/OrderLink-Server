@@ -1,4 +1,4 @@
-package com.order.orderlink.deliverydetail.domain;
+package com.order.orderlink.address.domain;
 
 import java.util.UUID;
 
@@ -23,10 +23,10 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @Entity
-@Table(name = "p_delivery_details")
+@Table(name = "p_addresses")
 @EntityListeners(AuditingEntityListener.class)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class DeliveryDetail extends BaseTimeEntity {
+public class Address extends BaseTimeEntity {
 
 	@Id
 	@GeneratedValue
@@ -48,7 +48,7 @@ public class DeliveryDetail extends BaseTimeEntity {
 	private Boolean isDefault;
 
 	@Builder
-	public DeliveryDetail(User user, String address, String request, Boolean isDefault) {
+	public Address(User user, String address, String request, Boolean isDefault) {
 		this.user = user;
 		this.address = address;
 		this.request = request;

@@ -1,9 +1,9 @@
-package com.order.orderlink.deliverydetail.application.dtos;
+package com.order.orderlink.address.application.dtos;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 
-public class DeliveryDetailRequest {
+public class AddressRequest {
 
 	@Getter
 	public static class Create {

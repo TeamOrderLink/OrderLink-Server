@@ -1,4 +1,4 @@
-package com.order.orderlink.deliverydetail.presentation;
+package com.order.orderlink.address.presentation;
 
 import java.util.UUID;
 
@@ -17,57 +17,57 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.order.orderlink.address.application.AddressService;
+import com.order.orderlink.address.application.dtos.AddressRequest;
+import com.order.orderlink.address.application.dtos.AddressResponse;
 import com.order.orderlink.common.auth.UserDetailsImpl;
 import com.order.orderlink.common.dtos.SuccessNonDataResponse;
 import com.order.orderlink.common.dtos.SuccessResponse;
 import com.order.orderlink.common.enums.SuccessCode;
-import com.order.orderlink.deliverydetail.application.dtos.DeliveryDetailRequest;
-import com.order.orderlink.deliverydetail.application.dtos.DeliveryDetailResponse;
-import com.order.orderlink.deliverydetail.application.dtos.DeliveryDetailService;
 import com.order.orderlink.user.domain.User;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/api/deliveries")
+@RequestMapping("/api/addresses")
 @RequiredArgsConstructor
-public class DeliveryDetailController {
+public class AddressController {
 
-	private final DeliveryDetailService deliveryDetailService;
+	private final AddressService addressService;
 
 	/**
-	 * 배송 상세 생성
+	 * 배송지 등록
 	 * @param userDetails 인증된 사용자 정보
-	 * @param request DeliveryDetailRequest.Create
-	 * @return SuccessResponse<DeliveryDetailResponse.Create>
-	 * @see DeliveryDetailRequest.Create
-	 * @see DeliveryDetailResponse.Create
+	 * @param request AddressRequest.Create
+	 * @return SuccessResponse<AddressResponse.Create>
+	 * @see AddressRequest.Create
+	 * @see AddressResponse.Create
 	 * @author Jihwan
 	 */
 	@PostMapping
 	@PreAuthorize("hasAuthority('ROLE_CUSTOMER')")
-	public SuccessResponse<DeliveryDetailResponse.Create> createDeliveryDetail(
+	public SuccessResponse<AddressResponse.Create> createAddress(
 		@AuthenticationPrincipal UserDetailsImpl userDetails,
-		@Valid @RequestBody DeliveryDetailRequest.Create request) {
+		@Valid @RequestBody AddressRequest.Create request) {
 		User user = userDetails.getUser();
-		return SuccessResponse.success(SuccessCode.DELIVERY_DETAIL_CREATE_SUCCESS,
-			deliveryDetailService.createDeliveryDetail(user, request));
+		return SuccessResponse.success(SuccessCode.ADDRESS_CREATE_SUCCESS,
+			addressService.createAddress(user, request));
 	}
 
 	/**
-	 * 배송 상세 전체 목록 조회
+	 * 배송지 목록 조회
 	 * @param userDetails 인증된 사용자 정보
 	 * @param page 1-based 페이지 번호
 	 * @param size 페이지 크기
 	 * @param sort 정렬 기준 (예: createdAt,asc or updatedAt,desc)
-	 * @return SuccessResponse<DeliveryDetailResponse.ReadAll>
-	 * @see DeliveryDetailResponse.ReadAll
+	 * @return SuccessResponse<AddressResponse.ReadAll>
+	 * @see AddressResponse.ReadAll
 	 * @author Jihwan
 	 */
 	@GetMapping
 	@PreAuthorize("hasAuthority('ROLE_CUSTOMER')")
-	public SuccessResponse<DeliveryDetailResponse.ReadAll> getDeliveryDetails(
+	public SuccessResponse<AddressResponse.ReadAll> getAddresses(
 		@AuthenticationPrincipal UserDetailsImpl userDetails,
 		@RequestParam(defaultValue = "1") int page,
 		@RequestParam(defaultValue = "10") int size,
@@ -105,45 +105,43 @@ public class DeliveryDetailController {
 
 		Pageable pageable = PageRequest.of(page - 1, size, sortObj);
 		UUID userId = userDetails.getUser().getId();
-		return SuccessResponse.success(SuccessCode.DELIVERY_DETAIL_READ_ALL_SUCCESS,
-			deliveryDetailService.getDeliveryDetails(userId, pageable));
+		return SuccessResponse.success(SuccessCode.ADDRESS_READ_ALL_SUCCESS,
+			addressService.getAddresses(userId, pageable));
 	}
 
 	/**
-	 * 배송 상세 단건 조회
-	 * @param deliveryDetailId 배송 상세 ID
-	 * @return SuccessResponse<DeliveryDetailResponse.Read>
-	 * @see DeliveryDetailResponse.Read
+	 * 배송지 상세 조회
+	 * @param id 배송지 ID
+	 * @return SuccessResponse<AddressResponse.Read>
+	 * @see AddressResponse.Read
 	 * @author Jihwan
 	 */
 	@GetMapping("/{id}")
 	@PreAuthorize("hasAuthority('ROLE_CUSTOMER')")
-	public SuccessResponse<DeliveryDetailResponse.Read> getDeliveryDetail(@PathVariable("id") UUID deliveryDetailId) {
-		return SuccessResponse.success(SuccessCode.DELIVERY_DETAIL_READ_SUCCESS,
-			deliveryDetailService.getDeliveryDetail(deliveryDetailId));
+	public SuccessResponse<AddressResponse.Read> getAddressInfo(@PathVariable("id") UUID id) {
+		return SuccessResponse.success(SuccessCode.ADDRESS_READ_SUCCESS,
+			addressService.getAddressInfo(id));
 	}
 
 	/**
-	 * 배송 상세 수정
-	 * @param deliveryDetailId 배송 상세 ID
-	 * @param request DeliveryDetailRequest.Update
-	 * @return SuccessResponse<DeliveryDetailResponse.Update>
-	 * @see DeliveryDetailRequest.Update
-	 * @see DeliveryDetailResponse.Update
+	 * 배송지 수정
+	 * @param id 배송지 ID
+	 * @param request AddressRequest.Update
+	 * @return SuccessResponse<AddressResponse.Update>
+	 * @see AddressRequest.Update
+	 * @see AddressResponse.Update
 	 * @author Jihwan
 	 */
 	@PutMapping("/{id}")
 	@PreAuthorize("hasAuthority('ROLE_CUSTOMER')")
-	public SuccessResponse<DeliveryDetailResponse.Update> updateDeliveryDetail(
-		@PathVariable("id") UUID deliveryDetailId,
-		@Valid @RequestBody DeliveryDetailRequest.Update request) {
-		return SuccessResponse.success(SuccessCode.DELIVERY_DETAIL_UPDATE_SUCCESS,
-			deliveryDetailService.updateDeliveryDetail(deliveryDetailId, request));
+	public SuccessResponse<AddressResponse.Update> updateAddress(@PathVariable("id") UUID id,
+		@Valid @RequestBody AddressRequest.Update request) {
+		return SuccessResponse.success(SuccessCode.ADDRESS_UPDATE_SUCCESS, addressService.updateAddress(id, request));
 	}
 
 	/**
-	 * 배송 상세 삭제
-	 * @param deliveryDetailId 배송 상세 ID
+	 * 배송지 삭제
+	 * @param id 배송지 ID
 	 * @param userDetails 인증된 사용자 정보
 	 * @return SuccessNonDataResponse
 	 * @see SuccessNonDataResponse
@@ -151,11 +149,11 @@ public class DeliveryDetailController {
 	 */
 	@DeleteMapping("/{id}")
 	@PreAuthorize("hasAuthority('ROLE_CUSTOMER')")
-	public SuccessNonDataResponse deleteDeliveryDetail(@PathVariable("id") UUID deliveryDetailId,
+	public SuccessNonDataResponse deleteAddress(@PathVariable("id") UUID id,
 		@AuthenticationPrincipal UserDetailsImpl userDetails) {
 		String username = userDetails.getUser().getUsername();
-		deliveryDetailService.deleteDeliveryDetail(deliveryDetailId, username);
-		return SuccessNonDataResponse.success(SuccessCode.DELIVERY_DETAIL_DELETE_SUCCESS);
+		addressService.deleteAddress(id, username);
+		return SuccessNonDataResponse.success(SuccessCode.ADDRESS_DELETE_SUCCESS);
 	}
 
 }
