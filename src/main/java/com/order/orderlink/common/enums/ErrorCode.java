@@ -32,7 +32,10 @@ public enum ErrorCode {
 	DELIVERY_DETAIL_NOT_FOUND(HttpStatus.NOT_FOUND, "배송 상세 정보를 찾을 수 없습니다."),
 
 	//Category
-	CATEGORY_NOT_FOUND(HttpStatus.NOT_FOUND, "카테고리가 존재하지 않습니다.");
+	CATEGORY_NOT_FOUND(HttpStatus.NOT_FOUND, "카테고리가 존재하지 않습니다."),
+
+    // FOOD
+    FOOD_NOT_FOUND(HttpStatus.NOT_FOUND, "음식을 찾을 수 없습니다.");
 
 	private final HttpStatus status;
 	private final String message;
