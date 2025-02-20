@@ -26,4 +26,11 @@ public class RestaurantResponse {
     public static class GetRestaurants {
         private final List<RestaurantDto> restaurants;
     }
+
+    @Getter
+    @Builder
+    @AllArgsConstructor
+    public static class GetRestaurant {
+        private final RestaurantDto restaurantDto;
+    }
 }

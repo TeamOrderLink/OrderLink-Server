@@ -3,6 +3,7 @@ package com.order.orderlink.restaurant.application;
 import com.order.orderlink.common.auth.UserDetailsImpl;
 import com.order.orderlink.common.enums.ErrorCode;
 import com.order.orderlink.common.exception.AuthException;
+import com.order.orderlink.common.exception.RestaurantException;
 import com.order.orderlink.food.domain.Food;
 import com.order.orderlink.restaurant.application.dtos.RestaurantDto;
 import com.order.orderlink.restaurant.application.dtos.RestaurantFoodDto;
@@ -19,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalTime;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -54,11 +56,41 @@ public class RestaurantService {
         // 응답 결과 반환
         return new RestaurantResponse.Create(restaurant.getId());
     }
+    /** restaurantRepository.findAll();로 가져온 리스트를 매핑이 끝날 때 까지 세션 유지하기 위해 트랜잭션 사용 **/
+    // 음식점 조회 API
+    @Transactional
+    public RestaurantResponse.GetRestaurant getRestaurant(UUID restaurantId) {
+        Restaurant restaurant = getRestaurantById(restaurantId);
 
-    /**
-        restaurantRepository.findAll();로 가져온 리스트를 매핑이 끝날 때 까지 세션 유지하기 위해 트랜잭션 사용
-    */
-    ///  전체 음식점 조회 메서드
+        boolean isOpen = isOpen(restaurant.getOpenTime(), restaurant.getCloseTime());
+
+        RestaurantDto restaurantDto = RestaurantDto.builder()
+                .restaurantId(restaurant.getId())
+                .name(restaurant.getName())
+                .address(restaurant.getAddress())
+                .phone(restaurant.getPhone())
+                .description(restaurant.getDescription())
+                .openTime(String.valueOf(restaurant.getOpenTime()))
+                .closeTime(String.valueOf(restaurant.getCloseTime()))
+                .businessStatus(isOpen)
+                .ownerName(restaurant.getOwnerName())
+                .businessRegNum(restaurant.getBusinessRegNum())
+                .avgRating(restaurant.getAvgRating())
+                .ratingSum(restaurant.getRatingSum())
+                .ratingCount(restaurant.getRatingCount())
+                .region(restaurant.getRegion())
+                .foods(restaurant.getFoods().stream()
+                        .map(this::convertToRestaurantFoodDto)
+                        .collect(Collectors.toList()))
+                .build();
+
+        return RestaurantResponse.GetRestaurant.builder()
+                .restaurantDto(restaurantDto)
+                .build();
+    }
+
+    /** restaurantRepository.findAll();로 가져온 리스트를 매핑이 끝날 때 까지 세션 유지하기 위해 트랜잭션 사용 **/
+    // 전체 음식점 조회 API
     @Transactional
     public RestaurantResponse.GetRestaurants getAllRestaurants() {
         List<Restaurant> restaurants = restaurantRepository.findAll();
@@ -75,8 +107,7 @@ public class RestaurantService {
 
     // Convert : Restaurant -> RestaurantDto
     private RestaurantDto convertToRestaurantDto(Restaurant restaurant) {
-        LocalTime now = LocalTime.now();
-        boolean isOpen = now.isAfter(restaurant.getOpenTime()) && now.isBefore(restaurant.getCloseTime());
+        boolean isOpen = isOpen(restaurant.getOpenTime(), restaurant.getCloseTime());
 
         return RestaurantDto.builder()
                 .restaurantId(restaurant.getId())
@@ -84,8 +115,8 @@ public class RestaurantService {
                 .address(restaurant.getAddress())
                 .phone(restaurant.getPhone())
                 .description(restaurant.getDescription())
-                .openTime(restaurant.getOpenTime())
-                .closeTime(restaurant.getCloseTime())
+                .openTime(String.valueOf(restaurant.getOpenTime()))
+                .closeTime(String.valueOf(restaurant.getCloseTime()))
                 .businessStatus(isOpen)
                 .ownerName(restaurant.getOwnerName())
                 .businessRegNum(restaurant.getBusinessRegNum())
@@ -108,10 +139,20 @@ public class RestaurantService {
                 .build();
     }
 
+    // 영업 상태 확인
+    private boolean isOpen(LocalTime openTime, LocalTime closeTime) {
+        LocalTime now = LocalTime.now();
+        return now.isAfter(openTime) && now.isBefore(closeTime);
+    }
+
     // 사용자 권한 조회
     private UserRoleEnum getUserRole(User user) {
         return user.getRole();
     }
 
-
+    // 음식점 찾기
+    private Restaurant getRestaurantById(UUID restaurantId) {
+        return restaurantRepository.findById(restaurantId)
+                .orElseThrow(() -> new RestaurantException(ErrorCode.RESTAURANT_NOT_FOUND));
+    }
 }

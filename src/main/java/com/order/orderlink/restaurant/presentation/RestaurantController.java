@@ -13,6 +13,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.UUID;
+
 @Slf4j
 @RestController
 @RequestMapping("/api/restaurants")
@@ -35,5 +37,12 @@ public class RestaurantController {
     public SuccessResponse<RestaurantResponse.GetRestaurants> getAllRestaurants() {
         return SuccessResponse.success(SuccessCode.RESTAURANTS_GET_SUCCESS,
                 restaurantService.getAllRestaurants());
+    }
+
+    // 음식점 조회 API
+    @GetMapping("/{id}")
+    public SuccessResponse<RestaurantResponse.GetRestaurant> getRestaurant(@PathVariable("id") UUID restaurantId) {
+        return SuccessResponse.success(SuccessCode.RESTAURANT_GET_SUCCESS,
+                restaurantService.getRestaurant(restaurantId));
     }
 }

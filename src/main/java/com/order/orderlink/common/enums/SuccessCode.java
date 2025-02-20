@@ -51,7 +51,8 @@ public enum SuccessCode {
 
     // Restaurant
     RESTAURANT_CREATE_SUCCESS(HttpStatus.OK, "음식점 등록 성공입니다."),
-	RESTAURANTS_GET_SUCCESS(HttpStatus.OK, "전체 음식점 조회 성공입니다.");
+	RESTAURANTS_GET_SUCCESS(HttpStatus.OK, "전체 음식점 조회 성공입니다."),
+	RESTAURANT_GET_SUCCESS(HttpStatus.OK, "음식점 조회 성공입니다.");
 
 	private final HttpStatus status;
 	private final String message;
