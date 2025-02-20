@@ -20,4 +20,10 @@ public class CategoryRequest {
 
 		private List<UUID> categoryIds;
 	}
+
+	@Getter
+	public static class UpdateCategory {
+		@NotBlank
+		private String name;
+	}
 }
