@@ -32,10 +32,6 @@ public class RestaurantService {
 
     // 음식점 등록 메서드
     public RestaurantResponse.Create createRestaurant(UserDetailsImpl userDetails, RestaurantRequest.Create request) {
-        // 사용자 권한 확인 -> MASTER만 음식점 등록 가능
-        if (!getUserRole(userDetails.getUser()).equals(UserRoleEnum.MASTER)) {
-            throw new AuthException(ErrorCode.USER_ACCESS_DENIED);
-        }
 
         // Request DTO -> Entity
         Restaurant restaurant = Restaurant.builder()
