@@ -30,7 +30,7 @@ public class Restaurant extends BaseTimeEntity {
     @UuidGenerator(style = UuidGenerator.Style.AUTO)
     private UUID id;
 
-    @Column(name = "name", unique = true, nullable = false)
+    @Column(name = "name", nullable = false)
     private String name;
 
     @Column(name = "address", unique = true, nullable = false)
@@ -42,12 +42,10 @@ public class Restaurant extends BaseTimeEntity {
     @Column(name = "description")
     private String description;
 
-    @NotNull
     @Convert(converter = LocalTimeToStringConverter.class)
     @Column(name = "open_time", nullable = false)
     private LocalTime openTime;
 
-    @NotNull
     @Convert(converter = LocalTimeToStringConverter.class)
     @Column(name = "close_time", nullable = false)
     private LocalTime closeTime;
