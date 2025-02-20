@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.util.List;
 import java.util.UUID;
 
 @Getter
@@ -16,5 +17,13 @@ public class RestaurantResponse {
     @AllArgsConstructor
     public static class Create{
         private final UUID restaurantId;
+    }
+
+
+    @Getter
+    @Builder
+    @AllArgsConstructor
+    public static class GetRestaurants {
+        private final List<RestaurantDto> restaurants;
     }
 }
