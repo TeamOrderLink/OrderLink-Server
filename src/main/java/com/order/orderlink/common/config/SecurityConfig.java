@@ -3,6 +3,7 @@ package com.order.orderlink.common.config;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -63,7 +64,11 @@ public class SecurityConfig {
 			)
 			.authorizeHttpRequests(authorize -> authorize
 				.requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll() // resources 접근 허용 설정
-				.requestMatchers("/api/auth/login", "/api/users", "/api/categories").permitAll()
+                .requestMatchers("/api/auth/login", "/api/users", "/api/categories").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/restaurants/**").permitAll()
+                .requestMatchers(HttpMethod.POST, "/api/restaurants").hasAuthority("ROLE_MASTER")
+                .requestMatchers(HttpMethod.PUT, "/api/restaurants/**").hasAuthority("ROLE_MASTER")
+                .requestMatchers(HttpMethod.DELETE, "/api/restaurants/**").hasAuthority("ROLE_MASTER")
 				.anyRequest().authenticated()
 			);
 
