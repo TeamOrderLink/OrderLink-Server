@@ -35,6 +35,7 @@ public enum SuccessCode {
 	// FOOD
 	FOOD_CREATE_SUCCESS(HttpStatus.OK, "음식 등록 성공입니다."),
     FOOD_UPDATE_SUCCESS(HttpStatus.OK, "음식 수정 성공입니다."),
+    FOOD_DELETE_SUCCESS(HttpStatus.OK, "음식 삭제 성공입니다."),
 
 	// ADDRESS
 	ADDRESS_CREATE_SUCCESS(HttpStatus.OK, "배송지 등록 성공입니다."),
@@ -42,6 +43,12 @@ public enum SuccessCode {
 	ADDRESS_READ_SUCCESS(HttpStatus.OK, "배송지 상세 조회 성공입니다."),
 	ADDRESS_UPDATE_SUCCESS(HttpStatus.OK, "배송지 수정 성공입니다."),
 	ADDRESS_DELETE_SUCCESS(HttpStatus.OK, "배송지 삭제 성공입니다."),
+
+    // DELIVERY DETAIL
+    DELIVERY_DETAIL_CREATE_SUCCESS(HttpStatus.OK, "배송지 등록 성공입니다."),
+    DELIVERY_DETAIL_READ_SUCCESS(HttpStatus.OK, "배송지 상세 조회 성공입니다."),
+    DELIVERY_DETAIL_UPDATE_SUCCESS(HttpStatus.OK, "배송지 수정 성공입니다."),
+    DELIVERY_DETAIL_DELETE_SUCCESS(HttpStatus.OK, "배송지 삭제 성공입니다."),
 
 	//Category
 	CATEGORY_CREATE_SUCCESS(HttpStatus.OK, "카테고리 새로 추가 성공입니다"),
