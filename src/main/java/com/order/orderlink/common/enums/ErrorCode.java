@@ -7,7 +7,7 @@ import lombok.Getter;
 @Getter
 public enum ErrorCode {
 
-	// AUTH,
+	// AUTH
 	TOKEN_INVALID(HttpStatus.UNAUTHORIZED, "토큰이 유효하지 않습니다."),
 
 	// USER
@@ -28,15 +28,17 @@ public enum ErrorCode {
 	// PAYMENT
 	PAYMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "결제내역이 존재하지 않습니다."),
 
-	// DELIVERY DETAIL
-	DELIVERY_DETAIL_NOT_FOUND(HttpStatus.NOT_FOUND, "배송 상세 정보를 찾을 수 없습니다."),
+	// ADDRESS
+	ADDRESS_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 배송지를 찾을 수 없거나 권한이 없습니다."),
 
 	//Category
 	CATEGORY_NOT_FOUND(HttpStatus.NOT_FOUND, "카테고리가 존재하지 않습니다."),
 
 	//Region
 	REGION_NOT_FOUND(HttpStatus.NOT_FOUND, "운영지역을 찾을 수 없습니다."),
-	REGION_NOT_PARENT(HttpStatus.BAD_REQUEST, "운영지역과 같은 상위지역으로 설정할 수 없습니다.");
+	REGION_NOT_PARENT(HttpStatus.BAD_REQUEST, "운영지역과 같은 상위지역으로 설정할 수 없습니다."),
+	// FOOD
+	FOOD_NOT_FOUND(HttpStatus.NOT_FOUND, "음식을 찾을 수 없습니다.");
 
 	private final HttpStatus status;
 	private final String message;

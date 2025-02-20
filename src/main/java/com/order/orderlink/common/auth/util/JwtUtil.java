@@ -72,22 +72,22 @@ public class JwtUtil {
 		} catch (Exception e) {
 			if (e instanceof SecurityException) {
 				log.debug("[SecurityException] 잘못된 토큰");
-				throw new JwtException("[SecurityException] 잘못된 토큰입니다.");
+				throw new JwtException("[SecurityException]: 잘못된 토큰입니다.");
 			} else if (e instanceof MalformedJwtException) {
 				log.debug("[MalformedJwtException] 잘못된 토큰");
-				throw new JwtException("[MalformedJwtException] 잘못된 토큰입니다.");
+				throw new JwtException("[MalformedJwtException]: 잘못된 토큰입니다.");
 			} else if (e instanceof ExpiredJwtException) {
 				log.debug("[ExpiredJwtException] 토큰 만료");
-				throw new JwtException("[ExpiredJwtException] 토큰이 만료되었습니다.");
+				throw new JwtException("[ExpiredJwtException]: 토큰이 만료되었습니다.");
 			} else if (e instanceof UnsupportedJwtException) {
 				log.debug("[UnsupportedJwtException] 지원되지 않는 토큰");
-				throw new JwtException("[UnsupportedJwtException] 지원되지 않는 토큰입니다.");
+				throw new JwtException("[UnsupportedJwtException]: 지원되지 않는 토큰입니다.");
 			} else if (e instanceof IllegalArgumentException) {
 				log.debug("[IllegalArgumentException]");
-				throw new JwtException("[IllegalArgumentException]");
+				throw new JwtException("[IllegalArgumentException]: 토큰이 비어있습니다.");
 			} else {
 				log.debug("[토큰검증 오류] {}", e.getClass());
-				throw new JwtException("[토큰검증 오류] 미처리 토큰 오류");
+				throw new JwtException("[토큰검증 오류]: 미처리 토큰 오류");
 			}
 		}
 	}

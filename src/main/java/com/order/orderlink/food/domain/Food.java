@@ -41,7 +41,25 @@ public class Food extends BaseTimeEntity {
     private String imageUrl;
 
     @Column(name = "is_hidden", nullable = false)
-    private boolean isHidden = false;
+    private Boolean isHidden = false;
+
+    public void updateFood(String name, String description, int price, String imageUrl, Boolean isHidden) {
+        if (name != null && !name.trim().isEmpty()) {
+            this.name = name;
+        }
+        if (description != null && !description.trim().isEmpty()) {
+            this.description = description;
+        }
+        if (price != 0) {
+            this.price = price;
+        }
+        if (imageUrl != null && !imageUrl.trim().isEmpty()) {
+            this.imageUrl = imageUrl;
+        }
+        if (isHidden != null) {
+            this.isHidden = isHidden;
+        }
+    }
 
 
 }

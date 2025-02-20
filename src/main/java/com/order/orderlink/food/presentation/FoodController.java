@@ -7,10 +7,9 @@ import com.order.orderlink.food.application.dtos.FoodRequest;
 import com.order.orderlink.food.application.dtos.FoodResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/foods")
@@ -23,6 +22,13 @@ public class FoodController {
     public SuccessResponse<FoodResponse.Create> createFood(
             @Valid @RequestBody FoodRequest.Create request) {
         return SuccessResponse.success(SuccessCode.FOOD_CREATE_SUCCESS, foodService.createFood(request));
+    }
+
+    @PutMapping("/{foodId}")
+    public SuccessResponse<FoodResponse.Update> updateFood(
+            @PathVariable UUID foodId,
+            @RequestBody FoodRequest.Update request) {
+        return SuccessResponse.success(SuccessCode.FOOD_UPDATE_SUCCESS, foodService.updateFood(foodId, request));
     }
 
 }

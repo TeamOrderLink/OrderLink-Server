@@ -2,6 +2,7 @@ package com.order.orderlink.common.auth.filter;
 
 import java.io.IOException;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
@@ -10,12 +11,15 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.order.orderlink.common.auth.UserDetailsServiceImpl;
 import com.order.orderlink.common.auth.util.JwtUtil;
 import com.order.orderlink.common.enums.ErrorCode;
 import com.order.orderlink.common.exception.AuthException;
+import com.order.orderlink.common.exception.GlobalExceptionHandler;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -35,25 +39,26 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 		FilterChain filterChain) throws ServletException, IOException {
 
 		String tokenValue = jwtUtil.getJwtFromHeader(request);
-
-		if (StringUtils.hasText(tokenValue)) {
-
-			if (!jwtUtil.validateToken(tokenValue)) {
-				log.error("토큰이 유효하지 않습니다.");
-				throw new AuthException(ErrorCode.TOKEN_INVALID);
-			}
-
-			Claims info = jwtUtil.getUserInfoFromToken(tokenValue);
-
-			try {
+		try {
+			if (StringUtils.hasText(tokenValue)) {
+				if (!jwtUtil.validateToken(tokenValue)) {
+					log.error("토큰이 유효하지 않습니다.");
+					throw new AuthException(ErrorCode.TOKEN_INVALID);
+				}
+				Claims info = jwtUtil.getUserInfoFromToken(tokenValue);
 				setAuthentication(info.getSubject());
-			} catch (Exception e) {
-				log.error(e.getMessage());
-				return;
 			}
+			filterChain.doFilter(request, response);
+		} catch (JwtException ex) {
+			log.debug(ex.getMessage());
+			response.setStatus(HttpStatus.UNAUTHORIZED.value());
+			response.setContentType("application/json;charset=UTF-8");
+			String jsonResponse = new ObjectMapper()
+				.writeValueAsString(new GlobalExceptionHandler.ErrorResponse(
+					HttpStatus.UNAUTHORIZED.value(), ex.getMessage()));
+			response.getWriter().write(jsonResponse);
+			response.getWriter().flush();
 		}
-
-		filterChain.doFilter(request, response);
 	}
 
 	// 인증 처리
