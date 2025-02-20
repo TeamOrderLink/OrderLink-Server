@@ -34,7 +34,7 @@ public class CategoryController {
 	}
 
 	@PostMapping("/register")
-	@PreAuthorize("hasAnyAuthority('ROLE_MASTER', 'ROLE_OWNER')")
+	@PreAuthorize("hasAuthority('ROLE_MASTER')")
 	public SuccessNonDataResponse createRestaurantCategory(
 		@RequestBody CategoryRequest.RegisterRestaurantCategory request,
 		@RequestParam UUID restaurantId
@@ -44,7 +44,6 @@ public class CategoryController {
 	}
 
 	@GetMapping
-	@PreAuthorize("hasAnyAuthority('ROLE_MASTER', 'ROLE_OWNER', 'ROLE_CUSTOMER')")
 	public SuccessResponse<CategoryResponse.GetCateories> getCategories(
 	) {
 		return SuccessResponse.success(SuccessCode.CATEGORY_GET_SUCCESS,

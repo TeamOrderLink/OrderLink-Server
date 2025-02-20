@@ -63,7 +63,7 @@ public class SecurityConfig {
 			)
 			.authorizeHttpRequests(authorize -> authorize
 				.requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll() // resources 접근 허용 설정
-				.requestMatchers("/api/auth/login", "/api/users").permitAll()
+				.requestMatchers("/api/auth/login", "/api/users", "/api/categories").permitAll()
 				.anyRequest().authenticated()
 			);
 
