@@ -122,6 +122,7 @@ public class RestaurantService {
     // Convert : Food -> RestaurantFoodDto
     private RestaurantFoodDto convertToRestaurantFoodDto(Food food) {
         return RestaurantFoodDto.builder()
+                .foodId(food.getId())
                 .foodName(food.getName())
                 .foodDescription(food.getDescription())
                 .price(food.getPrice())
