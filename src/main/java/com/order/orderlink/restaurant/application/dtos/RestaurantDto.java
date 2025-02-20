@@ -20,10 +20,10 @@ public class RestaurantDto {
     private String phone;
     private String description;
 
-    @Pattern(regexp = "^([01]\\d|2[0-3]):[0-5]\\d$", message = "시간은 00:00 ~ 23:59 이내의 시간으로 HH:mm 형식에 맞게 입력해 주세요.")
+    @Pattern(regexp = "^([01]\\d|2[0-3]):[0-5]\\d$", message = "영업 시작 시간은 00:00 ~ 23:59 이내의 시간으로 HH:mm 형식에 맞게 입력해 주세요.")
     private String openTime;
 
-    @Pattern(regexp = "^([01]\\d|2[0-3]):[0-5]\\d$", message = "시간은 00:00 ~ 23:59 이내의 시간으로 HH:mm 형식에 맞게 입력해 주세요.")
+    @Pattern(regexp = "^([01]\\d|2[0-3]):[0-5]\\d$", message = "영업 종료 시간은 00:00 ~ 23:59 이내의 시간으로 HH:mm 형식에 맞게 입력해 주세요.")
     private String closeTime;
 
     private boolean businessStatus;
