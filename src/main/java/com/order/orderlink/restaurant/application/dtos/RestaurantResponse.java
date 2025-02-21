@@ -1,6 +1,5 @@
 package com.order.orderlink.restaurant.application.dtos;
 
-import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -17,7 +16,7 @@ public class RestaurantResponse {
     @Getter
     @Builder
     @AllArgsConstructor
-    public static class Create{
+    public static class Create {
         private final UUID restaurantId;
     }
 
@@ -26,6 +25,27 @@ public class RestaurantResponse {
     @AllArgsConstructor
     public static class GetRestaurants {
         private final List<RestaurantDto> restaurants;
+    }
+
+    @Getter
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class GetRestaurant {
+        private UUID restaurantId;
+        private String name;
+        private String address;
+        private String phone;
+        private String description;
+        private String openTime;
+        private String closeTime;
+        private boolean businessStatus;
+        private String ownerName;
+        private String businessRegNum;
+        private Double avgRating;
+        private Double ratingSum;
+        private Integer ratingCount;
+        private List<GetRestaurantFoodDto> foods;
     }
 
     @Getter
@@ -46,14 +66,14 @@ public class RestaurantResponse {
         private Double avgRating;
         private Double ratingSum;
         private Integer ratingCount;
-        private List<RestaurantFoodDto> foods;
     }
 
     @Getter
     @AllArgsConstructor
     @NoArgsConstructor
     @Builder
-    public static class RestaurantFoodDto {
+    public static class GetRestaurantFoodDto {
+        private UUID foodId;
         private String foodName;
         private String foodDescription;
         private int price;

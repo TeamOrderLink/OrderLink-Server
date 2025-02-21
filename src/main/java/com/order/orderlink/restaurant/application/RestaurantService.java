@@ -1,12 +1,11 @@
 package com.order.orderlink.restaurant.application;
 
-import com.order.orderlink.common.auth.UserDetailsImpl;
 import com.order.orderlink.common.enums.ErrorCode;
-import com.order.orderlink.common.exception.AuthException;
 import com.order.orderlink.common.exception.RestaurantException;
 import com.order.orderlink.food.domain.Food;
+import com.order.orderlink.restaurant.application.dtos.RestaurantResponse.GetRestaurant;
 import com.order.orderlink.restaurant.application.dtos.RestaurantResponse.RestaurantDto;
-import com.order.orderlink.restaurant.application.dtos.RestaurantResponse.RestaurantFoodDto;
+import com.order.orderlink.restaurant.application.dtos.RestaurantResponse.GetRestaurantFoodDto;
 import com.order.orderlink.restaurant.application.dtos.RestaurantRequest;
 import com.order.orderlink.restaurant.application.dtos.RestaurantResponse;
 import com.order.orderlink.restaurant.domain.Restaurant;
@@ -31,7 +30,7 @@ public class RestaurantService {
     private final RestaurantRepository restaurantRepository;
 
     // 음식점 등록 메서드
-    public RestaurantResponse.Create createRestaurant(UserDetailsImpl userDetails, RestaurantRequest.Create request) {
+    public RestaurantResponse.Create createRestaurant(RestaurantRequest.Create request) {
 
         // Request DTO -> Entity
         Restaurant restaurant = Restaurant.builder()
@@ -54,12 +53,12 @@ public class RestaurantService {
     /** restaurantRepository.findAll();로 가져온 리스트를 매핑이 끝날 때 까지 세션 유지하기 위해 트랜잭션 사용 **/
     // 음식점 조회 API
     @Transactional(readOnly = true)
-    public RestaurantResponse.RestaurantDto getRestaurant(UUID restaurantId) {
+    public GetRestaurant getRestaurant(UUID restaurantId) {
         Restaurant restaurant = getRestaurantById(restaurantId);
 
         boolean isOpen = isOpen(restaurant.getOpenTime(), restaurant.getCloseTime());
 
-        return RestaurantDto.builder()
+        return GetRestaurant.builder()
                 .restaurantId(restaurant.getId())
                 .name(restaurant.getName())
                 .address(restaurant.getAddress())
@@ -113,15 +112,12 @@ public class RestaurantService {
                 .avgRating(restaurant.getAvgRating())
                 .ratingSum(restaurant.getRatingSum())
                 .ratingCount(restaurant.getRatingCount())
-                .foods(restaurant.getFoods().stream()
-                        .map(this::convertToRestaurantFoodDto)
-                        .collect(Collectors.toList()))
                 .build();
     }
 
     // Convert : Food -> RestaurantFoodDto
-    private RestaurantFoodDto convertToRestaurantFoodDto(Food food) {
-        return RestaurantFoodDto.builder()
+    private GetRestaurantFoodDto convertToRestaurantFoodDto(Food food) {
+        return GetRestaurantFoodDto.builder()
                 .foodId(food.getId())
                 .foodName(food.getName())
                 .foodDescription(food.getDescription())
