@@ -2,6 +2,7 @@ package com.order.orderlink.address.domain;
 
 import java.util.UUID;
 
+import org.hibernate.annotations.SQLRestriction;
 import org.hibernate.annotations.UuidGenerator;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -25,6 +26,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @Entity
 @Table(name = "p_addresses")
+@SQLRestriction("deleted_at IS NULL")
 @EntityListeners(AuditingEntityListener.class)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Address extends BaseTimeEntity {
