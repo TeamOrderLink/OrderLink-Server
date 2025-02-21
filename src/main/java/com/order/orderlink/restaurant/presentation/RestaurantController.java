@@ -7,6 +7,7 @@ import com.order.orderlink.restaurant.application.dtos.RestaurantRequest;
 import com.order.orderlink.restaurant.application.dtos.RestaurantResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
@@ -21,6 +22,7 @@ public class RestaurantController {
 
     // 음식점 등록 API
     @PostMapping
+    @PreAuthorize("hasAuthority('ROLE_MASTER')")
     public SuccessResponse<RestaurantResponse.Create> createRestaurant(
         @RequestBody RestaurantRequest.Create request) {
         return SuccessResponse.success(SuccessCode.RESTAURANT_CREATE_SUCCESS,
