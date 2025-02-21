@@ -64,5 +64,8 @@ public class Food extends BaseTimeEntity {
         }
     }
 
+    public void softDelete(String deletedBy) {
+        super.softDelete(deletedBy);
+    }
 
 }
