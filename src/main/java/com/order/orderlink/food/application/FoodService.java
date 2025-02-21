@@ -12,22 +12,24 @@ import com.order.orderlink.restaurant.domain.Restaurant;
 import com.order.orderlink.restaurant.domain.repository.RestaurantRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class FoodService {
 
     private final FoodRepository foodRepository;
     private final RestaurantRepository restaurantRepository;
 
-    public FoodResponse.Create createFood(FoodRequest.Create request) {
+    public FoodResponse.Create createFood(FoodRequest.Create request, UUID userId) {
 
         Restaurant restaurant = getRestaurant(request.getRestaurantId());
         Food food = Food.builder()
                 .restaurant(restaurant)
-                .userId(request.getUserId())
+                .userId(userId)
                 .name(request.getName())
                 .description(request.getDescription())
                 .price(request.getPrice())
@@ -40,8 +42,12 @@ public class FoodService {
         return new FoodResponse.Create(savedFood.getId());
     }
 
-    public FoodResponse.Update updateFood(UUID foodId, FoodRequest.Update request) {
+    public FoodResponse.Update updateFood(UUID foodId, FoodRequest.Update request, UUID userId) {
         Food food = getFood(foodId);
+
+        if (!food.getUserId().equals(userId)) {
+            throw new UserException(ErrorCode.USER_ACCESS_DENIED);
+        }
 
         food.updateFood(
                 request.getName(),
@@ -66,15 +72,16 @@ public class FoodService {
 
     }
 
-    public void deleteFood(UUID foodId, UUID userId) {
+    public FoodResponse.Delete softDeleteFood(UUID foodId, UUID userId) {
         Food food = getFood(foodId);
 
-        // getId owner_name으로 변경 필요
         if (!food.getUserId().equals(userId)) {
             throw new UserException(ErrorCode.USER_ACCESS_DENIED);
         }
 
-        foodRepository.deleteById(food.getId());
+        food.softDelete(userId.toString());
+
+        return new FoodResponse.Delete(food.getUserId(), food.getDeletedAt());
     }
 
 
