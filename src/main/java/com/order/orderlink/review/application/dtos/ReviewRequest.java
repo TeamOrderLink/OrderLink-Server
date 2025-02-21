@@ -30,6 +30,7 @@ public class ReviewRequest {
 		@Max(value = 5, message = "평점은 최대 5점이어야 합니다.")
 		private Integer rating;
 
+		@Size(max = 500, message = "리뷰는 최대 500자까지 입력 가능합니다.")
 		private String content;
 
 	}
