@@ -63,12 +63,24 @@ public class SecurityConfig {
 				.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 			)
 			.authorizeHttpRequests(authorize -> authorize
+				.requestMatchers(PathRequest.toStaticResources().atCommonLocations())
+				.permitAll() // resources 접근 허용 설정
+				.requestMatchers("/api/auth/login", "/api/users", "/api/categories", "/api/foods/**", "/api/foods")
+				.permitAll()
+				.requestMatchers(HttpMethod.DELETE, "/api/foods/**")
+				.hasAnyAuthority("ROLE_OWNER")
+				.requestMatchers(HttpMethod.POST, "/api/foods")
+				.hasAnyAuthority("ROLE_OWNER")
+				.requestMatchers(HttpMethod.POST, "/api/foods/**")
+				.hasAnyAuthority("ROLE_OWNER")
+				.requestMatchers(HttpMethod.DELETE, "/api/foods/**")
+				.hasAnyAuthority("ROLE_OWNER")
 				.requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll() // resources 접근 허용 설정
-                .requestMatchers("/api/auth/login", "/api/users", "/api/categories").permitAll()
-                .requestMatchers(HttpMethod.GET, "/api/restaurants/**").permitAll()
-                .requestMatchers(HttpMethod.POST, "/api/restaurants").hasAuthority("ROLE_MASTER")
-                .requestMatchers(HttpMethod.PUT, "/api/restaurants/**").hasAuthority("ROLE_MASTER")
-                .requestMatchers(HttpMethod.DELETE, "/api/restaurants/**").hasAuthority("ROLE_MASTER")
+				.requestMatchers("/api/auth/login", "/api/users", "/api/categories").permitAll()
+				.requestMatchers(HttpMethod.GET, "/api/restaurants/**").permitAll()
+				.requestMatchers(HttpMethod.POST, "/api/restaurants").hasAuthority("ROLE_MASTER")
+				.requestMatchers(HttpMethod.PUT, "/api/restaurants/**").hasAuthority("ROLE_MASTER")
+				.requestMatchers(HttpMethod.DELETE, "/api/restaurants/**").hasAuthority("ROLE_MASTER")
 				.anyRequest().authenticated()
 			);
 
