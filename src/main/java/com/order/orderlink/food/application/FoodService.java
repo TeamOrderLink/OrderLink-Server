@@ -72,14 +72,14 @@ public class FoodService {
 
     }
 
-    public FoodResponse.Delete softDeleteFood(UUID foodId, UUID userId) {
+    public FoodResponse.Delete softDeleteFood(UUID foodId, UUID userId, String username) {
         Food food = getFood(foodId);
 
         if (!food.getUserId().equals(userId)) {
             throw new UserException(ErrorCode.USER_ACCESS_DENIED);
         }
 
-        food.softDelete(userId.toString());
+        food.softDelete(username);
 
         return new FoodResponse.Delete(food.getUserId(), food.getDeletedAt());
     }

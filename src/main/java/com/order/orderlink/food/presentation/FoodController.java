@@ -45,8 +45,10 @@ public class FoodController {
     public SuccessResponse<FoodResponse.Delete> deleteFood(
             @PathVariable UUID foodId,
             @AuthenticationPrincipal UserDetailsImpl userDetails) {
+
         UUID userId = userDetails.getUser().getId();
-        return SuccessResponse.success(SuccessCode.FOOD_DELETE_SUCCESS, foodService.softDeleteFood(foodId, userId));
+        String username = userDetails.getUser().getUsername();
+        return SuccessResponse.success(SuccessCode.FOOD_DELETE_SUCCESS, foodService.softDeleteFood(foodId, userId, username));
     }
 
 }
