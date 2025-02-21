@@ -34,27 +34,40 @@ public enum SuccessCode {
 
 	// FOOD
 	FOOD_CREATE_SUCCESS(HttpStatus.OK, "음식 등록 성공입니다."),
-    FOOD_UPDATE_SUCCESS(HttpStatus.OK, "음식 수정 성공입니다."),
+	FOOD_UPDATE_SUCCESS(HttpStatus.OK, "음식 수정 성공입니다."),
+	FOOD_DELETE_SUCCESS(HttpStatus.OK, "음식 삭제 성공입니다."),
 
-	// DELIVERY DETAIL
-	DELIVERY_DETAIL_CREATE_SUCCESS(HttpStatus.OK, "배송지 등록 성공입니다."),
-	DELIVERY_DETAIL_READ_SUCCESS(HttpStatus.OK, "배송지 상세 조회 성공입니다."),
-	DELIVERY_DETAIL_UPDATE_SUCCESS(HttpStatus.OK, "배송지 수정 성공입니다."),
-	DELIVERY_DETAIL_DELETE_SUCCESS(HttpStatus.OK, "배송지 삭제 성공입니다."),
+	// ADDRESS
+	ADDRESS_CREATE_SUCCESS(HttpStatus.OK, "배송지 등록 성공입니다."),
+	ADDRESS_READ_ALL_SUCCESS(HttpStatus.OK, "배송지 목록 조회 성공입니다."),
+	ADDRESS_READ_SUCCESS(HttpStatus.OK, "배송지 상세 조회 성공입니다."),
+	ADDRESS_UPDATE_SUCCESS(HttpStatus.OK, "배송지 수정 성공입니다."),
+	ADDRESS_DELETE_SUCCESS(HttpStatus.OK, "배송지 삭제 성공입니다."),
 
-	//Category
+	// CATEGORY
 	CATEGORY_CREATE_SUCCESS(HttpStatus.OK, "카테고리 새로 추가 성공입니다"),
 	CATEGORY_REGISTER_SUCCESS(HttpStatus.OK, "음식점 카테고리 등록 성공입니다"),
 	CATEGORY_GET_SUCCESS(HttpStatus.OK, "카테고리 리스트 조회 성공입니다"),
 	CATEGORY_DELETE_SUCCESS(HttpStatus.OK, "카테고리 삭제 성공입니다"),
 	CATEGORY_UPDATE_SUCCESS(HttpStatus.OK, "카테고리 수정 성공입니다"),
 
-    // Restaurant
-    RESTAURANT_CREATE_SUCCESS(HttpStatus.OK, "음식점 등록 성공입니다."),
+  // RESTAURANT
+  RESTAURANT_CREATE_SUCCESS(HttpStatus.OK, "음식점 등록 성공입니다."),
 	RESTAURANTS_GET_SUCCESS(HttpStatus.OK, "전체 음식점 조회 성공입니다."),
-	RESTAURANT_GET_SUCCESS(HttpStatus.OK, "음식점 조회 성공입니다.");
+	RESTAURANT_GET_SUCCESS(HttpStatus.OK, "음식점 조회 성공입니다."),
+
+	// REGION
+	REGION_CREATE_SUCCESS(HttpStatus.OK, "운영지역 새로 추가 성공입니다"),
+	REGION_GET_SUCCESS(HttpStatus.OK, "운영지역 리스트 조회 성공입니다"),
+	REGION_DELETE_SUCCESS(HttpStatus.OK, "운영지역 삭제 성공입니다"),
+	REGION_UPDATE_SUCCESS(HttpStatus.OK, "운영지역 수정 성공입니다"),
+
+	// AI
+	AI_DESCRIPTION_GENERATE_SUCCESS(HttpStatus.OK, "음식 설명 생성 성공입니다."),
+
+	;
 
 	private final HttpStatus status;
 	private final String message;
-}
 
+}

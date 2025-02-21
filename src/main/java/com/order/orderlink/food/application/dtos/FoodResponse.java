@@ -30,5 +30,12 @@ public class FoodResponse {
         private final String updatedBy;
     }
 
+    @Getter
+    @AllArgsConstructor
+    public static class Delete {
+        private final UUID id;
+        private final LocalDateTime deletedAt;
+    }
+
 
 }
