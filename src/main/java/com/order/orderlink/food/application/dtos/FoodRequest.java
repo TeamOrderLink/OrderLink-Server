@@ -15,9 +15,6 @@ public class FoodRequest {
         @NotNull(message = "음식점 id를 입력해주세요.")
         private UUID restaurantId;
 
-        @NotNull(message = "사용자 id를 입력해주세요.")
-        private UUID userId;
-
         @NotBlank(message = "음식명을 입력해주세요.")
         private String name;
 
