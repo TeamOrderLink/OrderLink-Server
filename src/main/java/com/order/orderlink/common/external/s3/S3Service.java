@@ -2,7 +2,6 @@ package com.order.orderlink.common.external.s3;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -12,10 +11,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.amazonaws.HttpMethod;
 import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.model.DeleteObjectRequest;
-import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 
@@ -47,28 +43,6 @@ public class S3Service {
 		} catch (IOException e) {
 			throw new RuntimeException("파일 업로드 중 오류 발생", e);
 		}
-	}
-
-	/**
-	 * S3에서 파일 삭제
-	 */
-	public void deleteFile(String fileUrl) {
-		String fileKey = extractFileKey(fileUrl);
-		amazonS3.deleteObject(new DeleteObjectRequest(bucket, fileKey));
-	}
-
-	/**
-	 * S3에서 파일 다운로드를 위한 Pre-Signed URL 생성
-	 */
-	public String getPreSignedUrl(String fileUrl) {
-		String fileKey = extractFileKey(fileUrl);
-
-		GeneratePresignedUrlRequest request = new GeneratePresignedUrlRequest(bucket, fileKey)
-			.withMethod(HttpMethod.GET)
-			.withExpiration(getExpirationTime());
-
-		URL preSignedUrl = amazonS3.generatePresignedUrl(request);
-		return preSignedUrl.toString();
 	}
 
 	/**
