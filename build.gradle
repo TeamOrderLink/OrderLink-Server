@@ -56,7 +56,7 @@ dependencies {
     implementation 'org.json:json:20250107'
 
     // s3
-    implementation 'com.amazonaws:aws-java-sdk-s3:1.12.781'
+    implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-aws', version: '2.2.6.RELEASE'
 
     // lombok
     compileOnly 'org.projectlombok:lombok'
