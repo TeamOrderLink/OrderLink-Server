@@ -9,6 +9,8 @@ public enum ErrorCode {
 
 	// AUTH
 	TOKEN_INVALID(HttpStatus.UNAUTHORIZED, "토큰이 유효하지 않습니다."),
+	OWNER_AUTH_TOKEN_REQUIRED(HttpStatus.UNAUTHORIZED, "음식점 정보 수정을 위해 인증 토큰은 필수 입력입니다."),
+	INVALID_OWNER_AUTH_TOKEN(HttpStatus.BAD_REQUEST, "인증 토큰의 형식이 올바르지 않습니다."),
 
 	// USER
 	USER_ALREADY_EXISTS(HttpStatus.BAD_REQUEST, "이미 존재하는 사용자입니다."),

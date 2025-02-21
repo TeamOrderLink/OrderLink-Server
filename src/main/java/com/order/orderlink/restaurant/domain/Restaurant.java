@@ -65,6 +65,9 @@ public class Restaurant extends BaseTimeEntity {
 	@Column(name = "owner_name", nullable = false)
 	private String ownerName;
 
+    @Column(name = "owner_auth_token", unique = true, nullable = false)
+    private String ownerAuthToken;
+
 	@Column(name = "business_reg_num", unique = true, nullable = false)
 	private String businessRegNum;
 
@@ -97,4 +100,38 @@ public class Restaurant extends BaseTimeEntity {
 	public void updateAvgRating(Double newAvgRating) {
 		this.avgRating = newAvgRating;
 	}
+
+    public void update(String name, String address, String phone, String description, LocalTime openTime, LocalTime closeTime, String ownerName, String ownerAuthToken, String businessRegNum) {
+        if (name != null) {
+            this.name = name;
+        }
+
+        if (address != null) {
+            this.address = address;
+        }
+
+        if (phone != null) {
+            this.phone = phone;
+        }
+
+        if (description != null) {
+            this.description = description;
+        }
+
+        if (openTime != null) {
+            this.openTime = openTime;
+        }
+
+        if (closeTime != null) {
+            this.closeTime = closeTime;
+        }
+
+        if (ownerName != null && !ownerName.trim().isEmpty()) {
+            this.ownerName = ownerName;
+        }
+
+        if (businessRegNum != null) {
+            this.businessRegNum = businessRegNum;
+        }
+    }
 }

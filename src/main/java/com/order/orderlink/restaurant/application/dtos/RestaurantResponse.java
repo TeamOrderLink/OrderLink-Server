@@ -1,10 +1,15 @@
 package com.order.orderlink.restaurant.application.dtos;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -18,6 +23,7 @@ public class RestaurantResponse {
     @AllArgsConstructor
     public static class Create {
         private final UUID restaurantId;
+        private final String ownerAuthToken;
     }
 
     @Getter
@@ -78,5 +84,22 @@ public class RestaurantResponse {
         private String foodDescription;
         private int price;
         private String imageUrl;
+    }
+
+    @Getter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Builder
+    public static class Update {
+        private UUID restaurantId;
+        private String name;
+        private String address;
+        private String phone;
+        private String description;
+        private LocalTime openTime;
+        private LocalTime closeTime;
+        private boolean businessStatus;
+        private String ownerName;
+        private String businessRegNum;
     }
 }

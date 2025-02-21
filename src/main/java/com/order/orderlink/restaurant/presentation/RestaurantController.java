@@ -16,10 +16,15 @@ import com.order.orderlink.common.enums.SuccessCode;
 import com.order.orderlink.restaurant.application.RestaurantService;
 import com.order.orderlink.restaurant.application.dtos.RestaurantRequest;
 import com.order.orderlink.restaurant.application.dtos.RestaurantResponse;
+import jakarta.validation.Valid;
 import com.order.orderlink.restaurant.domain.Restaurant;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.UUID;
 
 @Slf4j
 @RestController
@@ -28,34 +33,48 @@ import lombok.extern.slf4j.Slf4j;
 public class RestaurantController {
 
 	private final RestaurantService restaurantService;
+    //webclient 용
+    @GetMapping("/{restaurantId}/getRestaurant")
+    public ResponseEntity<Restaurant> getRestaurantById(@PathVariable UUID restaurantId) {
+        Restaurant restaurant = restaurantService.getRestaurantById(restaurantId);
+        return ResponseEntity.ok(restaurant);
+    }
 
-	// 음식점 등록 API
-	@PostMapping
-	@PreAuthorize("hasAuthority('ROLE_MASTER')")
-	public SuccessResponse<RestaurantResponse.Create> createRestaurant(
-		@RequestBody RestaurantRequest.Create request) {
-		return SuccessResponse.success(SuccessCode.RESTAURANT_CREATE_SUCCESS,
-			restaurantService.createRestaurant(request));
-	}
+    // 음식점 등록 API
+    @PostMapping
+    @PreAuthorize("hasAuthority('ROLE_MASTER')")
+    public SuccessResponse<RestaurantResponse.Create> createRestaurant(
+        @Valid @RequestBody RestaurantRequest.Create request) {
 
-	// 전체 음식점 목록 조회 API
-	@GetMapping
-	public SuccessResponse<RestaurantResponse.GetRestaurants> getAllRestaurants() {
-		return SuccessResponse.success(SuccessCode.RESTAURANTS_GET_SUCCESS,
-			restaurantService.getAllRestaurants());
-	}
+        return SuccessResponse.success(SuccessCode.RESTAURANT_CREATE_SUCCESS,
+                restaurantService.createRestaurant(request));
+    }
 
-	// 음식점 조회 API
-	@GetMapping("/{id}")
-	public SuccessResponse<RestaurantResponse.GetRestaurant> getRestaurant(@PathVariable("id") UUID restaurantId) {
-		return SuccessResponse.success(SuccessCode.RESTAURANT_GET_SUCCESS,
-			restaurantService.getRestaurant(restaurantId));
-	}
+    // 전체 음식점 목록 조회 API
+    @GetMapping
+    public SuccessResponse<RestaurantResponse.GetRestaurants> getAllRestaurants() {
 
-	//webclient 용
-	@GetMapping("/{restaurantId}/getRestaurant")
-	public ResponseEntity<Restaurant> getRestaurantById(@PathVariable UUID restaurantId) {
-		Restaurant restaurant = restaurantService.getRestaurantById(restaurantId);
-		return ResponseEntity.ok(restaurant);
-	}
+        return SuccessResponse.success(SuccessCode.RESTAURANTS_GET_SUCCESS,
+                restaurantService.getAllRestaurants());
+    }
+
+    // 음식점 조회 API
+    @GetMapping("/{id}")
+    public SuccessResponse<RestaurantResponse.GetRestaurant> getRestaurant(
+            @PathVariable("id") UUID restaurantId) {
+
+        return SuccessResponse.success(SuccessCode.RESTAURANT_GET_SUCCESS,
+                restaurantService.getRestaurant(restaurantId));
+    }
+
+    // 음식점 수정 API
+    @PutMapping("/{id}")
+    @PreAuthorize("hasAnyAuthority('ROLE_OWNER', 'ROLE_MASTER')")
+    public SuccessResponse<RestaurantResponse.Update> updateRestaurant(
+            @PathVariable("id") UUID restaurantId,
+            @Valid @RequestBody RestaurantRequest.Update request) {
+
+        return SuccessResponse.success(SuccessCode.RESTAURANT_UPDATE_SUCCESS,
+                restaurantService.updateRestaurant(request, restaurantId));
+    }
 }
