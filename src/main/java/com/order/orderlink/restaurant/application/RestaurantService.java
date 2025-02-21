@@ -23,8 +23,9 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Slf4j
-@Service
 @RequiredArgsConstructor
+@Transactional
+@Service
 public class RestaurantService {
 
     private final RestaurantRepository restaurantRepository;
