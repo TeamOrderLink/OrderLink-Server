@@ -133,11 +133,6 @@ public class RestaurantService {
         return now.isAfter(openTime) && now.isBefore(closeTime);
     }
 
-    // 사용자 권한 조회
-    private UserRoleEnum getUserRole(User user) {
-        return user.getRole();
-    }
-
     // 음식점 찾기
     private Restaurant getRestaurantById(UUID restaurantId) {
         return restaurantRepository.findById(restaurantId)
