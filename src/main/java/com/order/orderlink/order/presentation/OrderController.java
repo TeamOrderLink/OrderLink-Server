@@ -24,6 +24,7 @@ import com.order.orderlink.order.application.dtos.OrderResponse;
 import com.order.orderlink.order.domain.Order;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -55,7 +56,7 @@ public class OrderController {
 	@PreAuthorize("hasAuthority('ROLE_CUSTOMER')")
 	public SuccessResponse<OrderResponse.Create> createOrder(
 		@AuthenticationPrincipal UserDetailsImpl userDetails,
-		@RequestBody OrderRequest.Create request) {
+		@Valid @RequestBody OrderRequest.Create request) {
 		return SuccessResponse.success(SuccessCode.ORDER_CREATE_SUCCESS,
 			orderService.createOrder(userDetails, request));
 	}
