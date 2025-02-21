@@ -20,6 +20,7 @@ import com.order.orderlink.common.dtos.SuccessNonDataResponse;
 import com.order.orderlink.common.dtos.SuccessResponse;
 import com.order.orderlink.common.enums.SuccessCode;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -31,7 +32,7 @@ public class CategoryController {
 	@PostMapping
 	@PreAuthorize("hasAuthority('ROLE_MASTER')")
 	public SuccessResponse<CategoryResponse.Create> createCategory(
-		@RequestBody CategoryRequest.Create request) {
+		@Valid @RequestBody CategoryRequest.Create request) {
 		return SuccessResponse.success(SuccessCode.CATEGORY_CREATE_SUCCESS,
 			categoryService.createCategory(request));
 	}
@@ -66,7 +67,7 @@ public class CategoryController {
 	@PreAuthorize("hasAuthority('ROLE_MASTER')")
 	public SuccessNonDataResponse updateCategories(
 		@PathVariable UUID categoryId,
-		@RequestBody CategoryRequest.UpdateCategory request
+		@Valid @RequestBody CategoryRequest.UpdateCategory request
 	) {
 		categoryService.updateCategory(categoryId, request);
 		return SuccessNonDataResponse.success(SuccessCode.CATEGORY_UPDATE_SUCCESS);

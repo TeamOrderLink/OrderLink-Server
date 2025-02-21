@@ -48,7 +48,13 @@ public enum SuccessCode {
 	CATEGORY_REGISTER_SUCCESS(HttpStatus.OK, "음식점 카테고리 등록 성공입니다"),
 	CATEGORY_GET_SUCCESS(HttpStatus.OK, "카테고리 리스트 조회 성공입니다"),
 	CATEGORY_DELETE_SUCCESS(HttpStatus.OK, "카테고리 삭제 성공입니다"),
-	CATEGORY_UPDATE_SUCCESS(HttpStatus.OK, "카테고리 수정 성공입니다");
+	CATEGORY_UPDATE_SUCCESS(HttpStatus.OK, "카테고리 수정 성공입니다"),
+
+	//Region
+	REGION_CREATE_SUCCESS(HttpStatus.OK, "운영지역 새로 추가 성공입니다"),
+	REGION_GET_SUCCESS(HttpStatus.OK, "운영지역 리스트 조회 성공입니다"),
+	REGION_DELETE_SUCCESS(HttpStatus.OK, "운영지역 삭제 성공입니다"),
+	REGION_UPDATE_SUCCESS(HttpStatus.OK, "운영지역 수정 성공입니다");
 
 	private final HttpStatus status;
 	private final String message;
