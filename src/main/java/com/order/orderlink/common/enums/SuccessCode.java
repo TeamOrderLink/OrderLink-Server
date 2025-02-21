@@ -58,7 +58,9 @@ public enum SuccessCode {
 	REGION_UPDATE_SUCCESS(HttpStatus.OK, "운영지역 수정 성공입니다"),
 
 	// AI
-	AI_DESCRIPTION_GENERATE_SUCCESS(HttpStatus.OK, "음식 설명 생성 성공입니다.");
+	AI_DESCRIPTION_GENERATE_SUCCESS(HttpStatus.OK, "음식 설명 생성 성공입니다."),
+
+	;
 
 	private final HttpStatus status;
 	private final String message;

@@ -33,16 +33,18 @@ public enum ErrorCode {
 
 	// CATEGORY
 	CATEGORY_NOT_FOUND(HttpStatus.NOT_FOUND, "카테고리가 존재하지 않습니다."),
-  
-  // REGION
+
+	// REGION
 	REGION_NOT_FOUND(HttpStatus.NOT_FOUND, "운영지역을 찾을 수 없습니다."),
 	REGION_NOT_PARENT(HttpStatus.BAD_REQUEST, "운영지역과 같은 상위지역으로 설정할 수 없습니다."),
-  
+
 	// FOOD
 	FOOD_NOT_FOUND(HttpStatus.NOT_FOUND, "음식을 찾을 수 없습니다."),
 
 	// AI
-	AI_API_RESPONSE_PARSING_ERROR(HttpStatus.NOT_FOUND, "음식 설명 생성 도중 오류가 발생했습니다.");
+	AI_API_RESPONSE_PARSING_ERROR(HttpStatus.NOT_FOUND, "음식 설명 생성 도중 오류가 발생했습니다."),
+
+	;
 
 	private final HttpStatus status;
 	private final String message;
