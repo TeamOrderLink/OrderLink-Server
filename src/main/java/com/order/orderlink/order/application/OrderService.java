@@ -178,7 +178,6 @@ public class OrderService {
 		UUID userId = getUserId(userDetails);
 		Order order = getOrderById(orderId);
 		if (request.getStatus().equals(OrderStatus.CANCELED)) {
-			order.updateOrderStatus(OrderStatus.CANCELED);
 			//주문 취소는 5분 내에만
 			if (Duration.between(order.getCreatedAt(), LocalDateTime.now()).toMinutes() > 5) {
 				throw new OrderException(ErrorCode.ORDER_CANCEL_TIME_EXCEEDED);
