@@ -8,6 +8,7 @@ import java.util.UUID;
 import org.hibernate.annotations.UuidGenerator;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.order.orderlink.common.auth.util.LocalTimeToStringConverter;
 import com.order.orderlink.common.entity.BaseTimeEntity;
 import com.order.orderlink.food.domain.Food;
@@ -80,7 +81,10 @@ public class Restaurant extends BaseTimeEntity {
 	private Integer ratingCount = 0;
 
 	@OneToMany(mappedBy = "restaurant")
+	@JsonIgnore
 	private List<Food> foods = new ArrayList<>();
+
+	private UUID regionId;
 
 	public void updateRatingSum(Double newRatingSum) {
 		this.ratingSum = newRatingSum;
@@ -93,5 +97,4 @@ public class Restaurant extends BaseTimeEntity {
 	public void updateAvgRating(Double newAvgRating) {
 		this.avgRating = newAvgRating;
 	}
-
 }

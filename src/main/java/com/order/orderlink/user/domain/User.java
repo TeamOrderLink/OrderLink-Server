@@ -8,6 +8,7 @@ import org.hibernate.annotations.SQLRestriction;
 import org.hibernate.annotations.UuidGenerator;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.order.orderlink.address.domain.Address;
 import com.order.orderlink.common.entity.BaseTimeEntity;
 
@@ -65,6 +66,7 @@ public class User extends BaseTimeEntity {
 	private UserRoleEnum role;
 
 	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+	@JsonIgnore
 	private List<Address> addresses = new ArrayList<>();
 
 	@Builder

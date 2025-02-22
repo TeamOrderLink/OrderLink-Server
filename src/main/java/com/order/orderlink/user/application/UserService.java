@@ -135,6 +135,7 @@ public class UserService {
 		return new UserResponse.Delete(user.getId(), user.getDeletedAt());
 	}
 
+	@Transactional(readOnly = true)
 	public User getUser(UUID userId) {
 		return userRepository.findById(userId)
 			.orElseThrow(() -> new UserException(ErrorCode.USER_NOT_FOUND));

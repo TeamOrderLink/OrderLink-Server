@@ -4,7 +4,8 @@ import java.util.UUID;
 
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.reactive.function.client.WebClientResponseException;
+
+import com.order.orderlink.restaurant.domain.Restaurant;
 
 import lombok.RequiredArgsConstructor;
 
@@ -15,17 +16,12 @@ public class RestaurantClient {
 	private final WebClient webClient;
 	private static final String RESTAURANTS_URL = "/restaurants";
 
-	public boolean isRestaurantExists(UUID restaurantId) {
-		try {
-			webClient.get()
-				.uri(uriBuilder -> uriBuilder.path(RESTAURANTS_URL + "/{restaurantId}").build(restaurantId))
-				.retrieve()
-				.toBodilessEntity()
-				.block();
+	public Restaurant getRestaurant(UUID restaurantId) {
+		return webClient.get()
+			.uri(uriBuilder -> uriBuilder.path(RESTAURANTS_URL + "/{restaurantId}/getRestaurant").build(restaurantId))
+			.retrieve()
+			.bodyToMono(Restaurant.class)
+			.block();
 
-			return true;
-		} catch (WebClientResponseException.NotFound e) {
-			return false;
-		}
 	}
 }

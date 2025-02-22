@@ -1,5 +1,7 @@
 package com.order.orderlink.order.application;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -12,11 +14,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.order.orderlink.common.auth.UserDetailsImpl;
+import com.order.orderlink.common.client.RestaurantClient;
 import com.order.orderlink.common.client.UserClient;
 import com.order.orderlink.common.enums.ErrorCode;
 import com.order.orderlink.common.exception.AuthException;
 import com.order.orderlink.common.exception.OrderException;
-import com.order.orderlink.common.exception.RestaurantException;
 import com.order.orderlink.order.application.dtos.OrderDTO;
 import com.order.orderlink.order.application.dtos.OrderFoodDTO;
 import com.order.orderlink.order.application.dtos.OrderRequest;
@@ -29,7 +31,6 @@ import com.order.orderlink.order.domain.repository.OrderRepositoryImpl;
 import com.order.orderlink.orderitem.domain.OrderItem;
 import com.order.orderlink.payment.domain.Payment;
 import com.order.orderlink.restaurant.domain.Restaurant;
-import com.order.orderlink.restaurant.domain.repository.RestaurantRepository;
 import com.order.orderlink.user.domain.User;
 import com.order.orderlink.user.domain.UserRoleEnum;
 
@@ -42,9 +43,9 @@ import lombok.RequiredArgsConstructor;
 public class OrderService {
 
 	private final OrderRepository orderRepository;
-	private final RestaurantRepository restaurantRepository;
 	private final UserClient userClient;
 	private final OrderRepositoryImpl orderRepositoryImpl;
+	private final RestaurantClient restaurantClient;
 
 	public OrderResponse.Create createOrder(UserDetailsImpl userDetails, OrderRequest.Create request) {
 		UUID userId = getUserId(userDetails);
@@ -121,8 +122,7 @@ public class OrderService {
 	}
 
 	private Restaurant getRestaurant(UUID restaurantId) {
-		Restaurant restaurant = restaurantRepository.findById(restaurantId)
-			.orElseThrow(() -> new RestaurantException(ErrorCode.RESTAURANT_NOT_FOUND));
+		Restaurant restaurant = restaurantClient.getRestaurant(restaurantId);
 		return restaurant;
 	}
 
@@ -178,8 +178,13 @@ public class OrderService {
 		UUID userId = getUserId(userDetails);
 		Order order = getOrderById(orderId);
 		if (request.getStatus().equals(OrderStatus.CANCELED)) {
+			//주문 취소는 5분 내에만
+			if (Duration.between(order.getCreatedAt(), LocalDateTime.now()).toMinutes() > 5) {
+				throw new OrderException(ErrorCode.ORDER_CANCEL_TIME_EXCEEDED);
+			}
 			order.updateOrderStatus(OrderStatus.CANCELED);
 		} else {
+			//customer 는 주문 취소만 할 수 있음
 			if (userDetails.getUser().getRole().equals(UserRoleEnum.CUSTOMER)) {
 				throw new AuthException(ErrorCode.USER_ACCESS_DENIED);
 			}
@@ -226,6 +231,7 @@ public class OrderService {
 		return order;
 	}
 
+	@Transactional(readOnly = true)
 	public OrderResponse.GetOrders getSearchedOrders(UserDetailsImpl userDetails, OrderRequest.Search request, int page,
 		int size) {
 		UUID userId = getUserId(userDetails);

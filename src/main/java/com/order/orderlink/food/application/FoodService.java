@@ -10,9 +10,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.order.orderlink.common.client.RestaurantClient;
 import com.order.orderlink.common.enums.ErrorCode;
 import com.order.orderlink.common.exception.FoodException;
-import com.order.orderlink.common.exception.RestaurantException;
 import com.order.orderlink.common.exception.UserException;
 import com.order.orderlink.common.external.s3.S3Service;
 import com.order.orderlink.food.application.dtos.FoodDTO;
@@ -21,7 +21,6 @@ import com.order.orderlink.food.application.dtos.FoodResponse;
 import com.order.orderlink.food.domain.Food;
 import com.order.orderlink.food.domain.repository.FoodRepository;
 import com.order.orderlink.restaurant.domain.Restaurant;
-import com.order.orderlink.restaurant.domain.repository.RestaurantRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -31,12 +30,11 @@ import lombok.RequiredArgsConstructor;
 public class FoodService {
 
 	private final FoodRepository foodRepository;
-	private final RestaurantRepository restaurantRepository;
 	private final S3Service s3Service;
+	private final RestaurantClient restaurantClient;
 
 	public FoodResponse.Create createFood(FoodRequest.Create request, UUID restaurantId, UUID userId) {
-
-		Restaurant restaurant = getRestaurant(restaurantId);
+		Restaurant restaurant = restaurantClient.getRestaurant(restaurantId);
 		Food food = Food.builder()
 			.restaurant(restaurant)
 			.userId(userId)
@@ -94,13 +92,6 @@ public class FoodService {
 		Food food = foodRepository.findById(foodId)
 			.orElseThrow(() -> new FoodException(ErrorCode.FOOD_NOT_FOUND));
 		return food;
-	}
-
-	private Restaurant getRestaurant(UUID restaurantId) {
-		Restaurant restaurant = restaurantRepository.findById(restaurantId)
-			.orElseThrow(() -> new RestaurantException(ErrorCode.RESTAURANT_NOT_FOUND));
-
-		return restaurant;
 	}
 
 	public FoodResponse.UploadImage uploadFoodImage(UUID foodId, MultipartFile file) {
