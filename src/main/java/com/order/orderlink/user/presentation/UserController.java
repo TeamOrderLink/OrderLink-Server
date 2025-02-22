@@ -63,7 +63,7 @@ public class UserController {
 	public SuccessResponse<UserResponse.ReadUserList> getAllUsers(
 		@RequestParam(defaultValue = "1") int page,
 		@RequestParam(defaultValue = "10") int size,
-		@RequestParam(defaultValue = "createdAt,asc") String sort) {
+		@RequestParam(required = false) String sort) {
 
 		if (page < 1) {
 			page = 1;
@@ -80,14 +80,30 @@ public class UserController {
 			if (sortParts.length == 2) {
 				String fieldInput = sortParts[0].trim();
 				String orderInput = sortParts[1].trim().toLowerCase();
-
-				if (!fieldInput.isEmpty() && (orderInput.equals("asc") || orderInput.equals("desc"))) {
-					sortObj = orderInput.equals("asc") ?
-						Sort.by(fieldInput).ascending() : Sort.by(fieldInput).descending();
+				// field가 "id", "username", "email", "phone", "nickname", "createdAt", "updatedAt' 중 하나이면 사용,
+				// 아니면 기본 정렬 적용
+				if (fieldInput.equals("id") || fieldInput.equals("username") || fieldInput.equals("email")
+					|| fieldInput.equals("phone") || fieldInput.equals("nickname") || fieldInput.equals("createdAt")
+					|| fieldInput.equals("updatedAt")) {
+					if (orderInput.equals("asc")) {
+						sortObj = Sort.by(fieldInput).ascending();
+					} else if (orderInput.equals("desc")) {
+						sortObj = Sort.by(fieldInput).descending();
+					}
+				} else {
+					// 유효하지 않은 field이면 기본값 적용
+					sortObj = Sort.by(
+						Sort.Order.desc("createdAt"),
+						Sort.Order.desc("updatedAt")
+					);
 				}
+			} else {
+				sortObj = Sort.by(
+					Sort.Order.desc("createdAt"),
+					Sort.Order.desc("updatedAt")
+				);
 			}
-		}
-		if (sortObj == null) {
+		} else {
 			sortObj = Sort.by(
 				Sort.Order.desc("createdAt"),
 				Sort.Order.desc("updatedAt")
@@ -95,8 +111,9 @@ public class UserController {
 		}
 
 		// 1-based로 받은 페이지 번호를 0-based 페이지 번호로 변환
+		assert sortObj != null;
 		Pageable pageable = PageRequest.of(page - 1, size, sortObj);
-		return SuccessResponse.success(SuccessCode.USER_READ_ALL_SUCCESS, userService.getAllUsers(pageable));
+		return SuccessResponse.success(SuccessCode.USER_GET_SUCCESS, userService.getAllUsers(pageable));
 	}
 
 	/**
@@ -109,7 +126,7 @@ public class UserController {
 	@GetMapping("/me")
 	public SuccessResponse<UserResponse.Read> getMyInfo(@AuthenticationPrincipal UserDetailsImpl userDetails) {
 		UUID userId = userDetails.getUser().getId();
-		return SuccessResponse.success(SuccessCode.USER_READ_SUCCESS, userService.getMyInfo(userId));
+		return SuccessResponse.success(SuccessCode.USER_GET_DETAIL_SUCCESS, userService.getMyInfo(userId));
 	}
 
 	/**
@@ -122,7 +139,7 @@ public class UserController {
 	@GetMapping("/{id}")
 	@PreAuthorize("hasAuthority('ROLE_MASTER')")
 	public SuccessResponse<UserResponse.Read> getUserInfoByAdmin(@PathVariable("id") UUID userId) {
-		return SuccessResponse.success(SuccessCode.USER_READ_SUCCESS, userService.getUserInfoByAdmin(userId));
+		return SuccessResponse.success(SuccessCode.USER_GET_DETAIL_SUCCESS, userService.getUserInfoByAdmin(userId));
 	}
 
 	/**

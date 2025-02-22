@@ -71,7 +71,7 @@ public class AddressController {
 		@AuthenticationPrincipal UserDetailsImpl userDetails,
 		@RequestParam(defaultValue = "1") int page,
 		@RequestParam(defaultValue = "10") int size,
-		@RequestParam(defaultValue = "createdAt,desc") String sort) {
+		@RequestParam(required = false) String sort) {
 
 		if (page < 1) {
 			page = 1;
@@ -84,28 +84,42 @@ public class AddressController {
 		Sort sortObj = null;
 		if (sort != null && !sort.trim().isEmpty()) {
 			String[] sortParts = sort.split(",");
-
 			if (sortParts.length == 2) {
 				String fieldInput = sortParts[0].trim();
 				String orderInput = sortParts[1].trim().toLowerCase();
-
-				if (!fieldInput.isEmpty() && (orderInput.equals("asc") || orderInput.equals("desc"))) {
-					sortObj = orderInput.equals("asc") ?
-						Sort.by(fieldInput).ascending() : Sort.by(fieldInput).descending();
+				// field가 "id", "createdAt", "updatedAt" 중 하나이면 사용,
+				// 아니면 기본 정렬 적용
+				if (fieldInput.equals("id") || fieldInput.equals("createdAt") || fieldInput.equals("updatedAt")) {
+					if (orderInput.equals("asc")) {
+						sortObj = Sort.by(fieldInput).ascending();
+					} else if (orderInput.equals("desc")) {
+						sortObj = Sort.by(fieldInput).descending();
+					}
+				} else {
+					// 유효하지 않은 field이면 기본값 적용
+					sortObj = Sort.by(
+						Sort.Order.desc("createdAt"),
+						Sort.Order.desc("updatedAt")
+					);
 				}
+			} else {
+				sortObj = Sort.by(
+					Sort.Order.desc("createdAt"),
+					Sort.Order.desc("updatedAt")
+				);
 			}
-		}
-
-		if (sortObj == null) {
+		} else {
 			sortObj = Sort.by(
 				Sort.Order.desc("createdAt"),
 				Sort.Order.desc("updatedAt")
 			);
 		}
 
+		// 1-based 페이지 번호를 0-based로 변환
+		assert sortObj != null;
 		Pageable pageable = PageRequest.of(page - 1, size, sortObj);
 		UUID userId = userDetails.getUser().getId();
-		return SuccessResponse.success(SuccessCode.ADDRESS_READ_ALL_SUCCESS,
+		return SuccessResponse.success(SuccessCode.ADDRESS_GET_SUCCESS,
 			addressService.getAddresses(userId, pageable));
 	}
 
@@ -121,7 +135,7 @@ public class AddressController {
 	public SuccessResponse<AddressResponse.Read> getAddressInfo(@PathVariable("id") UUID id,
 		@AuthenticationPrincipal UserDetailsImpl userDetails) {
 		UUID currentUserId = userDetails.getUser().getId();
-		return SuccessResponse.success(SuccessCode.ADDRESS_READ_SUCCESS,
+		return SuccessResponse.success(SuccessCode.ADDRESS_GET_DETAIL_SUCCESS,
 			addressService.getAddressInfo(id, currentUserId));
 	}
 

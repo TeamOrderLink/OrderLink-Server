@@ -14,8 +14,8 @@ public enum SuccessCode {
 
 	// USER
 	USER_CREATE_SUCCESS(HttpStatus.OK, "회원 가입 성공입니다."),
-	USER_READ_ALL_SUCCESS(HttpStatus.OK, "전체 회원 조회 성공입니다."),
-	USER_READ_SUCCESS(HttpStatus.OK, "회원 정보 조회 성공입니다."),
+	USER_GET_SUCCESS(HttpStatus.OK, "회원 목록 조회 성공입니다."),
+	USER_GET_DETAIL_SUCCESS(HttpStatus.OK, "회원 상세 조회 성공입니다."),
 	USER_UPDATE_SUCCESS(HttpStatus.OK, "회원 정보 수정 성공입니다."),
 	USER_PASSWORD_UPDATE_SUCCESS(HttpStatus.OK, "비밀번호 변경 성공입니다."),
 	USER_DELETE_SUCCESS(HttpStatus.OK, "회원 삭제 성공입니다."),
@@ -41,8 +41,8 @@ public enum SuccessCode {
 
 	// ADDRESS
 	ADDRESS_CREATE_SUCCESS(HttpStatus.OK, "배송지 등록 성공입니다."),
-	ADDRESS_READ_ALL_SUCCESS(HttpStatus.OK, "배송지 목록 조회 성공입니다."),
-	ADDRESS_READ_SUCCESS(HttpStatus.OK, "배송지 상세 조회 성공입니다."),
+	ADDRESS_GET_SUCCESS(HttpStatus.OK, "배송지 목록 조회 성공입니다."),
+	ADDRESS_GET_DETAIL_SUCCESS(HttpStatus.OK, "배송지 상세 조회 성공입니다."),
 	ADDRESS_UPDATE_SUCCESS(HttpStatus.OK, "배송지 수정 성공입니다."),
 	ADDRESS_DELETE_SUCCESS(HttpStatus.OK, "배송지 삭제 성공입니다."),
 
@@ -53,8 +53,8 @@ public enum SuccessCode {
 	CATEGORY_DELETE_SUCCESS(HttpStatus.OK, "카테고리 삭제 성공입니다"),
 	CATEGORY_UPDATE_SUCCESS(HttpStatus.OK, "카테고리 수정 성공입니다"),
 
-  // RESTAURANT
-  RESTAURANT_CREATE_SUCCESS(HttpStatus.OK, "음식점 등록 성공입니다."),
+	// RESTAURANT
+	RESTAURANT_CREATE_SUCCESS(HttpStatus.OK, "음식점 등록 성공입니다."),
 	RESTAURANTS_GET_SUCCESS(HttpStatus.OK, "전체 음식점 조회 성공입니다."),
 	RESTAURANT_GET_SUCCESS(HttpStatus.OK, "음식점 조회 성공입니다."),
 
@@ -69,6 +69,13 @@ public enum SuccessCode {
 
 	//s3
 	FOOD_UPLOAD_IMG_SUCCESS(HttpStatus.OK, "음식 사진 등록 성공입니다."),
+
+	// REVIEW
+	REVIEW_CREATE_SUCCESS(HttpStatus.OK, "리뷰 등록 성공입니다."),
+	REVIEW_GET_SUCCESS(HttpStatus.OK, "리뷰 목록 조회 성공입니다."),
+	REVIEW_GET_DETAIL_SUCCESS(HttpStatus.OK, "리뷰 상세 조회 성공입니다."),
+	REVIEW_UPDATE_SUCCESS(HttpStatus.OK, "리뷰 수정 성공입니다."),
+	REVIEW_DELETE_SUCCESS(HttpStatus.OK, "리뷰 삭제 성공입니다."),
 
 	;
 
