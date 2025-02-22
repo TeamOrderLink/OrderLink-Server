@@ -121,7 +121,7 @@ public class Restaurant extends BaseTimeEntity {
             this.description = description;
         }
 
-        if (openTime == null) {
+        if (openTime != null) {
             this.openTime = LocalTime.parse(openTime, formatter);
         }
 
