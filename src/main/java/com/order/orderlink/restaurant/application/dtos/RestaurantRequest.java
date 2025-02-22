@@ -60,6 +60,6 @@ public class RestaurantRequest {
 
         @NotBlank(message = "토큰은 필수 입력이며, 공백을 포함할 수 없습니다.")
         @Pattern(regexp = "^[A-Za-z0-9_-]{22}$", message = "음식점 인증을 위한 점주 인증 토큰이 올바르지 않습니다.")
-        private String ownerAuthToken = ""; // NullPointerException 방지를 위해 빈값으로 초기화
+        private String ownerAuthToken;
     }
 }
