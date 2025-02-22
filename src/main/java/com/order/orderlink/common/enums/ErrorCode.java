@@ -45,6 +45,11 @@ public enum ErrorCode {
 	// AI
 	AI_API_RESPONSE_PARSING_ERROR(HttpStatus.NOT_FOUND, "음식 설명 생성 도중 오류가 발생했습니다."),
 
+	// REVIEW
+	REVIEW_ALREADY_EXISTS(HttpStatus.BAD_REQUEST, "이미 작성된 리뷰가 존재합니다."),
+	REVIEW_NOT_FOUND(HttpStatus.NOT_FOUND, "리뷰를 찾을 수 없습니다."),
+	REVIEW_NOT_ALLOWED(HttpStatus.BAD_REQUEST, "해당 리뷰에 대한 권한이 없습니다."),
+
 	;
 
 	private final HttpStatus status;

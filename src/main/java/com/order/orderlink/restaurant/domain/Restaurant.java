@@ -85,4 +85,16 @@ public class Restaurant extends BaseTimeEntity {
 	private List<Food> foods = new ArrayList<>();
 
 	private UUID regionId;
+
+	public void updateRatingSum(Double newRatingSum) {
+		this.ratingSum = newRatingSum;
+	}
+
+	public void updateRatingCount(Integer newRatingCount) {
+		this.ratingCount = newRatingCount;
+	}
+
+	public void updateAvgRating(Double newAvgRating) {
+		this.avgRating = newAvgRating;
+	}
 }
