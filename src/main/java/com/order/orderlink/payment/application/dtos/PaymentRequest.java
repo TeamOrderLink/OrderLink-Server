@@ -24,7 +24,6 @@ public class PaymentRequest {
 
 		@NotBlank
 		private String expiryDate;
-		@NotBlank
 		private int amount;
 	}
 }
