@@ -1,14 +1,6 @@
 package com.order.orderlink.restaurant.application;
 
 import com.order.orderlink.common.auth.util.TokenGenerator;
-import java.time.LocalTime;
-import java.util.List;
-import java.util.UUID;
-import java.util.stream.Collectors;
-
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.order.orderlink.common.enums.ErrorCode;
 import com.order.orderlink.common.exception.AuthException;
 import com.order.orderlink.common.exception.RestaurantException;
@@ -20,9 +12,16 @@ import com.order.orderlink.restaurant.application.dtos.RestaurantResponse.GetRes
 import com.order.orderlink.restaurant.application.dtos.RestaurantResponse.RestaurantDto;
 import com.order.orderlink.restaurant.domain.Restaurant;
 import com.order.orderlink.restaurant.domain.repository.RestaurantRepository;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -31,7 +30,7 @@ import lombok.extern.slf4j.Slf4j;
 public class RestaurantService {
 
     private final RestaurantRepository restaurantRepository;
-
+    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
     // 음식점 등록 API
     public RestaurantResponse.Create createRestaurant(RestaurantRequest.Create request) {
         // 점주 인증 토큰 생성
@@ -43,8 +42,8 @@ public class RestaurantService {
                 .address(request.getAddress())
                 .phone(request.getPhone())
                 .description(request.getDescription())
-                .openTime(request.getOpenTime())
-                .closeTime(request.getCloseTime())
+                .openTime(LocalTime.parse(request.getOpenTime(), formatter))
+                .closeTime(LocalTime.parse(request.getCloseTime(), formatter))
                 .ownerAuthToken(ownerAuthToken)
                 .ownerName(request.getOwnerName())
                 .businessRegNum(request.getBusinessRegNum())
@@ -111,8 +110,8 @@ public class RestaurantService {
                 .address(restaurant.getAddress())
                 .phone(restaurant.getPhone())
                 .description(restaurant.getDescription())
-                .openTime(String.valueOf(restaurant.getOpenTime()))
-                .closeTime(String.valueOf(restaurant.getCloseTime()))
+                .openTime(restaurant.getOpenTime().format(formatter))
+                .closeTime(restaurant.getCloseTime().format(formatter))
                 .businessStatus(isOpen)
                 .ownerName(restaurant.getOwnerName())
                 .businessRegNum(restaurant.getBusinessRegNum())
@@ -150,8 +149,8 @@ public class RestaurantService {
                 .address(restaurant.getAddress())
                 .phone(restaurant.getPhone())
                 .description(restaurant.getDescription())
-                .openTime(String.valueOf(restaurant.getOpenTime()))
-                .closeTime(String.valueOf(restaurant.getCloseTime()))
+                .openTime(restaurant.getOpenTime().format(formatter))
+                .closeTime(restaurant.getCloseTime().format(formatter))
                 .businessStatus(isOpen)
                 .ownerName(restaurant.getOwnerName())
                 .businessRegNum(restaurant.getBusinessRegNum())
