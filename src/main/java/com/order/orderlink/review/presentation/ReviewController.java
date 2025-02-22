@@ -50,9 +50,9 @@ public class ReviewController {
 	 * @see ReviewService#createReview(UUID, UUID, ReviewRequest.Create)
 	 * @author Jihwan
 	 */
-	@PostMapping("/orders/{orderId}")
+	@PostMapping
 	@PreAuthorize("hasAuthority('ROLE_CUSTOMER')")
-	public SuccessResponse<ReviewResponse.Create> createReview(@PathVariable("orderId") String orderIdStr,
+	public SuccessResponse<ReviewResponse.Create> createReview(@RequestParam("orderId") String orderIdStr,
 		@AuthenticationPrincipal UserDetailsImpl userDetails, @Valid @RequestBody ReviewRequest.Create request) {
 
 		UUID orderId = UUID.fromString(orderIdStr);
