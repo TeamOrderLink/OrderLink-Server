@@ -96,7 +96,7 @@ public class UserController {
 
 		// 1-based로 받은 페이지 번호를 0-based 페이지 번호로 변환
 		Pageable pageable = PageRequest.of(page - 1, size, sortObj);
-		return SuccessResponse.success(SuccessCode.USER_READ_ALL_SUCCESS, userService.getAllUsers(pageable));
+		return SuccessResponse.success(SuccessCode.USER_GET_SUCCESS, userService.getAllUsers(pageable));
 	}
 
 	/**
@@ -109,7 +109,7 @@ public class UserController {
 	@GetMapping("/me")
 	public SuccessResponse<UserResponse.Read> getMyInfo(@AuthenticationPrincipal UserDetailsImpl userDetails) {
 		UUID userId = userDetails.getUser().getId();
-		return SuccessResponse.success(SuccessCode.USER_READ_SUCCESS, userService.getMyInfo(userId));
+		return SuccessResponse.success(SuccessCode.USER_GET_DETAIL_SUCCESS, userService.getMyInfo(userId));
 	}
 
 	/**
@@ -122,7 +122,7 @@ public class UserController {
 	@GetMapping("/{id}")
 	@PreAuthorize("hasAuthority('ROLE_MASTER')")
 	public SuccessResponse<UserResponse.Read> getUserInfoByAdmin(@PathVariable("id") UUID userId) {
-		return SuccessResponse.success(SuccessCode.USER_READ_SUCCESS, userService.getUserInfoByAdmin(userId));
+		return SuccessResponse.success(SuccessCode.USER_GET_DETAIL_SUCCESS, userService.getUserInfoByAdmin(userId));
 	}
 
 	/**

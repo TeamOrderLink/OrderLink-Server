@@ -105,7 +105,7 @@ public class AddressController {
 
 		Pageable pageable = PageRequest.of(page - 1, size, sortObj);
 		UUID userId = userDetails.getUser().getId();
-		return SuccessResponse.success(SuccessCode.ADDRESS_READ_ALL_SUCCESS,
+		return SuccessResponse.success(SuccessCode.ADDRESS_GET_SUCCESS,
 			addressService.getAddresses(userId, pageable));
 	}
 
@@ -121,7 +121,7 @@ public class AddressController {
 	public SuccessResponse<AddressResponse.Read> getAddressInfo(@PathVariable("id") UUID id,
 		@AuthenticationPrincipal UserDetailsImpl userDetails) {
 		UUID currentUserId = userDetails.getUser().getId();
-		return SuccessResponse.success(SuccessCode.ADDRESS_READ_SUCCESS,
+		return SuccessResponse.success(SuccessCode.ADDRESS_GET_DETAIL_SUCCESS,
 			addressService.getAddressInfo(id, currentUserId));
 	}
 
