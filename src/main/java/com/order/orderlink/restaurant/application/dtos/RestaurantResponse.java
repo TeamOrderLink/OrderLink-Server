@@ -96,8 +96,8 @@ public class RestaurantResponse {
         private String address;
         private String phone;
         private String description;
-        private LocalTime openTime;
-        private LocalTime closeTime;
+        private String openTime;
+        private String closeTime;
         private boolean businessStatus;
         private String ownerName;
         private String businessRegNum;

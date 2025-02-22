@@ -76,7 +76,6 @@ public class RestaurantService {
                 request.getOpenTime(),
                 request.getCloseTime(),
                 request.getOwnerName(),
-                request.getOwnerAuthToken(),
                 request.getBusinessRegNum()
         );
 
@@ -89,8 +88,8 @@ public class RestaurantService {
                 .address(updatedRestaurant.getAddress())
                 .phone(updatedRestaurant.getPhone())
                 .description(updatedRestaurant.getDescription())
-                .openTime(updatedRestaurant.getOpenTime())
-                .closeTime(updatedRestaurant.getCloseTime())
+                .openTime(updatedRestaurant.getOpenTime().format(formatter))
+                .closeTime(updatedRestaurant.getCloseTime().format(formatter))
                 .businessStatus(isOpen(updatedRestaurant.getOpenTime(), updatedRestaurant.getCloseTime()))
                 .ownerName(updatedRestaurant.getOwnerName())
                 .businessRegNum(updatedRestaurant.getBusinessRegNum())

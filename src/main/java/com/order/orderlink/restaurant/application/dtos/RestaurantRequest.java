@@ -1,12 +1,8 @@
 package com.order.orderlink.restaurant.application.dtos;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
-
-import java.time.LocalTime;
 
 public class RestaurantRequest {
 
@@ -52,13 +48,10 @@ public class RestaurantRequest {
         private String description;
 
         @Pattern(regexp = "^([01]\\d|2[0-3]):[0-5]\\d$",message = "영업 시작 시간은 00:00 ~ 23:59 이내의 시간으로 HH:mm 형식에 맞게 입력해 주세요.")
-        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm")
-        private LocalTime openTime;
-
+        private String openTime;
 
         @Pattern(regexp = "^([01]\\d|2[0-3]):[0-5]\\d$", message = "영업 종료 시간은 00:00 ~ 23:59 이내의 시간으로 HH:mm 형식에 맞게 입력해 주세요.")
-        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm")
-        private LocalTime closeTime;
+        private String closeTime;
 
         private String ownerName;
 

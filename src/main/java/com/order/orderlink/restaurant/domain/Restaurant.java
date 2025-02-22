@@ -1,6 +1,7 @@
 package com.order.orderlink.restaurant.domain;
 
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -101,7 +102,9 @@ public class Restaurant extends BaseTimeEntity {
 		this.avgRating = newAvgRating;
 	}
 
-    public void update(String name, String address, String phone, String description, LocalTime openTime, LocalTime closeTime, String ownerName, String ownerAuthToken, String businessRegNum) {
+    public void update(String name, String address, String phone, String description, String openTime, String closeTime, String ownerName, String businessRegNum) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+
         if (name != null) {
             this.name = name;
         }
@@ -118,12 +121,12 @@ public class Restaurant extends BaseTimeEntity {
             this.description = description;
         }
 
-        if (openTime != null) {
-            this.openTime = openTime;
+        if (openTime == null) {
+            this.openTime = LocalTime.parse(openTime, formatter);
         }
 
         if (closeTime != null) {
-            this.closeTime = closeTime;
+            this.closeTime = LocalTime.parse(closeTime, formatter);
         }
 
         if (ownerName != null && !ownerName.trim().isEmpty()) {
