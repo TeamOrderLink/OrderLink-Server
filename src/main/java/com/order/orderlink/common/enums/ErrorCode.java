@@ -21,6 +21,7 @@ public enum ErrorCode {
 	ORDER_NOT_FOUND(HttpStatus.NOT_FOUND, "주문을 찾을 수 없습니다."),
 	ORDER_INVALID_STATUS(HttpStatus.BAD_REQUEST, "주문 상태가 올바르지 않습니다."),
 	ORDER_SEARCH_NOT_ALLOWED(HttpStatus.BAD_REQUEST, "검색 조건이 필요합니다."),
+	ORDER_CANCEL_TIME_EXCEEDED(HttpStatus.BAD_REQUEST, "주문 취소는 5분 내에만 가능합니다."),
 
 	// RESTAURANT
 	RESTAURANT_NOT_FOUND(HttpStatus.NOT_FOUND, "음식점을 찾을 수 없습니다."),
