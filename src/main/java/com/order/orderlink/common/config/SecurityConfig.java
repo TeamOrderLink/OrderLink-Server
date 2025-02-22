@@ -77,8 +77,7 @@ public class SecurityConfig {
 				.requestMatchers(HttpMethod.PUT, "/api/restaurants/**").hasAuthority("ROLE_MASTER")
 				.requestMatchers(HttpMethod.DELETE, "/api/restaurants/**").hasAuthority("ROLE_MASTER")
 				.requestMatchers(HttpMethod.GET, "/api/reviews/**").permitAll()
-				.anyRequest()
-				.authenticated()
+				.anyRequest().authenticated()
 			);
 
 		// 필터 추가

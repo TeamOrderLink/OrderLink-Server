@@ -1,5 +1,6 @@
 package com.order.orderlink.review.application;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -12,14 +13,18 @@ import com.order.orderlink.common.enums.ErrorCode;
 import com.order.orderlink.common.exception.OrderException;
 import com.order.orderlink.common.exception.RestaurantException;
 import com.order.orderlink.common.exception.ReviewException;
+import com.order.orderlink.common.exception.UserException;
 import com.order.orderlink.order.domain.Order;
 import com.order.orderlink.order.domain.repository.OrderRepository;
+import com.order.orderlink.orderitem.domain.OrderItem;
 import com.order.orderlink.restaurant.domain.Restaurant;
 import com.order.orderlink.restaurant.domain.repository.RestaurantRepository;
 import com.order.orderlink.review.application.dtos.ReviewRequest;
 import com.order.orderlink.review.application.dtos.ReviewResponse;
 import com.order.orderlink.review.domain.Review;
 import com.order.orderlink.review.domain.repository.ReviewRepository;
+import com.order.orderlink.user.domain.User;
+import com.order.orderlink.user.domain.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -31,6 +36,7 @@ public class ReviewService {
 	private final ReviewRepository reviewRepository;
 	private final OrderRepository orderRepository;
 	private final RestaurantRepository restaurantRepository;
+	private final UserRepository userRepository;
 
 	/**
 	 * 리뷰 등록:
@@ -87,26 +93,57 @@ public class ReviewService {
 		return new ReviewResponse.Create(review.getId());
 	}
 
-	// 특정 음식점에 대한 모든 리뷰 조회
-	public ReviewResponse.ReadAsPage getReviewsByRestaurant(UUID restaurantId, Pageable pageable) {
+	// 특정 음식점에 대한 페이징 처리된 리뷰 목록 조회
+	public ReviewResponse.ReviewPageResponse getReviewsByRestaurant(UUID restaurantId, Pageable pageable) {
 		Page<Review> page = reviewRepository.findByRestaurantId(restaurantId, pageable);
-		List<ReviewResponse.Read> reviews = page.getContent().stream().map(review ->
-				ReviewResponse.Read.builder()
-					.id(review.getId())
-					.restaurantId(review.getRestaurant().getId())
-					.userId(review.getUserId())
-					.rating(review.getRating())
-					.content(review.getContent())
-					.createdAt(review.getCreatedAt())
-					.updatedAt(review.getUpdatedAt())
-					.build())
-			.toList();
-		return new ReviewResponse.ReadAsPage(reviews, page.getNumber() + 1, page.getTotalPages(),
+		List<ReviewResponse.Summary> reviews = page.getContent().stream().map(review -> {
+			// 리뷰 내용이 50자 이상이면 50자까지만 표시
+			String fullText = review.getContent() != null ? review.getContent() : "";
+			String summary = fullText.length() > 50 ? fullText.substring(0, 50) + "..." : fullText;
+			String nickname = getUserNickname(review.getUserId());
+			return ReviewResponse.Summary.builder()
+				.reviewId(review.getId())
+				.userNickname(nickname)
+				.rating(review.getRating())
+				.contentSummary(summary)
+				.createdAt(review.getCreatedAt())
+				.build();
+		}).toList();
+		return new ReviewResponse.ReviewPageResponse(reviews, page.getNumber() + 1, page.getTotalPages(),
 			page.getTotalElements());
 	}
 
+	// 리뷰 상세 조회: 특정 리뷰의 전체 정보를 반환, 주문 상세 정보(주문 ID, 주문 날짜, 주문 상품) 포함
+	public ReviewResponse.Detail getReviewDetail(UUID reviewId) {
+		Review review = getReview(reviewId);
+		String nickname = getUserNickname(review.getUserId());
+		Order order = orderRepository.findById(review.getOrderId())
+			.orElseThrow(() -> new OrderException(ErrorCode.ORDER_NOT_FOUND));
+
+		LocalDateTime orderDate = order.getCreatedAt();
+		List<String> orderItems = order.getOrderItems() != null
+			? order.getOrderItems().stream().map(OrderItem::getFoodName).toList()
+			: List.of();
+
+		ReviewResponse.OrderDetails orderDetails = ReviewResponse.OrderDetails.builder()
+			.orderId(review.getOrderId())
+			.orderDate(orderDate)
+			.orderItems(orderItems)
+			.build();
+
+		return ReviewResponse.Detail.builder()
+			.reviewId(review.getId())
+			.userNickname(nickname)
+			.rating(review.getRating())
+			.fullContentText(review.getContent())
+			.createdAt(review.getCreatedAt())
+			.updatedAt(review.getUpdatedAt())
+			.orderDetails(orderDetails)
+			.build();
+	}
+
 	// 리뷰 수정
-	public ReviewResponse.Read updateReview(UUID reviewId, UUID currentUserId, ReviewRequest.Update request) {
+	public ReviewResponse.Update updateReview(UUID reviewId, UUID currentUserId, ReviewRequest.Update request) {
 		Review review = getReview(reviewId);
 
 		// 리뷰 작성자와 현재 로그인한 사용자가 동일한지 확인
@@ -129,8 +166,8 @@ public class ReviewService {
 			restaurant.updateAvgRating(newRatingSum / restaurant.getRatingCount());
 		}
 
-		return ReviewResponse.Read.builder()
-			.id(review.getId())
+		return ReviewResponse.Update.builder()
+			.reviewId(review.getId())
 			.restaurantId(restaurant.getId())
 			.userId(review.getUserId())
 			.rating(review.getRating())
@@ -167,6 +204,12 @@ public class ReviewService {
 	private Review getReview(UUID reviewId) {
 		return reviewRepository.findById(reviewId)
 			.orElseThrow(() -> new ReviewException(ErrorCode.REVIEW_NOT_FOUND));
+	}
+
+	private String getUserNickname(UUID userId) {
+		User user = userRepository.findById(userId)
+			.orElseThrow(() -> new UserException(ErrorCode.USER_NOT_FOUND));
+		return user.getNickname();
 	}
 
 }

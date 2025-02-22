@@ -73,6 +73,7 @@ public enum SuccessCode {
 	// REVIEW
 	REVIEW_CREATE_SUCCESS(HttpStatus.OK, "리뷰 등록 성공입니다."),
 	REVIEW_GET_SUCCESS(HttpStatus.OK, "리뷰 목록 조회 성공입니다."),
+	REVIEW_GET_DETAIL_SUCCESS(HttpStatus.OK, "리뷰 상세 조회 성공입니다."),
 	REVIEW_UPDATE_SUCCESS(HttpStatus.OK, "리뷰 수정 성공입니다."),
 	REVIEW_DELETE_SUCCESS(HttpStatus.OK, "리뷰 삭제 성공입니다."),
 

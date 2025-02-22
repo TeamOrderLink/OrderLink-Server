@@ -28,7 +28,6 @@ import com.order.orderlink.review.application.ReviewService;
 import com.order.orderlink.review.application.dtos.ReviewRequest;
 import com.order.orderlink.review.application.dtos.ReviewResponse;
 
-import jakarta.annotation.security.PermitAll;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
@@ -70,16 +69,13 @@ public class ReviewController {
 	 * @param size 페이지 크기
 	 * @param sort 정렬 조건 (필드명, 정렬 방향)
 	 * @return 페이징 처리된 리뷰 목록 (리뷰 ID, 음식점 ID, 사용자 ID, 평점, 내용, 생성일, 수정일)
-	 * @see ReviewResponse.ReadAsPage
+	 * @see ReviewResponse.ReviewPageResponse
 	 * @author Jihwan
 	 */
 	@GetMapping
-	@PermitAll
-	public SuccessResponse<ReviewResponse.ReadAsPage> getReviewsByRestaurant(
-		@RequestParam("restaurantId") UUID restaurantId,
-		@RequestParam(defaultValue = "1") int page,
-		@RequestParam(defaultValue = "10") int size,
-		@RequestParam(required = false) String sort) {
+	public SuccessResponse<ReviewResponse.ReviewPageResponse> getReviewsByRestaurant(
+		@RequestParam("restaurantId") UUID restaurantId, @RequestParam(defaultValue = "1") int page,
+		@RequestParam(defaultValue = "10") int size, @RequestParam(required = false) String sort) {
 
 		// 페이지 번호가 1보다 작으면 1로 설정
 		if (page < 1) {
@@ -133,6 +129,18 @@ public class ReviewController {
 	}
 
 	/**
+	 * 리뷰 상세 조회
+	 * @param reviewId 리뷰 ID
+	 * @return 리뷰 상세 정보 (리뷰 ID, 사용자 닉네임, 평점, 내용, 생성일, 수정일)
+	 * @see ReviewResponse.Detail
+	 * @author Jihwan
+	 */
+	@GetMapping("/{reviewId}")
+	public SuccessResponse<ReviewResponse.Detail> getReviewDetail(@PathVariable("reviewId") UUID reviewId) {
+		return SuccessResponse.success(SuccessCode.REVIEW_GET_DETAIL_SUCCESS, reviewService.getReviewDetail(reviewId));
+	}
+
+	/**
 	 * 리뷰 수정
 	 * @param reviewId 리뷰 ID
 	 * @param userDetails 로그인한 사용자 정보
@@ -143,7 +151,7 @@ public class ReviewController {
 	 */
 	@PutMapping("/{reviewId}")
 	@PreAuthorize("hasAuthority('ROLE_CUSTOMER')")
-	public SuccessResponse<ReviewResponse.Read> updateReview(@PathVariable("reviewId") UUID reviewId,
+	public SuccessResponse<ReviewResponse.Update> updateReview(@PathVariable("reviewId") UUID reviewId,
 		@AuthenticationPrincipal UserDetailsImpl userDetails, @Valid @RequestBody ReviewRequest.Update request) {
 		UUID userId = userDetails.getUser().getId();
 		return SuccessResponse.success(SuccessCode.REVIEW_UPDATE_SUCCESS,
