@@ -2,14 +2,19 @@ package com.order.orderlink.review.presentation;
 
 import java.util.UUID;
 
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.order.orderlink.common.auth.UserDetailsImpl;
@@ -23,6 +28,7 @@ import com.order.orderlink.review.application.ReviewService;
 import com.order.orderlink.review.application.dtos.ReviewRequest;
 import com.order.orderlink.review.application.dtos.ReviewResponse;
 
+import jakarta.annotation.security.PermitAll;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
@@ -55,6 +61,75 @@ public class ReviewController {
 
 		return SuccessResponse.success(SuccessCode.REVIEW_CREATE_SUCCESS,
 			reviewService.createReview(orderId, userId, request));
+	}
+
+	/**
+	 * 특정 음식점에 대한 페이징 처리된 리뷰 목록 조회
+	 * @param restaurantId 음식점 ID
+	 * @param page 페이지 번호
+	 * @param size 페이지 크기
+	 * @param sort 정렬 조건 (필드명, 정렬 방향)
+	 * @return 페이징 처리된 리뷰 목록 (리뷰 ID, 음식점 ID, 사용자 ID, 평점, 내용, 생성일, 수정일)
+	 * @see ReviewResponse.ReadAsPage
+	 * @author Jihwan
+	 */
+	@GetMapping
+	@PermitAll
+	public SuccessResponse<ReviewResponse.ReadAsPage> getReviewsByRestaurant(
+		@RequestParam("restaurantId") UUID restaurantId,
+		@RequestParam(defaultValue = "1") int page,
+		@RequestParam(defaultValue = "10") int size,
+		@RequestParam(required = false) String sort) {
+
+		// 페이지 번호가 1보다 작으면 1로 설정
+		if (page < 1) {
+			page = 1;
+		}
+
+		// 허용된 사이즈: 10, 30, 50 (그 외면 기본 10)
+		if (size != 10 && size != 30 && size != 50) {
+			size = 10;
+		}
+
+		Sort sortObj = null;
+		if (sort != null && !sort.trim().isEmpty()) {
+			String[] sortParts = sort.split(",");
+			if (sortParts.length == 2) {
+				String fieldInput = sortParts[0].trim();
+				String orderInput = sortParts[1].trim().toLowerCase();
+				// field가 "rating", "createdAt", "updatedAt" 중 하나이면 사용,
+				// 아니면 기본 정렬 적용
+				if (fieldInput.equals("rating") || fieldInput.equals("createdAt") || fieldInput.equals("updatedAt")) {
+					if (orderInput.equals("asc")) {
+						sortObj = Sort.by(fieldInput).ascending();
+					} else if (orderInput.equals("desc")) {
+						sortObj = Sort.by(fieldInput).descending();
+					}
+				} else {
+					// 유효하지 않은 field이면 기본값 적용
+					sortObj = Sort.by(
+						Sort.Order.desc("createdAt"),
+						Sort.Order.desc("updatedAt")
+					);
+				}
+			} else {
+				sortObj = Sort.by(
+					Sort.Order.desc("createdAt"),
+					Sort.Order.desc("updatedAt")
+				);
+			}
+		} else {
+			sortObj = Sort.by(
+				Sort.Order.desc("createdAt"),
+				Sort.Order.desc("updatedAt")
+			);
+		}
+
+		// 1-based 페이지 번호를 0-based로 변환
+		assert sortObj != null;
+		Pageable pageable = PageRequest.of(page - 1, size, sortObj);
+		return SuccessResponse.success(SuccessCode.REVIEW_GET_SUCCESS,
+			reviewService.getReviewsByRestaurant(restaurantId, pageable));
 	}
 
 	/**

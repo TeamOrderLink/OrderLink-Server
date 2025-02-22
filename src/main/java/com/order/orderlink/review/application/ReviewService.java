@@ -1,7 +1,10 @@
 package com.order.orderlink.review.application;
 
+import java.util.List;
 import java.util.UUID;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -82,6 +85,24 @@ public class ReviewService {
 		restaurant.updateAvgRating(newRatingSum / newRatingCount);
 
 		return new ReviewResponse.Create(review.getId());
+	}
+
+	// 특정 음식점에 대한 모든 리뷰 조회
+	public ReviewResponse.ReadAsPage getReviewsByRestaurant(UUID restaurantId, Pageable pageable) {
+		Page<Review> page = reviewRepository.findByRestaurantId(restaurantId, pageable);
+		List<ReviewResponse.Read> reviews = page.getContent().stream().map(review ->
+				ReviewResponse.Read.builder()
+					.id(review.getId())
+					.restaurantId(review.getRestaurant().getId())
+					.userId(review.getUserId())
+					.rating(review.getRating())
+					.content(review.getContent())
+					.createdAt(review.getCreatedAt())
+					.updatedAt(review.getUpdatedAt())
+					.build())
+			.toList();
+		return new ReviewResponse.ReadAsPage(reviews, page.getNumber() + 1, page.getTotalPages(),
+			page.getTotalElements());
 	}
 
 	// 리뷰 수정

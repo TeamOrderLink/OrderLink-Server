@@ -1,6 +1,7 @@
 package com.order.orderlink.review.application.dtos;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 import lombok.AllArgsConstructor;
@@ -27,6 +28,16 @@ public class ReviewResponse {
 		private String content;
 		private LocalDateTime createdAt;
 		private LocalDateTime updatedAt;
+	}
+
+	@Getter
+	@Builder
+	@AllArgsConstructor
+	public static class ReadAsPage {
+		private List<ReviewResponse.Read> reviews;
+		private Integer currentPage;
+		private Integer totalPages;
+		private Long totalElements;
 	}
 
 }
