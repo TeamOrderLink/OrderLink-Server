@@ -1,6 +1,5 @@
 package com.order.orderlink.restaurant.application;
 
-import com.order.orderlink.common.auth.util.TokenGenerator;
 import com.order.orderlink.common.enums.ErrorCode;
 import com.order.orderlink.common.exception.AuthException;
 import com.order.orderlink.common.exception.RestaurantException;

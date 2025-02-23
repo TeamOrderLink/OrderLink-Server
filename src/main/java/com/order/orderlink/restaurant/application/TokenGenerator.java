@@ -1,4 +1,4 @@
-package com.order.orderlink.common.auth.util;
+package com.order.orderlink.restaurant.application;
 
 import java.security.SecureRandom;
 import java.util.Base64;
