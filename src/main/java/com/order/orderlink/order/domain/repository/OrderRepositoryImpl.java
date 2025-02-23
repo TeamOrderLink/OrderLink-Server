@@ -60,11 +60,11 @@ public class OrderRepositoryImpl implements OrderRepositoryCustom {
 		}
 
 		List<Order> orders = queryFactory.selectFrom(order)
-			.join(order.orderItems, orderItem)
-			.leftJoin(restaurant).on(restaurant.id.eq(order.restaurantId))
-			.where(builder)
-			.offset(pageable.getOffset()) // 페이징 시작점
-			.limit(pageable.getPageSize()) // 페이징 크기
+			.leftJoin(order.orderItems, orderItem).fetchJoin()
+			.leftJoin(restaurant).on(restaurant.id.eq(order.restaurantId)).fetchJoin()
+			.where(builder.or(restaurant.isNull()))
+			.offset(pageable.getOffset())
+			.limit(pageable.getPageSize())
 			.fetch();
 
 		// 총 결과 수 계산
