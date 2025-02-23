@@ -117,7 +117,13 @@ public class RestaurantService {
                 .ratingSum(restaurant.getRatingSum())
                 .ratingCount(restaurant.getRatingCount())
                 .foods(restaurant.getFoods().stream()
-                        .map(this::convertToRestaurantFoodDto)
+                        .map(food -> GetRestaurantFoodDto.builder()
+                                .foodId(food.getId())
+                                .foodName(food.getName())
+                                .foodDescription(food.getDescription())
+                                .price(food.getPrice())
+                                .imageUrl(food.getImageUrl())
+                                .build())
                         .collect(Collectors.toList()))
                 .build();
     }
@@ -125,47 +131,26 @@ public class RestaurantService {
     // 전체 음식점 조회 API
     @Transactional(readOnly = true)
     public RestaurantResponse.GetRestaurants getAllRestaurants() {
-        List<Restaurant> restaurants = restaurantRepository.findAll();
-
-        // Convert : List<Restaurant> -> List<RestaurantDto>
-        List<RestaurantDto> restaurantDtos = restaurants.stream()
-                .map(this::convertToRestaurantDto)
+        List<RestaurantDto> restaurants = restaurantRepository.findAll().stream()
+                .map(restaurant -> RestaurantDto.builder()
+                        .restaurantId(restaurant.getId())
+                        .name(restaurant.getName())
+                        .address(restaurant.getAddress())
+                        .phone(restaurant.getPhone())
+                        .description(restaurant.getDescription())
+                        .openTime(restaurant.getOpenTime().format(formatter))
+                        .closeTime(restaurant.getCloseTime().format(formatter))
+                        .businessStatus(isOpen(restaurant.getOpenTime(), restaurant.getCloseTime()))
+                        .ownerName(restaurant.getOwnerName())
+                        .businessRegNum(restaurant.getBusinessRegNum())
+                        .avgRating(restaurant.getAvgRating())
+                        .ratingSum(restaurant.getRatingSum())
+                        .ratingCount(restaurant.getRatingCount())
+                        .build())
                 .collect(Collectors.toList());
 
         return RestaurantResponse.GetRestaurants.builder()
-                .restaurants(restaurantDtos)
-                .build();
-    }
-
-    // Convert : Restaurant -> RestaurantDto
-    private RestaurantDto convertToRestaurantDto(Restaurant restaurant) {
-        boolean isOpen = isOpen(restaurant.getOpenTime(), restaurant.getCloseTime());
-
-        return RestaurantDto.builder()
-                .restaurantId(restaurant.getId())
-                .name(restaurant.getName())
-                .address(restaurant.getAddress())
-                .phone(restaurant.getPhone())
-                .description(restaurant.getDescription())
-                .openTime(restaurant.getOpenTime().format(formatter))
-                .closeTime(restaurant.getCloseTime().format(formatter))
-                .businessStatus(isOpen)
-                .ownerName(restaurant.getOwnerName())
-                .businessRegNum(restaurant.getBusinessRegNum())
-                .avgRating(restaurant.getAvgRating())
-                .ratingSum(restaurant.getRatingSum())
-                .ratingCount(restaurant.getRatingCount())
-                .build();
-    }
-
-    // Convert : Food -> RestaurantFoodDto
-    private GetRestaurantFoodDto convertToRestaurantFoodDto(Food food) {
-        return GetRestaurantFoodDto.builder()
-                .foodId(food.getId())
-                .foodName(food.getName())
-                .foodDescription(food.getDescription())
-                .price(food.getPrice())
-                .imageUrl(food.getImageUrl())
+                .restaurants(restaurants)
                 .build();
     }
 
