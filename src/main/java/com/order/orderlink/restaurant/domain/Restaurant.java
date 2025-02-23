@@ -105,35 +105,35 @@ public class Restaurant extends BaseTimeEntity {
     public void update(String name, String address, String phone, String description, String openTime, String closeTime, String ownerName, String businessRegNum) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
 
-        if (name != null) {
+        if (name != null && !name.isBlank()) {
             this.name = name;
         }
 
-        if (address != null) {
+        if (address != null && !address.isBlank()) {
             this.address = address;
         }
 
-        if (phone != null) {
+        if (phone != null && !phone.isBlank()) {
             this.phone = phone;
         }
 
-        if (description != null) {
+        if (description != null && !description.isBlank()) {
             this.description = description;
         }
 
-        if (openTime != null) {
+        if (openTime != null && !openTime.isBlank()) {
             this.openTime = LocalTime.parse(openTime, formatter);
         }
 
-        if (closeTime != null) {
+        if (closeTime != null && !closeTime.isBlank()) {
             this.closeTime = LocalTime.parse(closeTime, formatter);
         }
 
-        if (ownerName != null && !ownerName.trim().isEmpty()) {
+        if (ownerName != null && !ownerName.isBlank()) {
             this.ownerName = ownerName;
         }
 
-        if (businessRegNum != null) {
+        if (businessRegNum != null && !businessRegNum.isBlank()) {
             this.businessRegNum = businessRegNum;
         }
     }
