@@ -58,8 +58,8 @@ public class RestaurantRequest {
         @Pattern(regexp = "^\\d{3}-\\d{2}-\\d{5}$", message = "사업자 등록 번호는 '-'를 포함하여 000-00-00000 형식으로 입력해야 합니다.")
         private String businessRegNum;
 
-        @NotBlank(message = "토큰은 필수 입력이며, 공백을 포함할 수 없습니다.")
-        @Pattern(regexp = "^[A-Za-z0-9_-]{22}$", message = "음식점 인증을 위한 점주 인증 토큰이 올바르지 않습니다.")
+        @NotBlank(message = "점주 인증 토큰은 필수 입력입니다.")
+        @Pattern(regexp = "^[A-Za-z0-9_-]{22}$", message = "점주 인증 토큰이 올바르지 않습니다.")
         private String ownerAuthToken;
     }
 }
