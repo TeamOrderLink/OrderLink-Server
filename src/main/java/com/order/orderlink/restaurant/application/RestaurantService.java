@@ -3,7 +3,6 @@ package com.order.orderlink.restaurant.application;
 import com.order.orderlink.common.enums.ErrorCode;
 import com.order.orderlink.common.exception.AuthException;
 import com.order.orderlink.common.exception.RestaurantException;
-import com.order.orderlink.food.domain.Food;
 import com.order.orderlink.restaurant.application.dtos.RestaurantRequest;
 import com.order.orderlink.restaurant.application.dtos.RestaurantResponse;
 import com.order.orderlink.restaurant.application.dtos.RestaurantResponse.GetRestaurant;
@@ -93,6 +92,15 @@ public class RestaurantService {
                 .ownerName(updatedRestaurant.getOwnerName())
                 .businessRegNum(updatedRestaurant.getBusinessRegNum())
                 .build();
+    }
+
+    // 음식점 삭제 API
+    public RestaurantResponse.Delete softDeleteRestaurant(UUID restaurantId) {
+        Restaurant restaurant = getRestaurantById(restaurantId);
+
+        restaurant.softDelete(restaurant.getName());
+
+        return new RestaurantResponse.Delete(restaurant.getId(), restaurant.getDeletedAt());
     }
 
     // 음식점 조회 API

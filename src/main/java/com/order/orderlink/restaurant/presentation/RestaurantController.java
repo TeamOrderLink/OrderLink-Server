@@ -21,10 +21,7 @@ import com.order.orderlink.restaurant.domain.Restaurant;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.UUID;
 
 @Slf4j
 @RestController
@@ -76,5 +73,15 @@ public class RestaurantController {
 
         return SuccessResponse.success(SuccessCode.RESTAURANT_UPDATE_SUCCESS,
                 restaurantService.updateRestaurant(request, restaurantId));
+    }
+
+    // 음식점 삭제 API
+    @DeleteMapping("/{id}")
+    @PreAuthorize("hasAuthority('ROLE_MASTER')")
+    public SuccessResponse<RestaurantResponse.Delete> deleteRestaurant(
+            @PathVariable("id") UUID restaurantId) {
+
+        return SuccessResponse.success(SuccessCode.RESTAURANT_DELETE_SUCCESS,
+                restaurantService.softDeleteRestaurant(restaurantId));
     }
 }

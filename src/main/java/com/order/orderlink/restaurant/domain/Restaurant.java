@@ -1,11 +1,13 @@
 package com.order.orderlink.restaurant.domain;
 
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import lombok.*;
 import org.hibernate.annotations.UuidGenerator;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -21,10 +23,6 @@ import jakarta.persistence.EntityListeners;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
@@ -102,6 +100,7 @@ public class Restaurant extends BaseTimeEntity {
 		this.avgRating = newAvgRating;
 	}
 
+	// 음식점 정보 수정 메서드
     public void update(String name, String address, String phone, String description, String openTime, String closeTime, String ownerName, String businessRegNum) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
 
@@ -137,4 +136,10 @@ public class Restaurant extends BaseTimeEntity {
             this.businessRegNum = businessRegNum;
         }
     }
+
+	// Soft Delete 메서드
+	public void softDelete(String deletedBy) {
+		super.softDelete(deletedBy);
+		foods.forEach(food -> food.softDelete(deletedBy));
+	}
 }

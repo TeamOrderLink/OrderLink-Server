@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -96,5 +97,12 @@ public class RestaurantResponse {
         private boolean businessStatus;
         private String ownerName;
         private String businessRegNum;
+    }
+
+    @Getter
+    @AllArgsConstructor
+    public static class Delete {
+        private UUID restaurantId;
+        private LocalDateTime deletedAt;
     }
 }

@@ -58,6 +58,7 @@ public enum SuccessCode {
 	RESTAURANTS_GET_SUCCESS(HttpStatus.OK, "전체 음식점 조회 성공입니다."),
 	RESTAURANT_GET_SUCCESS(HttpStatus.OK, "음식점 조회 성공입니다."),
     RESTAURANT_UPDATE_SUCCESS(HttpStatus.OK, "음식점 수정 성공입니다."),
+	RESTAURANT_DELETE_SUCCESS(HttpStatus.OK, "음식점 삭제 성공입니다."),
 
 	// REGION
 	REGION_CREATE_SUCCESS(HttpStatus.OK, "운영지역 새로 추가 성공입니다"),
