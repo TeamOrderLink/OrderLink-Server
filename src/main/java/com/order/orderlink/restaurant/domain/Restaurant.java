@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.UuidGenerator;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -15,14 +16,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.order.orderlink.common.auth.util.LocalTimeToStringConverter;
 import com.order.orderlink.common.entity.BaseTimeEntity;
 import com.order.orderlink.food.domain.Food;
-
-import jakarta.persistence.Column;
-import jakarta.persistence.Convert;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EntityListeners;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
 
 @Getter
 @NoArgsConstructor
@@ -82,7 +75,7 @@ public class Restaurant extends BaseTimeEntity {
 	@Column(name = "rating_count", nullable = false)
 	private Integer ratingCount = 0;
 
-	@OneToMany(mappedBy = "restaurant")
+	@OneToMany(mappedBy = "restaurant", cascade = CascadeType.ALL, orphanRemoval = true)
 	@JsonIgnore
 	private List<Food> foods = new ArrayList<>();
 
