@@ -68,6 +68,8 @@ dependencies {
     // test
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.7.1'
+    testImplementation 'com.h2database:h2'
 
     //QueryDsl
     implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
