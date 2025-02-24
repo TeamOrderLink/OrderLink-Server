@@ -17,7 +17,7 @@ import com.order.orderlink.payment.application.dtos.PaymentRequest;
 import com.order.orderlink.payment.application.dtos.PaymentResponse;
 import com.order.orderlink.payment.domain.Payment;
 import com.order.orderlink.payment.domain.PaymentStatus;
-import com.order.orderlink.payment.domain.repository.JpaPaymentRepository;
+import com.order.orderlink.payment.domain.repository.PaymentRepository;
 import com.order.orderlink.user.domain.UserRoleEnum;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -28,7 +28,7 @@ import lombok.RequiredArgsConstructor;
 @Transactional
 public class PaymentService {
 	private final OrderClient orderClient;
-	private final JpaPaymentRepository paymentRepository;
+	private final PaymentRepository paymentRepository;
 
 	public PaymentResponse.Create createPayment(UserDetailsImpl userDetails, PaymentRequest.Create request,
 		HttpServletRequest httpServletRequest) {

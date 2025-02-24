@@ -18,7 +18,7 @@ import com.order.orderlink.region.application.dtos.RegionDTO;
 import com.order.orderlink.region.application.dtos.RegionRequest;
 import com.order.orderlink.region.application.dtos.RegionResponse;
 import com.order.orderlink.region.domain.Region;
-import com.order.orderlink.region.domain.repository.JpaRegionRepository;
+import com.order.orderlink.region.domain.repository.RegionRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -26,7 +26,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @Transactional
 public class RegionService {
-	private final JpaRegionRepository regionRepository;
+	private final RegionRepository regionRepository;
 
 	public RegionResponse.Create createRegion(RegionRequest.Create request) {
 		UUID parentId = request.getParentId();
