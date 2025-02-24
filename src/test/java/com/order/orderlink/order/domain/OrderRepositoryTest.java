@@ -1,4 +1,4 @@
-package com.order.orderlink.order;
+package com.order.orderlink.order.domain;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -22,9 +22,6 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.order.orderlink.common.auth.util.JwtUtil;
-import com.order.orderlink.order.domain.Order;
-import com.order.orderlink.order.domain.OrderStatus;
-import com.order.orderlink.order.domain.OrderType;
 import com.order.orderlink.order.domain.repository.OrderRepository;
 import com.order.orderlink.orderitem.domain.OrderItem;
 import com.order.orderlink.restaurant.domain.Restaurant;
@@ -81,7 +78,7 @@ public class OrderRepositoryTest {
 
 	@DisplayName("Status 로 order 검색 성공")
 	@Test
-	void findOrderByStatus() {
+	void findOrderByStatusSuccess() {
 		//given
 		Pageable pageable = PageRequest.of(0, 10, Sort.by("createdAt").descending());
 
@@ -95,7 +92,7 @@ public class OrderRepositoryTest {
 
 	@DisplayName("restaurantName 로 order 검색 성공")
 	@Test
-	void findOrderByRestaurantName() {
+	void findOrderByRestaurantNameSuccess() {
 		//given
 		Pageable pageable = PageRequest.of(0, 10, Sort.by("createdAt").descending());
 
@@ -112,7 +109,7 @@ public class OrderRepositoryTest {
 
 	@DisplayName("foodName 로 order 검색 성공")
 	@Test
-	void findOrderByFoodName() {
+	void findOrderByFoodNameSuccess() {
 		//given
 		Pageable pageable = PageRequest.of(0, 10, Sort.by("createdAt").descending());
 
@@ -126,7 +123,7 @@ public class OrderRepositoryTest {
 
 	@DisplayName("기간으로 order 검색 성공")
 	@Test
-	void findOrderByDates() {
+	void findOrderByDatesSuccess() {
 		//given
 		Pageable pageable = PageRequest.of(0, 10, Sort.by("createdAt").descending());
 
@@ -141,7 +138,7 @@ public class OrderRepositoryTest {
 
 	@DisplayName("다수 조건 중 하나라도 실패하면 실패")
 	@Test
-	void notFindIfOneFail() {
+	void findIfOneFail() {
 		//given
 		Pageable pageable = PageRequest.of(0, 10, Sort.by("createdAt").descending());
 
