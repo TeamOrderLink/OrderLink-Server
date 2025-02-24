@@ -83,7 +83,6 @@ public class OrderRepositoryTest {
 	@Test
 	void findOrderByStatus() {
 		//given
-
 		Pageable pageable = PageRequest.of(0, 10, Sort.by("createdAt").descending());
 
 		//when
