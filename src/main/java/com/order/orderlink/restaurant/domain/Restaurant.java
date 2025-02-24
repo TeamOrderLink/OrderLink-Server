@@ -1,21 +1,23 @@
 package com.order.orderlink.restaurant.domain;
 
-import java.time.LocalDateTime;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.order.orderlink.category.domain.RestaurantCategory;
+import com.order.orderlink.common.auth.util.LocalTimeToStringConverter;
+import com.order.orderlink.common.entity.BaseTimeEntity;
+import com.order.orderlink.food.domain.Food;
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import org.hibernate.annotations.UuidGenerator;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-
-import jakarta.persistence.*;
-import lombok.*;
-import org.hibernate.annotations.UuidGenerator;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.order.orderlink.common.auth.util.LocalTimeToStringConverter;
-import com.order.orderlink.common.entity.BaseTimeEntity;
-import com.order.orderlink.food.domain.Food;
 
 @Getter
 @NoArgsConstructor
@@ -78,6 +80,9 @@ public class Restaurant extends BaseTimeEntity {
 	@OneToMany(mappedBy = "restaurant", cascade = CascadeType.ALL, orphanRemoval = true)
 	@JsonIgnore
 	private List<Food> foods = new ArrayList<>();
+
+	@OneToMany
+	private List<RestaurantCategory> restaurantCategories = new ArrayList<>();
 
 	private UUID regionId;
 

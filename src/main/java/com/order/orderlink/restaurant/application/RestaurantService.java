@@ -1,5 +1,8 @@
 package com.order.orderlink.restaurant.application;
 
+import com.order.orderlink.category.domain.RestaurantCategory;
+import com.order.orderlink.category.domain.repository.JpaCategoryRepository;
+import com.order.orderlink.category.domain.repository.JpaRestaurantCategoryRepository;
 import com.order.orderlink.common.auth.UserDetailsImpl;
 import com.order.orderlink.common.enums.ErrorCode;
 import com.order.orderlink.common.exception.AuthException;
@@ -29,7 +32,9 @@ import java.util.stream.Collectors;
 public class RestaurantService {
 
     private final RestaurantRepository restaurantRepository;
+    private final JpaRestaurantCategoryRepository restaurantCategoryRepository;
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+
     // 음식점 등록 API
     public RestaurantResponse.Create createRestaurant(RestaurantRequest.Create request) {
         // 점주 인증 토큰 생성
@@ -160,6 +165,42 @@ public class RestaurantService {
 
         return RestaurantResponse.GetRestaurants.builder()
                 .restaurants(restaurants)
+                .build();
+    }
+
+    // 카테고리별 음식점 조회 API
+    public RestaurantResponse.RestaurantsByCategory getRestaurantsByCategory(UUID categoryId) {
+        // 해당 카테고리 ID로 가져온 중간 테이블 리스트
+        List<RestaurantCategory> restaurantCategories = restaurantCategoryRepository.findAllByCategoryId(categoryId);
+
+        // 중간 테이블 리스트 -> 음식점 ID 리스트 변환
+        List<UUID> restaurantIds = restaurantCategories.stream()
+                .map(RestaurantCategory::getRestaurantId).toList();
+
+        // 음식점 ID 리스트로 음식점 리스트 조회
+        List<Restaurant> restaurants = restaurantRepository.findAllById(restaurantIds);
+
+        // 음식점 Entity List -> ResponseDto List
+        List<RestaurantResponse.RestaurantDto> restaurantDtos = restaurants.stream()
+                .map(restaurant -> RestaurantResponse.RestaurantDto.builder()
+                        .restaurantId(restaurant.getId())
+                        .name(restaurant.getName())
+                        .address(restaurant.getAddress())
+                        .phone(restaurant.getPhone())
+                        .description(restaurant.getDescription())
+                        .openTime(restaurant.getOpenTime().format(formatter))
+                        .closeTime(restaurant.getCloseTime().format(formatter))
+                        .businessStatus(restaurant.isBusinessStatus())
+                        .ownerName(restaurant.getOwnerName())
+                        .businessRegNum(restaurant.getBusinessRegNum())
+                        .avgRating(restaurant.getAvgRating())
+                        .ratingSum(restaurant.getRatingSum())
+                        .ratingCount(restaurant.getRatingCount())
+                        .build())
+                .toList();
+
+        return RestaurantResponse.RestaurantsByCategory.builder()
+                .restaurantsByCategory(restaurantDtos)
                 .build();
     }
 

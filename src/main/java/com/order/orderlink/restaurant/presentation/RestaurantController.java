@@ -66,6 +66,16 @@ public class RestaurantController {
                 restaurantService.getRestaurant(restaurantId));
     }
 
+    // 카테고리별 음식점 조회 API
+    @GetMapping("/{categoryId}")
+    public SuccessResponse<RestaurantResponse.RestaurantsByCategory> getRestaurantByCategory(
+            @PathVariable("categoryId") UUID categoryId) {
+
+        return SuccessResponse.success(SuccessCode.RESTAURANTS_CATEGORY_GET_SUCCESS,
+                restaurantService.getRestaurantsByCategory(categoryId));
+    }
+
+
     // 음식점 수정 API
     @PutMapping("/{id}")
     @PreAuthorize("hasAnyAuthority('ROLE_OWNER', 'ROLE_MASTER')")

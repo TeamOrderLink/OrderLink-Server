@@ -13,7 +13,7 @@ import java.util.UUID;
 @Builder
 @AllArgsConstructor
 public class RestaurantResponse {
-
+    // 음식점 등록 Response
     @Getter
     @Builder
     @AllArgsConstructor
@@ -22,6 +22,7 @@ public class RestaurantResponse {
         private final String ownerAuthToken;
     }
 
+    // 전체 음식점 조회 Response
     @Getter
     @Builder
     @AllArgsConstructor
@@ -29,6 +30,35 @@ public class RestaurantResponse {
         private final List<RestaurantDto> restaurants;
     }
 
+    // 해당 카테고리로 조회한 음식점 리스트 Response
+    @Builder
+    @AllArgsConstructor
+    public static class RestaurantsByCategory {
+        private final List<RestaurantDto> restaurantsByCategory;
+    }
+
+    // 음식점 DTO(foods 미포함) : 전체 음식점 조회 시 리스트에 담을 DTO
+    @Getter
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class RestaurantDto {
+        private UUID restaurantId;
+        private String name;
+        private String address;
+        private String phone;
+        private String description;
+        private String openTime;
+        private String closeTime;
+        private boolean businessStatus;
+        private String ownerName;
+        private String businessRegNum;
+        private Double avgRating;
+        private Double ratingSum;
+        private Integer ratingCount;
+    }
+
+    // 음식점 상세 Response(foods 포함)
     @Getter
     @Builder
     @AllArgsConstructor
@@ -50,26 +80,7 @@ public class RestaurantResponse {
         private List<GetRestaurantFoodDto> foods;
     }
 
-    @Getter
-    @Builder
-    @AllArgsConstructor
-    @NoArgsConstructor
-    public static class RestaurantDto {
-        private UUID restaurantId;
-        private String name;
-        private String address;
-        private String phone;
-        private String description;
-        private String openTime;
-        private String closeTime;
-        private boolean businessStatus;
-        private String ownerName;
-        private String businessRegNum;
-        private Double avgRating;
-        private Double ratingSum;
-        private Integer ratingCount;
-    }
-
+    // 음식 DTO : 음식점 상세 조회 시 음식 리스트에 담을 DTO
     @Getter
     @AllArgsConstructor
     @NoArgsConstructor
@@ -82,6 +93,7 @@ public class RestaurantResponse {
         private String imageUrl;
     }
 
+    // 음식점 수정 Response : 수정이 가능한 필드만 반환
     @Getter
     @AllArgsConstructor
     @NoArgsConstructor
@@ -99,6 +111,7 @@ public class RestaurantResponse {
         private String businessRegNum;
     }
 
+    // 음식점 삭제 Response
     @Getter
     @AllArgsConstructor
     public static class Delete {
