@@ -12,8 +12,8 @@ import com.order.orderlink.category.application.dtos.CategoryRequest;
 import com.order.orderlink.category.application.dtos.CategoryResponse;
 import com.order.orderlink.category.domain.Category;
 import com.order.orderlink.category.domain.RestaurantCategory;
-import com.order.orderlink.category.domain.repository.JpaCategoryRepository;
-import com.order.orderlink.category.domain.repository.JpaRestaurantCategoryRepository;
+import com.order.orderlink.category.domain.repository.CategoryRepository;
+import com.order.orderlink.category.domain.repository.RestaurantCategoryRepository;
 import com.order.orderlink.common.enums.ErrorCode;
 import com.order.orderlink.common.exception.CategoryException;
 
@@ -23,8 +23,8 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @Transactional
 public class CategoryService {
-	private final JpaCategoryRepository categoryRepository;
-	private final JpaRestaurantCategoryRepository restaurantCategoryRepository;
+	private final CategoryRepository categoryRepository;
+	private final RestaurantCategoryRepository restaurantCategoryRepository;
 
 	public CategoryResponse.Create createCategory(CategoryRequest.Create request) {
 		Category category = Category.builder()
