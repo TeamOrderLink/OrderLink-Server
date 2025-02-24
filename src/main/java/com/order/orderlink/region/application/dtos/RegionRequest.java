@@ -3,6 +3,7 @@ package com.order.orderlink.region.application.dtos;
 import java.util.UUID;
 
 import jakarta.validation.constraints.NotBlank;
+import lombok.Builder;
 import lombok.Getter;
 
 public class RegionRequest {
@@ -14,6 +15,7 @@ public class RegionRequest {
 	}
 
 	@Getter
+	@Builder
 	public static class Update {
 		@NotBlank
 		private String regionName;
