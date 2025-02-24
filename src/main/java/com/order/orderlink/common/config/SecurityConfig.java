@@ -77,6 +77,7 @@ public class SecurityConfig {
 				.requestMatchers(HttpMethod.PUT, "/api/restaurants/**").hasAuthority("ROLE_MASTER")
 				.requestMatchers(HttpMethod.DELETE, "/api/restaurants/**").hasAuthority("ROLE_MASTER")
 				.requestMatchers(HttpMethod.GET, "/api/reviews/**").permitAll()
+				.requestMatchers(HttpMethod.POST, "/api/oauth/token").permitAll()
 				.anyRequest().authenticated()
 			);
 

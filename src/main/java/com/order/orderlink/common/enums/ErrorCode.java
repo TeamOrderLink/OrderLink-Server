@@ -9,6 +9,7 @@ public enum ErrorCode {
 
 	// AUTH
 	TOKEN_INVALID(HttpStatus.UNAUTHORIZED, "토큰이 유효하지 않습니다."),
+	FAILED_TO_GET_SERVICE_ACCOUNT_TOKEN(HttpStatus.INTERNAL_SERVER_ERROR, "서비스 계정 토큰을 가져오는데 실패했습니다."),
 
 	// USER
 	USER_ALREADY_EXISTS(HttpStatus.BAD_REQUEST, "이미 존재하는 사용자입니다."),

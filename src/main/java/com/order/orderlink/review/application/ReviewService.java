@@ -9,22 +9,21 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.order.orderlink.common.client.OrderClient;
+import com.order.orderlink.common.client.RestaurantClient;
+import com.order.orderlink.common.client.UserClient;
 import com.order.orderlink.common.enums.ErrorCode;
 import com.order.orderlink.common.exception.OrderException;
 import com.order.orderlink.common.exception.RestaurantException;
 import com.order.orderlink.common.exception.ReviewException;
-import com.order.orderlink.common.exception.UserException;
 import com.order.orderlink.order.domain.Order;
-import com.order.orderlink.order.domain.repository.OrderRepository;
 import com.order.orderlink.orderitem.domain.OrderItem;
 import com.order.orderlink.restaurant.domain.Restaurant;
-import com.order.orderlink.restaurant.domain.repository.RestaurantRepository;
 import com.order.orderlink.review.application.dtos.ReviewRequest;
 import com.order.orderlink.review.application.dtos.ReviewResponse;
 import com.order.orderlink.review.domain.Review;
 import com.order.orderlink.review.domain.repository.ReviewRepository;
 import com.order.orderlink.user.domain.User;
-import com.order.orderlink.user.domain.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -34,9 +33,9 @@ import lombok.RequiredArgsConstructor;
 public class ReviewService {
 
 	private final ReviewRepository reviewRepository;
-	private final OrderRepository orderRepository;
-	private final RestaurantRepository restaurantRepository;
-	private final UserRepository userRepository;
+	private final OrderClient orderClient;
+	private final RestaurantClient restaurantClient;
+	private final UserClient userClient;
 
 	/**
 	 * 리뷰 등록:
@@ -56,8 +55,7 @@ public class ReviewService {
 	public ReviewResponse.Create createReview(UUID orderId, UUID currentUserId, ReviewRequest.Create request) {
 
 		// 주문 조회
-		Order order = orderRepository.findById(orderId)
-			.orElseThrow(() -> new OrderException(ErrorCode.ORDER_NOT_FOUND));
+		Order order = orderClient.getOrder(orderId);
 
 		// 주문자와 현재 로그인한 사용자가 동일한지 확인
 		if (!order.getUserId().equals(currentUserId)) {
@@ -70,8 +68,7 @@ public class ReviewService {
 		}
 
 		UUID restaurantId = order.getRestaurantId();
-		Restaurant restaurant = restaurantRepository.findById(restaurantId)
-			.orElseThrow(() -> new RestaurantException(ErrorCode.RESTAURANT_NOT_FOUND));
+		Restaurant restaurant = restaurantClient.getRestaurant(restaurantId);
 
 		// 리뷰 생성
 		Review review = Review.builder()
@@ -117,9 +114,8 @@ public class ReviewService {
 	public ReviewResponse.Detail getReviewDetail(UUID reviewId) {
 		Review review = getReview(reviewId);
 		String nickname = getUserNickname(review.getUserId());
-		Order order = orderRepository.findById(review.getOrderId())
-			.orElseThrow(() -> new OrderException(ErrorCode.ORDER_NOT_FOUND));
 
+		Order order = orderClient.getOrder(review.getOrderId());
 		LocalDateTime orderDate = order.getCreatedAt();
 		List<String> orderItems = order.getOrderItems() != null
 			? order.getOrderItems().stream().map(OrderItem::getFoodName).toList()
@@ -207,8 +203,7 @@ public class ReviewService {
 	}
 
 	private String getUserNickname(UUID userId) {
-		User user = userRepository.findById(userId)
-			.orElseThrow(() -> new UserException(ErrorCode.USER_NOT_FOUND));
+		User user = userClient.getUser(userId);
 		return user.getNickname();
 	}
 
