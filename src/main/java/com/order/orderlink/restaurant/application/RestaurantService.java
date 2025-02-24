@@ -1,5 +1,6 @@
 package com.order.orderlink.restaurant.application;
 
+import com.order.orderlink.common.auth.UserDetailsImpl;
 import com.order.orderlink.common.enums.ErrorCode;
 import com.order.orderlink.common.exception.AuthException;
 import com.order.orderlink.common.exception.RestaurantException;
@@ -95,12 +96,12 @@ public class RestaurantService {
     }
 
     // 음식점 삭제 API
-    public RestaurantResponse.Delete softDeleteRestaurant(UUID restaurantId) {
+    public RestaurantResponse.Delete softDeleteRestaurant(UUID restaurantId, UserDetailsImpl userDetails) {
         Restaurant restaurant = getRestaurantById(restaurantId);
 
-        restaurant.softDelete(restaurant.getName());
+        restaurant.softDelete(userDetails.getUsername());
 
-        return new RestaurantResponse.Delete(restaurant.getId(), restaurant.getDeletedAt());
+        return new RestaurantResponse.Delete(userDetails.getUser().getId(), restaurant.getDeletedAt());
     }
 
     // 음식점 조회 API

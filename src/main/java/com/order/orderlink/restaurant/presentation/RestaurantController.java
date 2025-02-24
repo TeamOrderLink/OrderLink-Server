@@ -2,8 +2,10 @@ package com.order.orderlink.restaurant.presentation;
 
 import java.util.UUID;
 
+import com.order.orderlink.common.auth.UserDetailsImpl;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -79,9 +81,10 @@ public class RestaurantController {
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAuthority('ROLE_MASTER')")
     public SuccessResponse<RestaurantResponse.Delete> deleteRestaurant(
-            @PathVariable("id") UUID restaurantId) {
+            @PathVariable("id") UUID restaurantId,
+            @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
         return SuccessResponse.success(SuccessCode.RESTAURANT_DELETE_SUCCESS,
-                restaurantService.softDeleteRestaurant(restaurantId));
+                restaurantService.softDeleteRestaurant(restaurantId, userDetails));
     }
 }
