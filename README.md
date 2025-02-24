@@ -1,9 +1,9 @@
-# Orderlink 🛒
+# OrderLink 🛒
 
 **온라인·오프라인 주문을 지원하는 AI 기반 주문 관리 플랫폼**
 
 ## 📜 프로젝트 개요
-Orderlink는 온라인·오프라인 주문을 관리하고 AI를 활용한 음식 설명 추천 기능을 제공하는 플랫폼입니다. 사용자는 주문을 생성하고 결제할 수 있으며, 점주는 AI를 활용하여 음식 설명을 등록할 수 있습니다.
+OrderLink는 온라인·오프라인 주문을 관리하고 AI를 활용한 음식 설명 추천 기능을 제공하는 플랫폼입니다. 사용자는 주문을 생성하고 결제할 수 있으며, 점주는 AI를 활용하여 음식 설명을 등록할 수 있습니다.
 
 ---
 
@@ -124,7 +124,7 @@ nohup java -jar -Dspring.profiles.active=dev OrderLink-0.0.1-SNAPSHOT.jar > outp
 - `fix/xxx`: 버그 수정 브랜치
 - `hotfix/xxx`: 긴급 수정 브랜치
 - `test/xxx`: 테스트용 브랜치
-- `refactor/xxx`: 리팩토링용 브랜치
+- `refactor/xxx`: 리팩터링용 브랜치
 
 ---
 
