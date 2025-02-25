@@ -10,7 +10,7 @@ public class WebClientConfig {
 	@Bean
 	public WebClient webClient(WebClient.Builder builder) {
 		return builder
-			.baseUrl("http://localhost:8080") // 기본 URL 설정
+			.baseUrl("http://localhost:8080/api") // 기본 URL 설정
 			.build();
 	}
 
