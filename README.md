@@ -95,6 +95,230 @@ OrderLink는 온라인·오프라인 주문을 관리하고 AI를 활용한 음�
 
 ---
 
+
+## 📌 프로젝트 구조 - Project structure
+
+```
+📦main
+ ┣ 📂java
+ ┃ ┗ 📂com
+ ┃ ┃ ┗ 📂order
+ ┃ ┃ ┃ ┗ 📂orderlink
+ ┃ ┃ ┃ ┃ ┣ 📂address
+ ┃ ┃ ┃ ┃ ┃ ┣ 📂application
+ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📂dtos
+ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📜AddressRequest.java
+ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┗ 📜AddressResponse.java
+ ┃ ┃ ┃ ┃ ┃ ┃ ┗ 📜AddressService.java
+ ┃ ┃ ┃ ┃ ┃ ┣ 📂domain
+ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📂repository
+ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┗ 📜AddressRepository.java
+ ┃ ┃ ┃ ┃ ┃ ┃ ┗ 📜Address.java
+ ┃ ┃ ┃ ┃ ┃ ┗ 📂presentation
+ ┃ ┃ ┃ ┃ ┃ ┃ ┗ 📜AddressController.java
+ ┃ ┃ ┃ ┃ ┣ 📂ai
+ ┃ ┃ ┃ ┃ ┃ ┣ 📂application
+ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📂dtos
+ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📜AiApiRequest.java
+ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┗ 📜AiApiResponse.java
+ ┃ ┃ ┃ ┃ ┃ ┃ ┗ 📜AiApiService.java
+ ┃ ┃ ┃ ┃ ┃ ┣ 📂domain
+ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📂repository
+ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┗ 📜AiApiLogRepository.java
+ ┃ ┃ ┃ ┃ ┃ ┃ ┗ 📜AiApiLog.java
+ ┃ ┃ ┃ ┃ ┃ ┗ 📂presentation
+ ┃ ┃ ┃ ┃ ┃ ┃ ┗ 📜AiApiController.java
+ ┃ ┃ ┃ ┃ ┣ 📂category
+ ┃ ┃ ┃ ┃ ┃ ┣ 📂application
+ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📂dtos
+ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📜CategoryDTO.java
+ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📜CategoryRequest.java
+ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┗ 📜CategoryResponse.java
+ ┃ ┃ ┃ ┃ ┃ ┃ ┗ 📜CategoryService.java
+ ┃ ┃ ┃ ┃ ┃ ┣ 📂domain
+ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📂repository
+ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📜CategoryRepository.java
+ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┗ 📜RestaurantCategoryRepository.java
+ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📜Category.java
+ ┃ ┃ ┃ ┃ ┃ ┃ ┗ 📜RestaurantCategory.java
+ ┃ ┃ ┃ ┃ ┃ ┗ 📂presentation
+ ┃ ┃ ┃ ┃ ┃ ┃ ┗ 📜CategoryController.java
+ ┃ ┃ ┃ ┃ ┣ 📂common
+ ┃ ┃ ┃ ┃ ┃ ┣ 📂auth
+ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📂controller
+ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┗ 📜ServiceAccountTokenController.java
+ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📂filter
+ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📜JwtAuthenticationFilter.java
+ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┗ 📜JwtAuthorizationFilter.java
+ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📂service
+ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┗ 📜ServiceAccountTokenService.java
+ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📂util
+ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📜JwtUtil.java
+ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┗ 📜LocalTimeToStringConverter.java
+ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📜ServiceAccountUserDetails.java
+ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📜UserDetailsImpl.java
+ ┃ ┃ ┃ ┃ ┃ ┃ ┗ 📜UserDetailsServiceImpl.java
+ ┃ ┃ ┃ ┃ ┃ ┣ 📂client
+ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📜FoodClient.java
+ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📜OrderClient.java
+ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📜RestaurantClient.java
+ ┃ ┃ ┃ ┃ ┃ ┃ ┗ 📜UserClient.java
+ ┃ ┃ ┃ ┃ ┃ ┣ 📂config
+ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📜AiWebClientConfig.java
+ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📜AuditConfig.java
+ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📜AuditorAwareImpl.java
+ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📜QueryDslConfig.java
+ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📜S3Config.java
+ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📜SecurityConfig.java
+ ┃ ┃ ┃ ┃ ┃ ┃ ┗ 📜WebClientConfig.java
+ ┃ ┃ ┃ ┃ ┃ ┣ 📂dtos
+ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📜AuthRequest.java
+ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📜AuthResponse.java
+ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📜ErrorNonDataResponse.java
+ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📜ErrorResponse.java
+ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📜FoodRequest.java
+ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📜SuccessNonDataResponse.java
+ ┃ ┃ ┃ ┃ ┃ ┃ ┗ 📜SuccessResponse.java
+ ┃ ┃ ┃ ┃ ┃ ┣ 📂entity
+ ┃ ┃ ┃ ┃ ┃ ┃ ┗ 📜BaseTimeEntity.java
+ ┃ ┃ ┃ ┃ ┃ ┣ 📂enums
+ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📜ErrorCode.java
+ ┃ ┃ ┃ ┃ ┃ ┃ ┗ 📜SuccessCode.java
+ ┃ ┃ ┃ ┃ ┃ ┣ 📂exception
+ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📜AddressException.java
+ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📜AiApiException.java
+ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📜AuthException.java
+ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📜BaseException.java
+ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📜CategoryException.java
+ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📜FoodException.java
+ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📜GlobalExceptionHandler.java
+ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📜OrderException.java
+ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📜PaymentException.java
+ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📜RegionException.java
+ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📜RestaurantException.java
+ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📜ReviewException.java
+ ┃ ┃ ┃ ┃ ┃ ┃ ┗ 📜UserException.java
+ ┃ ┃ ┃ ┃ ┃ ┗ 📂external
+ ┃ ┃ ┃ ┃ ┃ ┃ ┗ 📂s3
+ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┗ 📜S3Service.java
+ ┃ ┃ ┃ ┃ ┣ 📂food
+ ┃ ┃ ┃ ┃ ┃ ┣ 📂application
+ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📂dtos
+ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📜FoodDTO.java
+ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📜FoodRequest.java
+ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┗ 📜FoodResponse.java
+ ┃ ┃ ┃ ┃ ┃ ┃ ┗ 📜FoodService.java
+ ┃ ┃ ┃ ┃ ┃ ┣ 📂domain
+ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📂repository
+ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📜FoodRepository.java
+ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┗ 📜FoodSearchRepository.java
+ ┃ ┃ ┃ ┃ ┃ ┃ ┗ 📜Food.java
+ ┃ ┃ ┃ ┃ ┃ ┣ 📂infrastructure
+ ┃ ┃ ┃ ┃ ┃ ┃ ┗ 📜FoodSearchRepositoryImpl.java
+ ┃ ┃ ┃ ┃ ┃ ┗ 📂presentation
+ ┃ ┃ ┃ ┃ ┃ ┃ ┗ 📜FoodController.java
+ ┃ ┃ ┃ ┃ ┣ 📂order
+ ┃ ┃ ┃ ┃ ┃ ┣ 📂application
+ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📂dtos
+ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📜OrderDTO.java
+ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📜OrderFoodDTO.java
+ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📜OrderRequest.java
+ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📜OrderResponse.java
+ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┗ 📜RestaurantOrderDTO.java
+ ┃ ┃ ┃ ┃ ┃ ┃ ┗ 📜OrderService.java
+ ┃ ┃ ┃ ┃ ┃ ┣ 📂domain
+ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📂repository
+ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📜OrderRepository.java
+ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📜OrderRepositoryCustom.java
+ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┗ 📜OrderRepositoryImpl.java
+ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📜Order.java
+ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📜OrderStatus.java
+ ┃ ┃ ┃ ┃ ┃ ┃ ┗ 📜OrderType.java
+ ┃ ┃ ┃ ┃ ┃ ┗ 📂presentation
+ ┃ ┃ ┃ ┃ ┃ ┃ ┗ 📜OrderController.java
+ ┃ ┃ ┃ ┃ ┣ 📂orderitem
+ ┃ ┃ ┃ ┃ ┃ ┣ 📂application
+ ┃ ┃ ┃ ┃ ┃ ┃ ┗ 📜OrderItemService.java
+ ┃ ┃ ┃ ┃ ┃ ┣ 📂domain
+ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📂repository
+ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┗ 📜OrderItemRepository.java
+ ┃ ┃ ┃ ┃ ┃ ┃ ┗ 📜OrderItem.java
+ ┃ ┃ ┃ ┃ ┃ ┗ 📂presentation
+ ┃ ┃ ┃ ┃ ┃ ┃ ┗ 📜OrderController.java
+ ┃ ┃ ┃ ┃ ┣ 📂payment
+ ┃ ┃ ┃ ┃ ┃ ┣ 📂application
+ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📂dtos
+ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📜PaymentRequest.java
+ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┗ 📜PaymentResponse.java
+ ┃ ┃ ┃ ┃ ┃ ┃ ┗ 📜PaymentService.java
+ ┃ ┃ ┃ ┃ ┃ ┣ 📂domain
+ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📂repository
+ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┗ 📜PaymentRepository.java
+ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📜Payment.java
+ ┃ ┃ ┃ ┃ ┃ ┃ ┗ 📜PaymentStatus.java
+ ┃ ┃ ┃ ┃ ┃ ┗ 📂presentation
+ ┃ ┃ ┃ ┃ ┃ ┃ ┗ 📜PaymentController.java
+ ┃ ┃ ┃ ┃ ┣ 📂region
+ ┃ ┃ ┃ ┃ ┃ ┣ 📂application
+ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📂dtos
+ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📜RegionDTO.java
+ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📜RegionRequest.java
+ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┗ 📜RegionResponse.java
+ ┃ ┃ ┃ ┃ ┃ ┃ ┗ 📜RegionService.java
+ ┃ ┃ ┃ ┃ ┃ ┣ 📂domain
+ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📂repository
+ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┗ 📜RegionRepository.java
+ ┃ ┃ ┃ ┃ ┃ ┃ ┗ 📜Region.java
+ ┃ ┃ ┃ ┃ ┃ ┗ 📂presentation
+ ┃ ┃ ┃ ┃ ┃ ┃ ┗ 📜RegionController.java
+ ┃ ┃ ┃ ┃ ┣ 📂restaurant
+ ┃ ┃ ┃ ┃ ┃ ┣ 📂application
+ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📂dtos
+ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📜RestaurantRequest.java
+ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┗ 📜RestaurantResponse.java
+ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📜RestaurantService.java
+ ┃ ┃ ┃ ┃ ┃ ┃ ┗ 📜TokenGenerator.java
+ ┃ ┃ ┃ ┃ ┃ ┣ 📂domain
+ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📂repository
+ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┗ 📜RestaurantRepository.java
+ ┃ ┃ ┃ ┃ ┃ ┃ ┗ 📜Restaurant.java
+ ┃ ┃ ┃ ┃ ┃ ┗ 📂presentation
+ ┃ ┃ ┃ ┃ ┃ ┃ ┗ 📜RestaurantController.java
+ ┃ ┃ ┃ ┃ ┣ 📂review
+ ┃ ┃ ┃ ┃ ┃ ┣ 📂application
+ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📂dtos
+ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📜ReviewRequest.java
+ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┗ 📜ReviewResponse.java
+ ┃ ┃ ┃ ┃ ┃ ┃ ┗ 📜ReviewService.java
+ ┃ ┃ ┃ ┃ ┃ ┣ 📂domain
+ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📂repository
+ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┗ 📜ReviewRepository.java
+ ┃ ┃ ┃ ┃ ┃ ┃ ┗ 📜Review.java
+ ┃ ┃ ┃ ┃ ┃ ┗ 📂presentation
+ ┃ ┃ ┃ ┃ ┃ ┃ ┗ 📜ReviewController.java
+ ┃ ┃ ┃ ┃ ┣ 📂user
+ ┃ ┃ ┃ ┃ ┃ ┣ 📂application
+ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📂dtos
+ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📜UserRequest.java
+ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┗ 📜UserResponse.java
+ ┃ ┃ ┃ ┃ ┃ ┃ ┗ 📜UserService.java
+ ┃ ┃ ┃ ┃ ┃ ┣ 📂domain
+ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📂repository
+ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┗ 📜UserRepository.java
+ ┃ ┃ ┃ ┃ ┃ ┃ ┣ 📜User.java
+ ┃ ┃ ┃ ┃ ┃ ┃ ┗ 📜UserRoleEnum.java
+ ┃ ┃ ┃ ┃ ┃ ┗ 📂presentation
+ ┃ ┃ ┃ ┃ ┃ ┃ ┗ 📜UserController.java
+ ┃ ┃ ┃ ┃ ┗ 📜OrderLinkApplication.java
+ ┗ 📂resources
+ ┃ ┣ 📂static
+ ┃ ┣ 📂templates
+ ┃ ┗ 📜application.properties
+```
+
+---
+
+
 ## 📌 서비스 구성 - User Flow Diagram
 
 ![image](https://github.com/user-attachments/assets/5b382449-0339-4201-9dda-8734f7d4320f)

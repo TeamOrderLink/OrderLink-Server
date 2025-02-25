@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.order.orderlink.common.auth.UserDetailsImpl;
@@ -45,10 +46,11 @@ public class RestaurantController {
 	@PostMapping
 	@PreAuthorize("hasAuthority('ROLE_MASTER')")
 	public SuccessResponse<RestaurantResponse.Create> createRestaurant(
-		@Valid @RequestBody RestaurantRequest.Create request) {
+		@Valid @RequestBody RestaurantRequest.Create request,
+		@RequestParam UUID regionId) {
 
 		return SuccessResponse.success(SuccessCode.RESTAURANT_CREATE_SUCCESS,
-			restaurantService.createRestaurant(request));
+			restaurantService.createRestaurant(request, regionId));
 	}
 
 	// 전체 음식점 목록 조회 API
@@ -66,6 +68,15 @@ public class RestaurantController {
 
 		return SuccessResponse.success(SuccessCode.RESTAURANT_GET_SUCCESS,
 			restaurantService.getRestaurant(restaurantId));
+	}
+
+	// 카테고리별 음식점 조회 API
+	@GetMapping("/{categoryId}/category")
+	public SuccessResponse<RestaurantResponse.RestaurantsByCategory> getRestaurantByCategory(
+		@PathVariable("categoryId") UUID categoryId) {
+
+		return SuccessResponse.success(SuccessCode.RESTAURANTS_CATEGORY_GET_SUCCESS,
+			restaurantService.getRestaurantsByCategory(categoryId));
 	}
 
 	// 음식점 수정 API

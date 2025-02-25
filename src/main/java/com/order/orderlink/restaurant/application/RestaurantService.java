@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.order.orderlink.category.domain.RestaurantCategory;
 import com.order.orderlink.category.domain.repository.RestaurantCategoryRepository;
 import com.order.orderlink.common.auth.UserDetailsImpl;
 import com.order.orderlink.common.enums.ErrorCode;
@@ -36,7 +37,7 @@ public class RestaurantService {
 	private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
 
 	// 음식점 등록 API
-	public RestaurantResponse.Create createRestaurant(RestaurantRequest.Create request) {
+	public RestaurantResponse.Create createRestaurant(RestaurantRequest.Create request, UUID regionId) {
 		// 점주 인증 토큰 생성
 		String ownerAuthToken = TokenGenerator.generateToken();
 
@@ -51,6 +52,7 @@ public class RestaurantService {
 			.ownerAuthToken(ownerAuthToken)
 			.ownerName(request.getOwnerName())
 			.businessRegNum(request.getBusinessRegNum())
+			.regionId(regionId)
 			.build();
 
 		// 음식점 repository 저장
@@ -166,6 +168,39 @@ public class RestaurantService {
 		return RestaurantResponse.GetRestaurants.builder()
 			.restaurants(restaurants)
 			.build();
+	}
+
+	// 카테고리별 음식점 조회 API
+	@Transactional(readOnly = true)
+	public RestaurantResponse.RestaurantsByCategory getRestaurantsByCategory(UUID categoryId) {
+
+		// 해당 카테고리 ID로 가져온 중간 테이블 리스트
+		List<RestaurantCategory> restaurantCategories = restaurantCategoryRepository.findAllByCategoryId(categoryId);
+
+		// 중간 테이블 리스트 -> 음식점 리스트 변환
+		List<Restaurant> restaurants = restaurantCategories.stream()
+			.map(RestaurantCategory::getRestaurant).toList();
+
+		// 음식점 Entity List -> ResponseDto List
+		List<RestaurantDto> restaurantDtos = restaurants.stream()
+			.map(restaurant -> RestaurantDto.builder()
+				.restaurantId(restaurant.getId())
+				.name(restaurant.getName())
+				.address(restaurant.getAddress())
+				.phone(restaurant.getPhone())
+				.description(restaurant.getDescription())
+				.openTime(restaurant.getOpenTime().format(formatter))
+				.closeTime(restaurant.getCloseTime().format(formatter))
+				.businessStatus(restaurant.isBusinessStatus())
+				.ownerName(restaurant.getOwnerName())
+				.businessRegNum(restaurant.getBusinessRegNum())
+				.avgRating(restaurant.getAvgRating())
+				.ratingSum(restaurant.getRatingSum())
+				.ratingCount(restaurant.getRatingCount())
+				.build())
+			.toList();
+
+		return new RestaurantResponse.RestaurantsByCategory(restaurantDtos);
 	}
 
 	// 영업 상태 확인
