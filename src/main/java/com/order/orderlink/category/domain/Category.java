@@ -37,7 +37,7 @@ public class Category extends BaseTimeEntity {
 	@NotNull
 	private String name;
 
-	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "category", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private List<RestaurantCategory> restaurantCategories = new ArrayList<>();
 
 	public void updateName(String name) {
