@@ -31,10 +31,12 @@ public class RestaurantResponse {
     }
 
     // 해당 카테고리로 조회한 음식점 리스트 Response
-    @Builder
+    @Getter
     @AllArgsConstructor
+    @NoArgsConstructor
+    @Builder
     public static class RestaurantsByCategory {
-        private final List<RestaurantDto> restaurantsByCategory;
+        List<RestaurantDto> restaurantsByCategory;
     }
 
     // 음식점 DTO(foods 미포함) : 전체 음식점 조회 시 리스트에 담을 DTO

@@ -1,18 +1,16 @@
 package com.order.orderlink.category.domain;
 
-import java.util.UUID;
-
-import jakarta.persistence.*;
-import org.hibernate.annotations.UuidGenerator;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-
 import com.order.orderlink.common.entity.BaseTimeEntity;
-
-import jakarta.validation.constraints.NotNull;
+import com.order.orderlink.restaurant.domain.Restaurant;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.UuidGenerator;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+import java.util.UUID;
 
 @Getter
 @NoArgsConstructor
@@ -26,10 +24,12 @@ public class RestaurantCategory extends BaseTimeEntity {
 	@UuidGenerator(style = UuidGenerator.Style.AUTO)
 	private UUID id;
 
-	@NotNull
-	private UUID restaurantId;
+	@ManyToOne
+	@JoinColumn(name = "restaurant_id", nullable = false)
+	private Restaurant restaurant;
 
-	@NotNull
-	private UUID categoryId;
+	@ManyToOne
+	@JoinColumn(name = "category_id", nullable = false)
+	private Category category;
 
 }

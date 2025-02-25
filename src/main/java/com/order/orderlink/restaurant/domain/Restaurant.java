@@ -81,7 +81,7 @@ public class Restaurant extends BaseTimeEntity {
 	@JsonIgnore
 	private List<Food> foods = new ArrayList<>();
 
-	@OneToMany
+	@OneToMany(mappedBy = "restaurant")
 	private List<RestaurantCategory> restaurantCategories = new ArrayList<>();
 
 	private UUID regionId;

@@ -67,7 +67,7 @@ public class RestaurantController {
     }
 
     // 카테고리별 음식점 조회 API
-    @GetMapping("/{categoryId}")
+    @GetMapping("/{categoryId}/category")
     public SuccessResponse<RestaurantResponse.RestaurantsByCategory> getRestaurantByCategory(
             @PathVariable("categoryId") UUID categoryId) {
 

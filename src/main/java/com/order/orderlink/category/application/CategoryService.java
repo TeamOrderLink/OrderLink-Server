@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import com.order.orderlink.common.client.RestaurantClient;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,6 +26,7 @@ import lombok.RequiredArgsConstructor;
 public class CategoryService {
 	private final CategoryRepository categoryRepository;
 	private final RestaurantCategoryRepository restaurantCategoryRepository;
+	private final RestaurantClient restaurantClient;
 
 	public CategoryResponse.Create createCategory(CategoryRequest.Create request) {
 		Category category = Category.builder()
@@ -39,8 +41,8 @@ public class CategoryService {
 		for (UUID categoryId : categoryIds) {
 			Category category = getCategory(categoryId);
 			RestaurantCategory restaurantCategory = RestaurantCategory.builder()
-				.categoryId(category.getId())
-				.restaurantId(restaurantId)
+				.category(category)
+				.restaurant(restaurantClient.getRestaurant(restaurantId))
 				.build();
 			restaurantCategoryRepository.save(restaurantCategory);
 		}
