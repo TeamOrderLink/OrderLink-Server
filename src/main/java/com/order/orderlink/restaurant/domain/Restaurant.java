@@ -1,10 +1,14 @@
 package com.order.orderlink.restaurant.domain;
 
+import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import jakarta.persistence.*;
+import lombok.*;
 import org.hibernate.annotations.UuidGenerator;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -12,18 +16,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.order.orderlink.common.auth.util.LocalTimeToStringConverter;
 import com.order.orderlink.common.entity.BaseTimeEntity;
 import com.order.orderlink.food.domain.Food;
-
-import jakarta.persistence.Column;
-import jakarta.persistence.Convert;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EntityListeners;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
@@ -65,6 +57,9 @@ public class Restaurant extends BaseTimeEntity {
 	@Column(name = "owner_name", nullable = false)
 	private String ownerName;
 
+    @Column(name = "owner_auth_token", unique = true, nullable = false)
+    private String ownerAuthToken;
+
 	@Column(name = "business_reg_num", unique = true, nullable = false)
 	private String businessRegNum;
 
@@ -80,7 +75,7 @@ public class Restaurant extends BaseTimeEntity {
 	@Column(name = "rating_count", nullable = false)
 	private Integer ratingCount = 0;
 
-	@OneToMany(mappedBy = "restaurant")
+	@OneToMany(mappedBy = "restaurant", cascade = CascadeType.ALL, orphanRemoval = true)
 	@JsonIgnore
 	private List<Food> foods = new ArrayList<>();
 
@@ -96,5 +91,48 @@ public class Restaurant extends BaseTimeEntity {
 
 	public void updateAvgRating(Double newAvgRating) {
 		this.avgRating = newAvgRating;
+	}
+
+	// 음식점 정보 수정 메서드
+    public void update(String name, String address, String phone, String description, String openTime, String closeTime, String ownerName, String businessRegNum) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+
+        if (name != null && !name.isBlank()) {
+            this.name = name;
+        }
+
+        if (address != null && !address.isBlank()) {
+            this.address = address;
+        }
+
+        if (phone != null && !phone.isBlank()) {
+            this.phone = phone;
+        }
+
+        if (description != null && !description.isBlank()) {
+            this.description = description;
+        }
+
+        if (openTime != null && !openTime.isBlank()) {
+            this.openTime = LocalTime.parse(openTime, formatter);
+        }
+
+        if (closeTime != null && !closeTime.isBlank()) {
+            this.closeTime = LocalTime.parse(closeTime, formatter);
+        }
+
+        if (ownerName != null && !ownerName.isBlank()) {
+            this.ownerName = ownerName;
+        }
+
+        if (businessRegNum != null && !businessRegNum.isBlank()) {
+            this.businessRegNum = businessRegNum;
+        }
+    }
+
+	// Soft Delete 메서드
+	public void softDelete(String deletedBy) {
+		super.softDelete(deletedBy);
+		foods.forEach(food -> food.softDelete(deletedBy));
 	}
 }

@@ -74,7 +74,7 @@ public class SecurityConfig {
 				.requestMatchers("/api/auth/login", "/api/users", "/api/categories").permitAll()
 				.requestMatchers(HttpMethod.GET, "/api/restaurants/**").permitAll()
 				.requestMatchers(HttpMethod.POST, "/api/restaurants").hasAuthority("ROLE_MASTER")
-				.requestMatchers(HttpMethod.PUT, "/api/restaurants/**").hasAuthority("ROLE_MASTER")
+                .requestMatchers(HttpMethod.PUT, "/api/restaurants/**").hasAnyAuthority("ROLE_OWNER", "ROLE_MASTER")
 				.requestMatchers(HttpMethod.DELETE, "/api/restaurants/**").hasAuthority("ROLE_MASTER")
 				.requestMatchers(HttpMethod.GET, "/api/reviews/**").permitAll()
 				.requestMatchers(HttpMethod.POST, "/api/oauth/token").permitAll()
