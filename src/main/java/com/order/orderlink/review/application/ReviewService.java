@@ -19,6 +19,7 @@ import com.order.orderlink.common.exception.ReviewException;
 import com.order.orderlink.order.domain.Order;
 import com.order.orderlink.orderitem.domain.OrderItem;
 import com.order.orderlink.restaurant.domain.Restaurant;
+import com.order.orderlink.restaurant.domain.repository.RestaurantRepository;
 import com.order.orderlink.review.application.dtos.ReviewRequest;
 import com.order.orderlink.review.application.dtos.ReviewResponse;
 import com.order.orderlink.review.domain.Review;
@@ -36,6 +37,7 @@ public class ReviewService {
 	private final OrderClient orderClient;
 	private final RestaurantClient restaurantClient;
 	private final UserClient userClient;
+	private final RestaurantRepository restaurantRepository;
 
 	/**
 	 * 리뷰 등록:
@@ -86,7 +88,7 @@ public class ReviewService {
 		restaurant.updateRatingSum(newRatingSum);
 		restaurant.updateRatingCount(newRatingCount);
 		restaurant.updateAvgRating(newRatingSum / newRatingCount);
-
+		restaurantRepository.save(restaurant);
 		return new ReviewResponse.Create(review.getId());
 	}
 
