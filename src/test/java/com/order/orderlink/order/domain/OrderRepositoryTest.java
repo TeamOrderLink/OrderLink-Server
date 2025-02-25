@@ -49,8 +49,10 @@ public class OrderRepositoryTest {
 			.description("마싯는 타코집")
 			.openTime(LocalTime.now())
 			.closeTime(LocalTime.now())
+			.ownerAuthToken("ownerAuthToken")
 			.ownerName("경린")
 			.businessRegNum("001020120")
+			.regionId(UUID.randomUUID())
 			.build();
 		restaurantRepository.save(restaurant);
 

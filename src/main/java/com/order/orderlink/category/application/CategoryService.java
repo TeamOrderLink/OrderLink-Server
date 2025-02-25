@@ -15,6 +15,7 @@ import com.order.orderlink.category.domain.Category;
 import com.order.orderlink.category.domain.RestaurantCategory;
 import com.order.orderlink.category.domain.repository.CategoryRepository;
 import com.order.orderlink.category.domain.repository.RestaurantCategoryRepository;
+import com.order.orderlink.common.client.RestaurantClient;
 import com.order.orderlink.common.enums.ErrorCode;
 import com.order.orderlink.common.exception.CategoryException;
 
