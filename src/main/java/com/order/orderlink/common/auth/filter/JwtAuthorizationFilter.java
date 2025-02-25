@@ -12,6 +12,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.order.orderlink.common.auth.ServiceAccountUserDetails;
 import com.order.orderlink.common.auth.UserDetailsServiceImpl;
 import com.order.orderlink.common.auth.util.JwtUtil;
 import com.order.orderlink.common.enums.ErrorCode;
@@ -39,26 +40,39 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 		FilterChain filterChain) throws ServletException, IOException {
 
 		String tokenValue = jwtUtil.getJwtFromHeader(request);
-		try {
-			if (StringUtils.hasText(tokenValue)) {
+		log.info("토큰: {}", tokenValue);
+		if (StringUtils.hasText(tokenValue)) {
+			try {
 				if (!jwtUtil.validateToken(tokenValue)) {
 					log.error("토큰이 유효하지 않습니다.");
 					throw new AuthException(ErrorCode.TOKEN_INVALID);
 				}
 				Claims info = jwtUtil.getUserInfoFromToken(tokenValue);
-				setAuthentication(info.getSubject());
+				String subject = info.getSubject();
+				// 서비스 계정 토큰의 subject 가 "serviceAccount" 인 경우, 별도 처리
+				if ("serviceAccount".equals(subject)) {
+					// 서비스 계정 전용 UserDetails 생성
+					UserDetails serviceAccountDetails = new ServiceAccountUserDetails();
+					Authentication authentication = new UsernamePasswordAuthenticationToken(serviceAccountDetails,
+						tokenValue, serviceAccountDetails.getAuthorities());
+					SecurityContextHolder.getContext().setAuthentication(authentication);
+					log.debug("서비스 계정 토큰입니다.");
+				} else {
+					// 일반 사용자 토큰 처리
+					setAuthentication(info.getSubject());
+				}
+			} catch (JwtException ex) {
+				log.debug(ex.getMessage());
+				response.setStatus(HttpStatus.UNAUTHORIZED.value());
+				response.setContentType("application/json;charset=UTF-8");
+				String jsonResponse = new ObjectMapper()
+					.writeValueAsString(new GlobalExceptionHandler.ErrorResponse(
+						HttpStatus.UNAUTHORIZED.value(), ex.getMessage()));
+				response.getWriter().write(jsonResponse);
+				response.getWriter().flush();
 			}
-			filterChain.doFilter(request, response);
-		} catch (JwtException ex) {
-			log.debug(ex.getMessage());
-			response.setStatus(HttpStatus.UNAUTHORIZED.value());
-			response.setContentType("application/json;charset=UTF-8");
-			String jsonResponse = new ObjectMapper()
-				.writeValueAsString(new GlobalExceptionHandler.ErrorResponse(
-					HttpStatus.UNAUTHORIZED.value(), ex.getMessage()));
-			response.getWriter().write(jsonResponse);
-			response.getWriter().flush();
 		}
+		filterChain.doFilter(request, response);
 	}
 
 	// 인증 처리
