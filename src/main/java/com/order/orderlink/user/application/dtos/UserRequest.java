@@ -5,10 +5,12 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
+import lombok.Setter;
 
 public class UserRequest {
 
 	@Getter
+	@Setter
 	public static class Create {
 
 		@Size(min = 4, max = 10, message = "아이디는 4자 이상 10자 이하이어야 합니다.")
@@ -39,11 +41,7 @@ public class UserRequest {
 	}
 
 	@Getter
-	public static class Read {
-
-	}
-
-	@Getter
+	@Setter
 	public static class Update {
 
 		@Email(message = "이메일 형식이 올바르지 않습니다.")
@@ -58,6 +56,7 @@ public class UserRequest {
 	}
 
 	@Getter
+	@Setter
 	public static class UpdateByAdmin {
 
 		@Email(message = "이메일 형식이 올바르지 않습니다.")
@@ -75,6 +74,7 @@ public class UserRequest {
 	}
 
 	@Getter
+	@Setter
 	public static class UpdatePassword {
 
 		@NotBlank(message = "현재 비밀번호를 입력해 주세요.")
@@ -91,6 +91,7 @@ public class UserRequest {
 	}
 
 	@Getter
+	@Setter
 	public static class Delete {
 
 		@NotBlank(message = "확인을 위해 현재 비밀번호를 입력해 주세요.")
