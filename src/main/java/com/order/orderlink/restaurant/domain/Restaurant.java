@@ -84,6 +84,7 @@ public class Restaurant extends BaseTimeEntity {
 	@OneToMany(mappedBy = "restaurant")
 	private List<RestaurantCategory> restaurantCategories = new ArrayList<>();
 
+	@Column(name = "region_id", nullable = false)
 	private UUID regionId;
 
 	public void updateRatingSum(Double newRatingSum) {

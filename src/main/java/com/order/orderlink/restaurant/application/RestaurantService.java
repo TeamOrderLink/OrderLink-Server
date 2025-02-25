@@ -36,7 +36,7 @@ public class RestaurantService {
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
 
     // 음식점 등록 API
-    public RestaurantResponse.Create createRestaurant(RestaurantRequest.Create request) {
+    public RestaurantResponse.Create createRestaurant(RestaurantRequest.Create request, UUID regionId) {
         // 점주 인증 토큰 생성
         String ownerAuthToken = TokenGenerator.generateToken();
 
@@ -51,6 +51,7 @@ public class RestaurantService {
                 .ownerAuthToken(ownerAuthToken)
                 .ownerName(request.getOwnerName())
                 .businessRegNum(request.getBusinessRegNum())
+                .regionId(regionId)
                 .build();
 
         // 음식점 repository 저장

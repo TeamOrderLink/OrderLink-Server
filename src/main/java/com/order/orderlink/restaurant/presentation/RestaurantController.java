@@ -43,10 +43,11 @@ public class RestaurantController {
     @PostMapping
     @PreAuthorize("hasAuthority('ROLE_MASTER')")
     public SuccessResponse<RestaurantResponse.Create> createRestaurant(
-        @Valid @RequestBody RestaurantRequest.Create request) {
+        @Valid @RequestBody RestaurantRequest.Create request,
+        @RequestParam UUID regionId) {
 
         return SuccessResponse.success(SuccessCode.RESTAURANT_CREATE_SUCCESS,
-                restaurantService.createRestaurant(request));
+                restaurantService.createRestaurant(request, regionId));
     }
 
     // 전체 음식점 목록 조회 API
