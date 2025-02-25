@@ -116,9 +116,9 @@ public class FoodService {
 	}
 
 	@Transactional(readOnly = true)
-	public FoodResponse.GetFoods getFoods(int page, int size) {
+	public FoodResponse.GetFoods getFoods(UUID restaurantId, int page, int size) {
 		Pageable pageable = PageRequest.of(page - 1, size);
-		Page<Food> foodPage = foodRepository.findAll(pageable);
+		Page<Food> foodPage = foodRepository.findByRestaurantId(restaurantId, pageable);
 
 		List<FoodDTO> foodDTOs = foodPage.getContent().stream()
 			.map(food -> FoodDTO.builder()

@@ -88,10 +88,11 @@ public class FoodController {
 	@GetMapping
 	public SuccessResponse<FoodResponse.GetFoods> getFoods(
 		@RequestParam(defaultValue = "1") int page,
-		@RequestParam(defaultValue = "10") int size
+		@RequestParam(defaultValue = "10") int size,
+		@RequestParam UUID restaurantId
 	) {
 
 		return SuccessResponse.success(SuccessCode.FOOD_GET_LIST_SUCCESS,
-			foodService.getFoods(page, size));
+			foodService.getFoods(restaurantId, page, size));
 	}
 }
