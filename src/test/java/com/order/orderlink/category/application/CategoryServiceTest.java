@@ -25,6 +25,7 @@ import com.order.orderlink.category.domain.repository.RestaurantCategoryReposito
 import com.order.orderlink.common.auth.util.JwtUtil;
 import com.order.orderlink.common.client.RestaurantClient;
 import com.order.orderlink.restaurant.domain.Restaurant;
+import com.order.orderlink.restaurant.domain.repository.RestaurantRepository;
 
 @TestPropertySource("classpath:application-test.properties")
 @SpringBootTest
@@ -46,6 +47,8 @@ public class CategoryServiceTest {
 
 	List<UUID> categoryIds = new ArrayList<>();
 	UUID restaurantId = null;
+	@Autowired
+	private RestaurantRepository restaurantRepository;
 
 	@BeforeEach
 	void setUp() {
@@ -69,7 +72,9 @@ public class CategoryServiceTest {
 			.ownerAuthToken("ownerAuthToken")
 			.ownerName("경린")
 			.businessRegNum("001020120")
+			.regionId(UUID.randomUUID())
 			.build();
+		restaurantRepository.save(restaurant);
 		restaurantId = restaurant.getId();
 		when(restaurantClient.getRestaurant(restaurant.getId())).thenReturn(restaurant);
 	}

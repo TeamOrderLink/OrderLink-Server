@@ -52,6 +52,7 @@ public class OrderRepositoryTest {
 			.ownerAuthToken("ownerAuthToken")
 			.ownerName("경린")
 			.businessRegNum("001020120")
+			.regionId(UUID.randomUUID())
 			.build();
 		restaurantRepository.save(restaurant);
 
