@@ -14,7 +14,6 @@ import com.order.orderlink.category.domain.Category;
 import com.order.orderlink.category.domain.repository.CategoryRepository;
 import com.order.orderlink.category.exception.CategoryException;
 import com.order.orderlink.common.client.RestaurantClient;
-import com.order.orderlink.common.enums.ErrorCode;
 import com.order.orderlink.restaurant.domain.RestaurantCategory;
 import com.order.orderlink.restaurant.domain.repository.RestaurantCategoryRepository;
 
@@ -68,7 +67,7 @@ public class CategoryService {
 
 	private Category getCategory(UUID categoryId) {
 		return categoryRepository.findById(categoryId)
-			.orElseThrow(() -> new CategoryException(ErrorCode.CATEGORY_NOT_FOUND));
+			.orElseThrow(CategoryException.CategoryNotFoundException::new);
 	}
 
 	public void updateCategory(UUID categoryId, CategoryRequest.UpdateCategory request) {
