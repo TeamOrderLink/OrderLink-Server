@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import com.order.orderlink.common.client.RestaurantClient;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -12,12 +11,12 @@ import com.order.orderlink.category.application.dtos.CategoryDTO;
 import com.order.orderlink.category.application.dtos.CategoryRequest;
 import com.order.orderlink.category.application.dtos.CategoryResponse;
 import com.order.orderlink.category.domain.Category;
-import com.order.orderlink.category.domain.RestaurantCategory;
 import com.order.orderlink.category.domain.repository.CategoryRepository;
-import com.order.orderlink.category.domain.repository.RestaurantCategoryRepository;
+import com.order.orderlink.category.exception.CategoryException;
 import com.order.orderlink.common.client.RestaurantClient;
 import com.order.orderlink.common.enums.ErrorCode;
-import com.order.orderlink.common.exception.CategoryException;
+import com.order.orderlink.restaurant.domain.RestaurantCategory;
+import com.order.orderlink.restaurant.domain.repository.RestaurantCategoryRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -30,9 +29,7 @@ public class CategoryService {
 	private final RestaurantClient restaurantClient;
 
 	public CategoryResponse.Create createCategory(CategoryRequest.Create request) {
-		Category category = Category.builder()
-			.name(request.getName())
-			.build();
+		Category category = Category.create(request.getName());
 		categoryRepository.save(category);
 		return CategoryResponse.Create.builder().categoryId(category.getId()).build();
 	}
@@ -70,9 +67,8 @@ public class CategoryService {
 	}
 
 	private Category getCategory(UUID categoryId) {
-		Category category = categoryRepository.findById(categoryId)
+		return categoryRepository.findById(categoryId)
 			.orElseThrow(() -> new CategoryException(ErrorCode.CATEGORY_NOT_FOUND));
-		return category;
 	}
 
 	public void updateCategory(UUID categoryId, CategoryRequest.UpdateCategory request) {
