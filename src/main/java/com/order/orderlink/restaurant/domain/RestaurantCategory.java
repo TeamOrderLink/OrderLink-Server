@@ -1,12 +1,12 @@
-package com.order.orderlink.category.domain;
+package com.order.orderlink.restaurant.domain;
 
 import java.util.UUID;
 
 import org.hibernate.annotations.UuidGenerator;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import com.order.orderlink.category.domain.Category;
 import com.order.orderlink.common.entity.BaseTimeEntity;
-import com.order.orderlink.restaurant.domain.Restaurant;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;

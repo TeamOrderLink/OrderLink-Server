@@ -13,7 +13,7 @@ import com.order.orderlink.address.application.dtos.AddressResponse;
 import com.order.orderlink.address.domain.Address;
 import com.order.orderlink.address.domain.repository.AddressRepository;
 import com.order.orderlink.common.enums.ErrorCode;
-import com.order.orderlink.common.exception.AddressException;
+import com.order.orderlink.address.exception.AddressException;
 import com.order.orderlink.user.domain.User;
 
 import lombok.RequiredArgsConstructor;

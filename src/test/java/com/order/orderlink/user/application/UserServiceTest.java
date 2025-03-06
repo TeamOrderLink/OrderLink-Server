@@ -24,7 +24,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import com.order.orderlink.common.exception.UserException;
+import com.order.orderlink.user.exception.UserException;
 import com.order.orderlink.user.application.dtos.UserRequest;
 import com.order.orderlink.user.application.dtos.UserResponse;
 import com.order.orderlink.user.domain.User;

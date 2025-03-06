@@ -13,7 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import com.order.orderlink.common.enums.ErrorCode;
-import com.order.orderlink.common.exception.OrderException;
+import com.order.orderlink.order.exception.OrderException;
 import com.order.orderlink.order.domain.Order;
 import com.order.orderlink.order.domain.OrderStatus;
 import com.querydsl.core.BooleanBuilder;
