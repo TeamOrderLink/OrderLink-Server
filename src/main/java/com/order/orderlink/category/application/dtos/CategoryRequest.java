@@ -5,6 +5,8 @@ import java.util.UUID;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -15,10 +17,14 @@ public class CategoryRequest {
 
 		@NotBlank
 		private String name;
+
+		private Create() {
+		}
 	}
 
 	@Getter
 	@Builder
+	@AllArgsConstructor(access = AccessLevel.PRIVATE)
 	public static class RegisterRestaurantCategory {
 		@NotEmpty
 		private List<UUID> categoryIds;
@@ -28,5 +34,8 @@ public class CategoryRequest {
 	public static class UpdateCategory {
 		@NotBlank
 		private String name;
+
+		private UpdateCategory() {
+		}
 	}
 }

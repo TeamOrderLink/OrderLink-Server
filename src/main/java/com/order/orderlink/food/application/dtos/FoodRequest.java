@@ -20,6 +20,9 @@ public class FoodRequest {
 		private int price;
 
 		private boolean isHidden;
+
+		private Create() {
+		}
 	}
 
 	@Getter
@@ -33,6 +36,9 @@ public class FoodRequest {
 		private int price;
 
 		private boolean isHidden;
+
+		private Update() {
+		}
 
 	}
 }

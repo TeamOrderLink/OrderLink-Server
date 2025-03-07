@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.order.orderlink.common.enums.ErrorCode;
-import com.order.orderlink.common.exception.UserException;
+import com.order.orderlink.user.exception.UserException;
 import com.order.orderlink.user.application.dtos.UserRequest;
 import com.order.orderlink.user.application.dtos.UserResponse;
 import com.order.orderlink.user.domain.User;

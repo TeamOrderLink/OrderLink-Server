@@ -12,15 +12,15 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.order.orderlink.common.client.RestaurantClient;
 import com.order.orderlink.common.enums.ErrorCode;
-import com.order.orderlink.common.exception.FoodException;
-import com.order.orderlink.common.exception.UserException;
 import com.order.orderlink.common.external.s3.S3Service;
 import com.order.orderlink.food.application.dtos.FoodDTO;
 import com.order.orderlink.food.application.dtos.FoodRequest;
 import com.order.orderlink.food.application.dtos.FoodResponse;
 import com.order.orderlink.food.domain.Food;
 import com.order.orderlink.food.domain.repository.FoodRepository;
+import com.order.orderlink.food.exception.FoodException;
 import com.order.orderlink.restaurant.domain.Restaurant;
+import com.order.orderlink.user.exception.UserException;
 
 import lombok.RequiredArgsConstructor;
 
@@ -35,14 +35,14 @@ public class FoodService {
 
 	public FoodResponse.Create createFood(FoodRequest.Create request, UUID restaurantId, UUID userId) {
 		Restaurant restaurant = restaurantClient.getRestaurant(restaurantId);
-		Food food = Food.builder()
-			.restaurant(restaurant)
-			.userId(userId)
-			.name(request.getName())
-			.description(request.getDescription())
-			.price(request.getPrice())
-			.isHidden(request.isHidden())
-			.build();
+		Food food = Food.create(
+			restaurant,
+			userId,
+			request.getName(),
+			request.getDescription(),
+			request.getPrice(),
+			request.isHidden()
+		);
 
 		Food savedFood = foodRepository.save(food);
 
@@ -83,15 +83,14 @@ public class FoodService {
 			throw new UserException(ErrorCode.USER_ACCESS_DENIED);
 		}
 
-		food.softDelete(username);
+		food.deleteFoodSoftly(username);
 
 		return new FoodResponse.Delete(food.getUserId(), food.getDeletedAt());
 	}
 
 	private Food getFood(UUID foodId) {
-		Food food = foodRepository.findById(foodId)
+		return foodRepository.findById(foodId)
 			.orElseThrow(() -> new FoodException(ErrorCode.FOOD_NOT_FOUND));
-		return food;
 	}
 
 	public FoodResponse.UploadImage uploadFoodImage(UUID foodId, MultipartFile file) {

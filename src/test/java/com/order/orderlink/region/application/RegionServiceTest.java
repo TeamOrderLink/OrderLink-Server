@@ -15,7 +15,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.order.orderlink.common.auth.util.JwtUtil;
-import com.order.orderlink.common.exception.RegionException;
+import com.order.orderlink.region.exception.RegionException;
 import com.order.orderlink.region.application.dtos.RegionRequest;
 import com.order.orderlink.region.domain.Region;
 import com.order.orderlink.region.domain.repository.RegionRepository;

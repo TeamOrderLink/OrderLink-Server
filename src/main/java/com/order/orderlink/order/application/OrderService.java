@@ -18,7 +18,7 @@ import com.order.orderlink.common.client.RestaurantClient;
 import com.order.orderlink.common.client.UserClient;
 import com.order.orderlink.common.enums.ErrorCode;
 import com.order.orderlink.common.exception.AuthException;
-import com.order.orderlink.common.exception.OrderException;
+import com.order.orderlink.order.exception.OrderException;
 import com.order.orderlink.order.application.dtos.OrderDTO;
 import com.order.orderlink.order.application.dtos.OrderFoodDTO;
 import com.order.orderlink.order.application.dtos.OrderRequest;

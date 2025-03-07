@@ -15,7 +15,6 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -23,7 +22,6 @@ import lombok.Setter;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 @Entity
 @Table(name = "p_foods")
 public class Food extends BaseTimeEntity {
@@ -71,7 +69,19 @@ public class Food extends BaseTimeEntity {
 		}
 	}
 
-	public void softDelete(String deletedBy) {
+	public static Food create(Restaurant restaurant, UUID userId, String name, String description, int price,
+		boolean isHidden) {
+		Food food = new Food();
+		food.restaurant = restaurant;
+		food.userId = userId;
+		food.name = name;
+		food.description = description;
+		food.price = price;
+		food.isHidden = isHidden;
+		return food;
+	}
+
+	public void deleteFoodSoftly(String deletedBy) {
 		super.softDelete(deletedBy);
 	}
 

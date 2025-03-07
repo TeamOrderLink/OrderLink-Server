@@ -8,6 +8,7 @@ import org.hibernate.annotations.UuidGenerator;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import com.order.orderlink.common.entity.BaseTimeEntity;
+import com.order.orderlink.restaurant.domain.RestaurantCategory;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
@@ -42,6 +43,12 @@ public class Category extends BaseTimeEntity {
 
 	public void updateName(String name) {
 		this.name = name;
+	}
+
+	public static Category create(String name) {
+		Category category = new Category();
+		category.name = name;
+		return category;
 	}
 }
 

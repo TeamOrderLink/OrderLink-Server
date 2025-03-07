@@ -17,7 +17,7 @@ import com.order.orderlink.ai.application.dtos.AiApiResponse;
 import com.order.orderlink.ai.domain.AiApiLog;
 import com.order.orderlink.ai.domain.repository.AiApiLogRepository;
 import com.order.orderlink.common.enums.ErrorCode;
-import com.order.orderlink.common.exception.AiApiException;
+import com.order.orderlink.ai.exception.AiApiException;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

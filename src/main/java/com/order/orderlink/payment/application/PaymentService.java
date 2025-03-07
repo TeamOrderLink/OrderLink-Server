@@ -11,7 +11,7 @@ import com.order.orderlink.common.auth.UserDetailsImpl;
 import com.order.orderlink.common.client.OrderClient;
 import com.order.orderlink.common.enums.ErrorCode;
 import com.order.orderlink.common.exception.AuthException;
-import com.order.orderlink.common.exception.PaymentException;
+import com.order.orderlink.payment.exception.PaymentException;
 import com.order.orderlink.order.domain.Order;
 import com.order.orderlink.payment.application.dtos.PaymentRequest;
 import com.order.orderlink.payment.application.dtos.PaymentResponse;

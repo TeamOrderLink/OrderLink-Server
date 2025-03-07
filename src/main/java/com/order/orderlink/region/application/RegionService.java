@@ -13,7 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.order.orderlink.common.auth.UserDetailsImpl;
 import com.order.orderlink.common.enums.ErrorCode;
-import com.order.orderlink.common.exception.RegionException;
+import com.order.orderlink.region.exception.RegionException;
 import com.order.orderlink.region.application.dtos.RegionDTO;
 import com.order.orderlink.region.application.dtos.RegionRequest;
 import com.order.orderlink.region.application.dtos.RegionResponse;
