@@ -21,11 +21,11 @@ import com.querydsl.core.BooleanBuilder;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 @Repository
-public class OrderCustomRepositoryImpl implements OrderCustomRepository {
+public class OrderRepositoryImpl implements OrderCustomRepository {
 
 	private final JPAQueryFactory queryFactory;
 
-	public OrderCustomRepositoryImpl(JPAQueryFactory queryFactory) {
+	public OrderRepositoryImpl(JPAQueryFactory queryFactory) {
 		this.queryFactory = queryFactory;
 	}
 
