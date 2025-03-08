@@ -1,7 +1,7 @@
-package com.order.orderlink.order.domain.repository;
+package com.order.orderlink.order.infrastructure;
 
 import static com.order.orderlink.order.domain.QOrder.*;
-import static com.order.orderlink.orderitem.domain.QOrderItem.*;
+import static com.order.orderlink.order.domain.QOrderItem.*;
 import static com.order.orderlink.restaurant.domain.QRestaurant.*;
 
 import java.time.LocalDate;
@@ -13,18 +13,19 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import com.order.orderlink.common.enums.ErrorCode;
-import com.order.orderlink.order.exception.OrderException;
 import com.order.orderlink.order.domain.Order;
 import com.order.orderlink.order.domain.OrderStatus;
+import com.order.orderlink.order.domain.repository.OrderCustomRepository;
+import com.order.orderlink.order.exception.OrderException;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 @Repository
-public class OrderRepositoryImpl implements OrderRepositoryCustom {
+public class OrderCustomRepositoryImpl implements OrderCustomRepository {
 
 	private final JPAQueryFactory queryFactory;
 
-	public OrderRepositoryImpl(JPAQueryFactory queryFactory) {
+	public OrderCustomRepositoryImpl(JPAQueryFactory queryFactory) {
 		this.queryFactory = queryFactory;
 	}
 
@@ -72,7 +73,8 @@ public class OrderRepositoryImpl implements OrderRepositoryCustom {
 			.join(order.orderItems, orderItem)
 			.leftJoin(restaurant).on(restaurant.id.eq(order.restaurantId))
 			.where(builder)
-			.fetchCount();
+			.fetch()
+			.size();
 
 		return new PageImpl<>(orders, pageable, total);
 	}

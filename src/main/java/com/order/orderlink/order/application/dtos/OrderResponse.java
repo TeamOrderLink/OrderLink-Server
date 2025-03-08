@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -16,14 +17,14 @@ public class OrderResponse {
 
 	@Getter
 	@Builder
-	@AllArgsConstructor
+	@AllArgsConstructor(access = AccessLevel.PRIVATE)
 	public static class Create {
 		private final UUID orderId;
 	}
 
 	@Getter
 	@Builder
-	@AllArgsConstructor
+	@AllArgsConstructor(access = AccessLevel.PRIVATE)
 	public static class GetOrders {
 		private final List<OrderDTO> orders;
 		private final int totalPages;
@@ -32,7 +33,7 @@ public class OrderResponse {
 
 	@Getter
 	@Builder
-	@AllArgsConstructor
+	@AllArgsConstructor(access = AccessLevel.PRIVATE)
 	public static class GetOrderDetail {
 		private final UUID orderId;
 		private final String restaurantName;
@@ -49,7 +50,7 @@ public class OrderResponse {
 
 	@Getter
 	@Builder
-	@AllArgsConstructor
+	@AllArgsConstructor(access = AccessLevel.PRIVATE)
 	public static class GetRestaurantOrders {
 		private final List<RestaurantOrderDTO> orders;
 		private final int totalPages;

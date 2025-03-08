@@ -88,7 +88,7 @@ public class FoodService {
 		return new FoodResponse.Delete(food.getUserId(), food.getDeletedAt());
 	}
 
-	private Food getFood(UUID foodId) {
+	public Food getFood(UUID foodId) {
 		return foodRepository.findById(foodId)
 			.orElseThrow(() -> new FoodException(ErrorCode.FOOD_NOT_FOUND));
 	}

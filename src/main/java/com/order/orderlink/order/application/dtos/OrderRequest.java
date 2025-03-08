@@ -18,7 +18,7 @@ public class OrderRequest {
 		@NotNull
 		private UUID restaurantId;
 
-		private List<OrderFoodDTO> foods;
+		private List<OrderItemDTO> foods;
 
 		@NotNull
 		private int totalPrice;
@@ -26,11 +26,17 @@ public class OrderRequest {
 		private String deliveryAddress;
 		private String deliveryRequest;
 		private OrderType orderType;
+
+		private Create() {
+		}
 	}
 
 	@Getter
 	public static class UpdateStatus {
 		private OrderStatus status;
+
+		private UpdateStatus() {
+		}
 	}
 
 	@Getter
@@ -40,5 +46,8 @@ public class OrderRequest {
 		private String foodName;
 		private LocalDate startDate;
 		private LocalDate endDate;
+
+		private Search() {
+		}
 	}
 }

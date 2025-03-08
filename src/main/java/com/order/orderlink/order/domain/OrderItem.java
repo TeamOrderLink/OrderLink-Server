@@ -1,4 +1,4 @@
-package com.order.orderlink.orderitem.domain;
+package com.order.orderlink.order.domain;
 
 import java.util.UUID;
 
@@ -6,7 +6,6 @@ import org.hibernate.annotations.UuidGenerator;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import com.order.orderlink.common.entity.BaseTimeEntity;
-import com.order.orderlink.order.domain.Order;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;

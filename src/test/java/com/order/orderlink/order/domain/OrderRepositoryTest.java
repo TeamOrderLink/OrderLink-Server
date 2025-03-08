@@ -23,7 +23,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.order.orderlink.common.auth.util.JwtUtil;
 import com.order.orderlink.order.domain.repository.OrderRepository;
-import com.order.orderlink.orderitem.domain.OrderItem;
 import com.order.orderlink.restaurant.domain.Restaurant;
 import com.order.orderlink.restaurant.domain.repository.RestaurantRepository;
 
