@@ -9,21 +9,22 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 public class CategoryRequest {
 
 	@Getter
+	@NoArgsConstructor(access = AccessLevel.PRIVATE)
+	@AllArgsConstructor(access = AccessLevel.PRIVATE)
 	public static class Create {
 
 		@NotBlank
 		private String name;
-
-		private Create() {
-		}
 	}
 
 	@Getter
 	@Builder
+	@NoArgsConstructor(access = AccessLevel.PRIVATE)
 	@AllArgsConstructor(access = AccessLevel.PRIVATE)
 	public static class RegisterRestaurantCategory {
 		@NotEmpty
@@ -31,11 +32,10 @@ public class CategoryRequest {
 	}
 
 	@Getter
+	@NoArgsConstructor(access = AccessLevel.PRIVATE)
+	@AllArgsConstructor(access = AccessLevel.PRIVATE)
 	public static class UpdateCategory {
 		@NotBlank
 		private String name;
-
-		private UpdateCategory() {
-		}
 	}
 }

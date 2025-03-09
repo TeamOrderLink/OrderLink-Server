@@ -3,11 +3,16 @@ package com.order.orderlink.food.application.dtos;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 public class FoodRequest {
 
 	@Getter
+	@NoArgsConstructor(access = AccessLevel.PRIVATE)
+	@AllArgsConstructor(access = AccessLevel.PRIVATE)
 	public static class Create {
 
 		@NotBlank(message = "음식명을 입력해주세요.")
@@ -20,12 +25,11 @@ public class FoodRequest {
 		private int price;
 
 		private boolean isHidden;
-
-		private Create() {
-		}
 	}
 
 	@Getter
+	@NoArgsConstructor(access = AccessLevel.PRIVATE)
+	@AllArgsConstructor(access = AccessLevel.PRIVATE)
 	public static class Update {
 
 		private String name;
@@ -36,9 +40,6 @@ public class FoodRequest {
 		private int price;
 
 		private boolean isHidden;
-
-		private Update() {
-		}
 
 	}
 }

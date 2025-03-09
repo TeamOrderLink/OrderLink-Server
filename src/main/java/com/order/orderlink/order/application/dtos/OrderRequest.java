@@ -8,11 +8,16 @@ import com.order.orderlink.order.domain.OrderStatus;
 import com.order.orderlink.order.domain.OrderType;
 
 import jakarta.validation.constraints.NotNull;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 public class OrderRequest {
 
 	@Getter
+	@NoArgsConstructor(access = AccessLevel.PRIVATE)
+	@AllArgsConstructor(access = AccessLevel.PRIVATE)
 	public static class Create {
 
 		@NotNull
@@ -26,28 +31,23 @@ public class OrderRequest {
 		private String deliveryAddress;
 		private String deliveryRequest;
 		private OrderType orderType;
-
-		private Create() {
-		}
 	}
 
 	@Getter
+	@NoArgsConstructor(access = AccessLevel.PRIVATE)
+	@AllArgsConstructor(access = AccessLevel.PRIVATE)
 	public static class UpdateStatus {
 		private OrderStatus status;
-
-		private UpdateStatus() {
-		}
 	}
 
 	@Getter
+	@NoArgsConstructor(access = AccessLevel.PRIVATE)
+	@AllArgsConstructor(access = AccessLevel.PRIVATE)
 	public static class Search {
 		private OrderStatus status;
 		private String restaurantName;
 		private String foodName;
 		private LocalDate startDate;
 		private LocalDate endDate;
-
-		private Search() {
-		}
 	}
 }
