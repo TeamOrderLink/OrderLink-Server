@@ -18,7 +18,6 @@ import com.order.orderlink.payment.application.PaymentService;
 import com.order.orderlink.payment.application.dtos.PaymentRequest;
 import com.order.orderlink.payment.application.dtos.PaymentResponse;
 
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
@@ -33,10 +32,9 @@ public class PaymentController {
 	@PreAuthorize("hasAuthority('ROLE_CUSTOMER')")
 	public SuccessResponse<PaymentResponse.Create> createPayment(
 		@AuthenticationPrincipal UserDetailsImpl userDetails,
-		@Valid @RequestBody PaymentRequest.Create request,
-		HttpServletRequest httpServletRequest) {
+		@Valid @RequestBody PaymentRequest.Create request) {
 		return SuccessResponse.success(SuccessCode.PAYMENT_CREATE_SUCCESS,
-			paymentService.createPayment(userDetails, request, httpServletRequest));
+			paymentService.createPayment(userDetails, request));
 	}
 
 	@GetMapping("{paymentId}")
