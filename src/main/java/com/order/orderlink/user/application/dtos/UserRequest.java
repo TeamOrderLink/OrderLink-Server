@@ -6,6 +6,7 @@ import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -14,6 +15,7 @@ public class UserRequest {
 
 	@Getter
 	@Setter
+	@Builder
 	@NoArgsConstructor(access = AccessLevel.PRIVATE)
 	@AllArgsConstructor(access = AccessLevel.PRIVATE)
 	public static class Create {
@@ -47,6 +49,7 @@ public class UserRequest {
 
 	@Getter
 	@Setter
+	@Builder
 	@NoArgsConstructor(access = AccessLevel.PRIVATE)
 	@AllArgsConstructor(access = AccessLevel.PRIVATE)
 	public static class Update {
@@ -64,6 +67,7 @@ public class UserRequest {
 
 	@Getter
 	@Setter
+	@Builder
 	@NoArgsConstructor(access = AccessLevel.PRIVATE)
 	@AllArgsConstructor(access = AccessLevel.PRIVATE)
 	public static class UpdateByAdmin {
@@ -84,6 +88,7 @@ public class UserRequest {
 
 	@Getter
 	@Setter
+	@Builder
 	@NoArgsConstructor(access = AccessLevel.PRIVATE)
 	@AllArgsConstructor(access = AccessLevel.PRIVATE)
 	public static class UpdatePassword {
@@ -103,6 +108,7 @@ public class UserRequest {
 
 	@Getter
 	@Setter
+	@Builder
 	@NoArgsConstructor(access = AccessLevel.PRIVATE)
 	@AllArgsConstructor(access = AccessLevel.PRIVATE)
 	public static class Delete {
