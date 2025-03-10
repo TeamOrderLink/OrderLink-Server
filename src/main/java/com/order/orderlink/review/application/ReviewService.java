@@ -97,19 +97,11 @@ public class ReviewService {
 	// 특정 음식점에 대한 페이징 처리된 리뷰 목록 조회
 	public ReviewResponse.ReviewPageResponse getReviewsByRestaurant(UUID restaurantId, Pageable pageable) {
 		Page<Review> page = reviewRepository.findByRestaurantId(restaurantId, pageable);
-		List<ReviewResponse.Summary> reviews = page.getContent().stream().map(review -> {
-			// 리뷰 내용이 50자 이상이면 50자까지만 표시
-			String fullText = review.getContent() != null ? review.getContent() : "";
-			String summary = fullText.length() > 50 ? fullText.substring(0, 50) + "..." : fullText;
-			String nickname = getUserNickname(review.getUserId());
-			return ReviewResponse.Summary.builder()
-				.reviewId(review.getId())
-				.userNickname(nickname)
-				.rating(review.getRating())
-				.contentSummary(summary)
-				.createdAt(review.getCreatedAt())
-				.build();
-		}).toList();
+		List<ReviewResponse.Summary> reviews = page.getContent()
+			.stream()
+			.map(this::mapToReviewSummary) // 메서드로 추출
+			.toList();
+
 		return ReviewResponse.ReviewPageResponse.builder()
 			.reviews(reviews)
 			.currentPage(page.getNumber() + 1)
@@ -213,6 +205,24 @@ public class ReviewService {
 	private String getUserNickname(UUID userId) {
 		User user = userClient.getUser(userId);
 		return user.getNickname();
+	}
+
+	// 리뷰를 ReviewResponse.Summary로 매핑
+	private ReviewResponse.Summary mapToReviewSummary(Review review) {
+		final int CONTENT_SUMMARY_LENGTH = 50;
+		String contentSummary = (review.getContent() == null || review.getContent().length() <= CONTENT_SUMMARY_LENGTH)
+			? review.getContent()
+			: review.getContent().substring(0, CONTENT_SUMMARY_LENGTH) + "...";
+
+		String nickname = getUserNickname(review.getUserId());
+
+		return ReviewResponse.Summary.builder()
+			.reviewId(review.getId())
+			.userNickname(nickname)
+			.rating(review.getRating())
+			.contentSummary(contentSummary)
+			.createdAt(review.getCreatedAt())
+			.build();
 	}
 
 }
