@@ -63,4 +63,8 @@ public class Address extends BaseTimeEntity {
 		}
 	}
 
+	public void deleteSoftly(String deletedBy) {
+		super.softDelete(deletedBy);
+	}
+
 }

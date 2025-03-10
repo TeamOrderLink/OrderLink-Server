@@ -102,7 +102,7 @@ public class AddressService {
 	// 배송지 삭제 (soft delete)
 	public void deleteAddress(UUID addressId, UUID currentUserId, String username) {
 		Address address = getAddressInstance(addressId, currentUserId);
-		address.softDelete(username);
+		address.deleteSoftly(username);
 	}
 
 	//
