@@ -89,7 +89,9 @@ public class ReviewService {
 		restaurant.updateRatingCount(newRatingCount);
 		restaurant.updateAvgRating(newRatingSum / newRatingCount);
 		restaurantRepository.save(restaurant);
-		return new ReviewResponse.Create(review.getId());
+		return ReviewResponse.Create.builder()
+			.reviewId(review.getId())
+			.build();
 	}
 
 	// 특정 음식점에 대한 페이징 처리된 리뷰 목록 조회
@@ -108,8 +110,12 @@ public class ReviewService {
 				.createdAt(review.getCreatedAt())
 				.build();
 		}).toList();
-		return new ReviewResponse.ReviewPageResponse(reviews, page.getNumber() + 1, page.getTotalPages(),
-			page.getTotalElements());
+		return ReviewResponse.ReviewPageResponse.builder()
+			.reviews(reviews)
+			.currentPage(page.getNumber() + 1)
+			.totalPages(page.getTotalPages())
+			.totalElements(page.getTotalElements())
+			.build();
 	}
 
 	// 리뷰 상세 조회: 특정 리뷰의 전체 정보를 반환, 주문 상세 정보(주문 ID, 주문 날짜, 주문 상품) 포함
@@ -185,7 +191,7 @@ public class ReviewService {
 		}
 
 		Restaurant restaurant = review.getRestaurant();
-		review.softDelete(currentUsername);
+		review.deleteSoftly(currentUsername);
 
 		// 음식점 평점 집계 업데이트
 		Double newRatingSum = restaurant.getRatingSum() - review.getRating();
