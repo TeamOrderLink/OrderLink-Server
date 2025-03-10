@@ -1,5 +1,7 @@
 package com.order.orderlink.address.presentation;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.data.domain.PageRequest;
@@ -73,54 +75,17 @@ public class AddressController {
 		@RequestParam(defaultValue = "10") int size,
 		@RequestParam(required = false) String sort) {
 
-		if (page < 1) {
-			page = 1;
-		}
+		final int validatedPage = validatePage(page);
+		final int validatedSize = validateSize(size);
+		final Sort sortObj = createSortObject(sort);
 
-		if (size != 10 && size != 30 && size != 50) {
-			size = 10;
-		}
-
-		Sort sortObj = null;
-		if (sort != null && !sort.trim().isEmpty()) {
-			String[] sortParts = sort.split(",");
-			if (sortParts.length == 2) {
-				String fieldInput = sortParts[0].trim();
-				String orderInput = sortParts[1].trim().toLowerCase();
-				// field가 "id", "createdAt", "updatedAt" 중 하나이면 사용,
-				// 아니면 기본 정렬 적용
-				if (fieldInput.equals("id") || fieldInput.equals("createdAt") || fieldInput.equals("updatedAt")) {
-					if (orderInput.equals("asc")) {
-						sortObj = Sort.by(fieldInput).ascending();
-					} else if (orderInput.equals("desc")) {
-						sortObj = Sort.by(fieldInput).descending();
-					}
-				} else {
-					// 유효하지 않은 field이면 기본값 적용
-					sortObj = Sort.by(
-						Sort.Order.desc("createdAt"),
-						Sort.Order.desc("updatedAt")
-					);
-				}
-			} else {
-				sortObj = Sort.by(
-					Sort.Order.desc("createdAt"),
-					Sort.Order.desc("updatedAt")
-				);
-			}
-		} else {
-			sortObj = Sort.by(
-				Sort.Order.desc("createdAt"),
-				Sort.Order.desc("updatedAt")
-			);
-		}
-
-		// 1-based 페이지 번호를 0-based로 변환
-		assert sortObj != null;
-		Pageable pageable = PageRequest.of(page - 1, size, sortObj);
+		Pageable pageable = PageRequest.of(validatedPage - 1, validatedSize, sortObj);
 		UUID userId = userDetails.getUser().getId();
-		return SuccessResponse.success(SuccessCode.ADDRESS_GET_SUCCESS,
-			addressService.getAddresses(userId, pageable));
+
+		return SuccessResponse.success(
+			SuccessCode.ADDRESS_GET_SUCCESS,
+			addressService.getAddresses(userId, pageable)
+		);
 	}
 
 	/**
@@ -174,6 +139,45 @@ public class AddressController {
 		String username = userDetails.getUser().getUsername();
 		addressService.deleteAddress(id, currentUserId, username);
 		return SuccessNonDataResponse.success(SuccessCode.ADDRESS_DELETE_SUCCESS);
+	}
+
+	// 페이지 유효성 검증
+	private int validatePage(int page) {
+		return Math.max(page, 1);
+	}
+
+	// 페이지 크기 유효성 검증
+	private int validateSize(int size) {
+		final int DEFAULT_SIZE = 10;
+		final List<Integer> ALLOWED_SIZES = Arrays.asList(10, 30, 50);
+		return ALLOWED_SIZES.contains(size) ? size : DEFAULT_SIZE;
+	}
+
+	// 정렬 객체 생성
+	private Sort createSortObject(String sortParam) {
+		final Sort DEFAULT_SORT = Sort.by(
+			Sort.Order.desc("createdAt"),
+			Sort.Order.desc("updatedAt")
+		);
+
+		if (sortParam == null || sortParam.trim().isEmpty()) {
+			return DEFAULT_SORT;
+		}
+
+		String[] sortParts = sortParam.split(",");
+		if (sortParts.length == 2) {
+			String field = sortParts[0].trim();
+			String order = sortParts[1].trim().toLowerCase();
+
+			if (List.of("id", "createdAt", "updatedAt").contains(field)) {
+				if (order.equals("asc")) {
+					return Sort.by(field).ascending();
+				} else if (order.equals("desc")) {
+					return Sort.by(field).descending();
+				}
+			}
+		}
+		return DEFAULT_SORT;
 	}
 
 }
