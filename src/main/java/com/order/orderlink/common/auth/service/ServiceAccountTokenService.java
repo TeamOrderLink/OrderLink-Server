@@ -67,16 +67,9 @@ public class ServiceAccountTokenService {
 	@Getter
 	@Setter
 	public static class TokenResponse {
-		private String access_token;
-		private int expires_in;
+		private String accessToken;
+		private int expiresIn;
 
-		public String getAccessToken() {
-			return access_token;
-		}
-
-		public int getExpiresIn() {
-			return expires_in;
-		}
 	}
 
 }
