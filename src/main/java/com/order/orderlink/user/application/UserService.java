@@ -176,7 +176,7 @@ public class UserService {
 			throw new UserException(ErrorCode.USER_PASSWORD_NOT_MATCH);
 		}
 
-		user.softDelete(username);  // BaseTimeEntity에 구현한 softDelete 메서드 (deletedBy, deletedAt 필드 업데이트)
+		user.deleteSoftly(username);  // BaseTimeEntity에 구현한 softDelete 메서드 (deletedBy, deletedAt 필드 업데이트)
 
 		return UserResponse.Delete.builder()
 			.id(user.getId())

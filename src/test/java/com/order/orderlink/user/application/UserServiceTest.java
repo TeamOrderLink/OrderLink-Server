@@ -24,12 +24,12 @@ import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import com.order.orderlink.user.exception.UserException;
 import com.order.orderlink.user.application.dtos.UserRequest;
 import com.order.orderlink.user.application.dtos.UserResponse;
 import com.order.orderlink.user.domain.User;
 import com.order.orderlink.user.domain.UserRoleEnum;
 import com.order.orderlink.user.domain.repository.UserRepository;
+import com.order.orderlink.user.exception.UserException;
 
 @ExtendWith(MockitoExtension.class)
 public class UserServiceTest {
@@ -248,7 +248,7 @@ public class UserServiceTest {
 
 	@Test
 	@DisplayName("회원 탈퇴 성공")
-	public void testSoftDeleteUser_Success() {
+	public void testDeleteSoftlyUser_Success() {
 		// Given
 		UserRequest.Delete deleteRequest = new UserRequest.Delete();
 		deleteRequest.setPassword("deletePass");
@@ -268,7 +268,7 @@ public class UserServiceTest {
 
 	@Test
 	@DisplayName("회원 탈퇴 실패: 비밀번호 불일치")
-	public void testSoftDeleteUser_PasswordMismatch() {
+	public void testDeleteSoftlyUser_PasswordMismatch() {
 		// Given
 		UserRequest.Delete deleteRequest = new UserRequest.Delete();
 		deleteRequest.setPassword("wrongPass");
