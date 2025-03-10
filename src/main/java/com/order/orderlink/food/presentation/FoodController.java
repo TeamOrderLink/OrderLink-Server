@@ -2,6 +2,7 @@ package com.order.orderlink.food.presentation;
 
 import java.util.UUID;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -21,6 +22,7 @@ import com.order.orderlink.common.enums.SuccessCode;
 import com.order.orderlink.food.application.FoodService;
 import com.order.orderlink.food.application.dtos.FoodRequest;
 import com.order.orderlink.food.application.dtos.FoodResponse;
+import com.order.orderlink.food.domain.Food;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -95,4 +97,11 @@ public class FoodController {
 		return SuccessResponse.success(SuccessCode.FOOD_GET_LIST_SUCCESS,
 			foodService.getFoods(restaurantId, page, size));
 	}
+
+	@GetMapping("/{foodId}/getFood")
+	public ResponseEntity<Food> getFood(@PathVariable UUID foodId) {
+		Food food = foodService.getFood(foodId);
+		return ResponseEntity.ok(food);
+	}
+
 }

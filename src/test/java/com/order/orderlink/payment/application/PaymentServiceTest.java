@@ -12,6 +12,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.transaction.annotation.Transactional;
@@ -90,11 +93,12 @@ public class PaymentServiceTest {
 		User user = new User("홍길동", "mr.hong", "hong@gmail.com", "01011112222",
 			"$2a$10$BbKYV3eeMYWBHcgxBLo11uRlugF3In804idrVHSzvqbZRmuvpN8Q6", UserRoleEnum.CUSTOMER);
 		UserDetailsImpl userDetails = new UserDetailsImpl(user);
-		HttpServletRequest httpServletRequest = mock(HttpServletRequest.class);
-		when(httpServletRequest.getHeader("Authorization")).thenReturn(accessToken);
+		Authentication authentication =
+			new UsernamePasswordAuthenticationToken(userDetails, accessToken, userDetails.getAuthorities());
+		SecurityContextHolder.getContext().setAuthentication(authentication);
 
 		//when
-		PaymentResponse.Create response = paymentService.createPayment(userDetails, request, httpServletRequest);
+		PaymentResponse.Create response = paymentService.createPayment(userDetails, request);
 
 		//then
 		assertNotNull(response);

@@ -49,7 +49,7 @@ public class Region extends BaseTimeEntity {
 		this.parent = parent;
 	}
 
-	public void softDelete(String deletedBy) {
+	public void deleteSoftly(String deletedBy) {
 		super.softDelete(deletedBy);
 	}
 
