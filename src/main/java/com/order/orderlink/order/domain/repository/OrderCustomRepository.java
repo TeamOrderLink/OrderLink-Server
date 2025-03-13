@@ -8,7 +8,7 @@ import org.springframework.data.domain.Pageable;
 import com.order.orderlink.order.domain.Order;
 import com.order.orderlink.order.domain.OrderStatus;
 
-public interface OrderRepositoryCustom {
+public interface OrderCustomRepository {
 	Page<Order> searchOrdersWithItems(OrderStatus status, String restaurantName, String foodName,
 		LocalDate startDate, LocalDate endDate, Pageable pageable);
 }

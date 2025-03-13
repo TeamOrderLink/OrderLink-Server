@@ -1,5 +1,7 @@
 package com.order.orderlink.user.presentation;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.data.domain.PageRequest;
@@ -36,6 +38,14 @@ public class UserController {
 
 	private final UserService userService;
 
+	private static final int DEFAULT_PAGE = 1;
+	private static final int DEFAULT_SIZE = 10;
+	private static final List<Integer> ALLOWED_PAGE_SIZES = Arrays.asList(10, 30, 50);
+	private static final Sort DEFAULT_SORT = Sort.by(
+		Sort.Order.desc("createdAt"),
+		Sort.Order.desc("updatedAt")
+	);
+
 	/**
 	 * 회원 가입
 	 * @param request UserRequest.Create
@@ -55,8 +65,6 @@ public class UserController {
 	 * @param size 페이지 크기
 	 * @param sort 정렬 기준 (예: createdAt,asc or updatedAt,desc)
 	 * @return SuccessResponse<UserResponse.ReadUserList>
-	 * @see UserResponse.ReadUserList
-	 * @author Jihwan
 	 */
 	@GetMapping("/all")
 	@PreAuthorize("hasAuthority('ROLE_MASTER')")
@@ -65,54 +73,12 @@ public class UserController {
 		@RequestParam(defaultValue = "10") int size,
 		@RequestParam(required = false) String sort) {
 
-		if (page < 1) {
-			page = 1;
-		}
+		page = validatePage(page);
+		size = validatePageSize(size);
 
-		// 허용된 페이지 크기: 10, 30, 50
-		if (size != 10 && size != 30 && size != 50) {
-			size = 10;
-		}
-
-		Sort sortObj = null;
-		if (sort != null && !sort.trim().isEmpty()) {
-			String[] sortParts = sort.split(",");
-			if (sortParts.length == 2) {
-				String fieldInput = sortParts[0].trim();
-				String orderInput = sortParts[1].trim().toLowerCase();
-				// field가 "id", "username", "email", "phone", "nickname", "createdAt", "updatedAt' 중 하나이면 사용,
-				// 아니면 기본 정렬 적용
-				if (fieldInput.equals("id") || fieldInput.equals("username") || fieldInput.equals("email")
-					|| fieldInput.equals("phone") || fieldInput.equals("nickname") || fieldInput.equals("createdAt")
-					|| fieldInput.equals("updatedAt")) {
-					if (orderInput.equals("asc")) {
-						sortObj = Sort.by(fieldInput).ascending();
-					} else if (orderInput.equals("desc")) {
-						sortObj = Sort.by(fieldInput).descending();
-					}
-				} else {
-					// 유효하지 않은 field이면 기본값 적용
-					sortObj = Sort.by(
-						Sort.Order.desc("createdAt"),
-						Sort.Order.desc("updatedAt")
-					);
-				}
-			} else {
-				sortObj = Sort.by(
-					Sort.Order.desc("createdAt"),
-					Sort.Order.desc("updatedAt")
-				);
-			}
-		} else {
-			sortObj = Sort.by(
-				Sort.Order.desc("createdAt"),
-				Sort.Order.desc("updatedAt")
-			);
-		}
-
-		// 1-based로 받은 페이지 번호를 0-based 페이지 번호로 변환
-		assert sortObj != null;
+		Sort sortObj = parseSort(sort);
 		Pageable pageable = PageRequest.of(page - 1, size, sortObj);
+
 		return SuccessResponse.success(SuccessCode.USER_GET_SUCCESS, userService.getAllUsers(pageable));
 	}
 
@@ -214,6 +180,42 @@ public class UserController {
 	public ResponseEntity<User> getUser(@PathVariable UUID userId) {
 		User user = userService.getUser(userId);
 		return ResponseEntity.ok(user);
+	}
+
+	// 페이지 번호 유효성 검증
+	private int validatePage(int page) {
+		return Math.max(page, DEFAULT_PAGE);
+	}
+
+	// 페이지 크기 유효성 검증
+	private int validatePageSize(int size) {
+		return ALLOWED_PAGE_SIZES.contains(size) ? size : DEFAULT_SIZE;
+	}
+
+	// 정렬 파라미터 파싱
+	private Sort parseSort(String sort) {
+		if (sort == null || sort.trim().isEmpty()) {
+			return DEFAULT_SORT;
+		}
+
+		String[] sortParts = sort.split(",");
+		if (sortParts.length == 2) {
+			String field = sortParts[0].trim();
+			String order = sortParts[1].trim().toLowerCase();
+
+			if (isValidSortField(field)) {
+				return order.equals("asc")
+					? Sort.by(field).ascending()
+					: Sort.by(field).descending();
+			}
+		}
+		return DEFAULT_SORT;
+	}
+
+	// 유효한 정렬 필드 확인
+	private boolean isValidSortField(String field) {
+		return Arrays.asList("id", "username", "email", "phone", "nickname", "createdAt", "updatedAt")
+			.contains(field);
 	}
 
 }

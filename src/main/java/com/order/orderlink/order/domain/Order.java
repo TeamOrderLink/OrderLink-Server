@@ -9,7 +9,6 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.order.orderlink.common.entity.BaseTimeEntity;
-import com.order.orderlink.orderitem.domain.OrderItem;
 import com.order.orderlink.payment.domain.Payment;
 
 import jakarta.persistence.CascadeType;

@@ -9,19 +9,19 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.order.orderlink.category.domain.RestaurantCategory;
-import com.order.orderlink.category.domain.repository.RestaurantCategoryRepository;
 import com.order.orderlink.common.auth.UserDetailsImpl;
 import com.order.orderlink.common.enums.ErrorCode;
 import com.order.orderlink.common.exception.AuthException;
-import com.order.orderlink.common.exception.RestaurantException;
 import com.order.orderlink.restaurant.application.dtos.RestaurantRequest;
 import com.order.orderlink.restaurant.application.dtos.RestaurantResponse;
 import com.order.orderlink.restaurant.application.dtos.RestaurantResponse.GetRestaurant;
 import com.order.orderlink.restaurant.application.dtos.RestaurantResponse.GetRestaurantFoodDto;
 import com.order.orderlink.restaurant.application.dtos.RestaurantResponse.RestaurantDto;
 import com.order.orderlink.restaurant.domain.Restaurant;
+import com.order.orderlink.restaurant.domain.RestaurantCategory;
+import com.order.orderlink.restaurant.domain.repository.RestaurantCategoryRepository;
 import com.order.orderlink.restaurant.domain.repository.RestaurantRepository;
+import com.order.orderlink.restaurant.exception.RestaurantException;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

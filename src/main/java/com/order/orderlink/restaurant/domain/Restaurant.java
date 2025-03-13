@@ -10,7 +10,6 @@ import org.hibernate.annotations.UuidGenerator;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.order.orderlink.category.domain.RestaurantCategory;
 import com.order.orderlink.common.auth.util.LocalTimeToStringConverter;
 import com.order.orderlink.common.entity.BaseTimeEntity;
 import com.order.orderlink.food.domain.Food;
@@ -150,6 +149,6 @@ public class Restaurant extends BaseTimeEntity {
 	// Soft Delete 메서드
 	public void softDelete(String deletedBy) {
 		super.softDelete(deletedBy);
-		foods.forEach(food -> food.softDelete(deletedBy));
+		foods.forEach(food -> food.deleteFoodSoftly(deletedBy));
 	}
 }

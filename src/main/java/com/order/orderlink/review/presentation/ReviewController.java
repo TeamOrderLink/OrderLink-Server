@@ -21,12 +21,12 @@ import com.order.orderlink.common.auth.UserDetailsImpl;
 import com.order.orderlink.common.dtos.SuccessNonDataResponse;
 import com.order.orderlink.common.dtos.SuccessResponse;
 import com.order.orderlink.common.enums.SuccessCode;
-import com.order.orderlink.common.exception.OrderException;
-import com.order.orderlink.common.exception.RestaurantException;
-import com.order.orderlink.common.exception.ReviewException;
+import com.order.orderlink.order.exception.OrderException;
+import com.order.orderlink.restaurant.exception.RestaurantException;
 import com.order.orderlink.review.application.ReviewService;
 import com.order.orderlink.review.application.dtos.ReviewRequest;
 import com.order.orderlink.review.application.dtos.ReviewResponse;
+import com.order.orderlink.review.exception.ReviewException;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

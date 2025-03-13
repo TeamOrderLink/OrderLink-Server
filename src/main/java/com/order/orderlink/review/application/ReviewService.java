@@ -13,17 +13,17 @@ import com.order.orderlink.common.client.OrderClient;
 import com.order.orderlink.common.client.RestaurantClient;
 import com.order.orderlink.common.client.UserClient;
 import com.order.orderlink.common.enums.ErrorCode;
-import com.order.orderlink.common.exception.OrderException;
-import com.order.orderlink.common.exception.RestaurantException;
-import com.order.orderlink.common.exception.ReviewException;
 import com.order.orderlink.order.domain.Order;
-import com.order.orderlink.orderitem.domain.OrderItem;
+import com.order.orderlink.order.domain.OrderItem;
+import com.order.orderlink.order.exception.OrderException;
 import com.order.orderlink.restaurant.domain.Restaurant;
 import com.order.orderlink.restaurant.domain.repository.RestaurantRepository;
+import com.order.orderlink.restaurant.exception.RestaurantException;
 import com.order.orderlink.review.application.dtos.ReviewRequest;
 import com.order.orderlink.review.application.dtos.ReviewResponse;
 import com.order.orderlink.review.domain.Review;
 import com.order.orderlink.review.domain.repository.ReviewRepository;
+import com.order.orderlink.review.exception.ReviewException;
 import com.order.orderlink.user.domain.User;
 
 import lombok.RequiredArgsConstructor;
@@ -89,27 +89,25 @@ public class ReviewService {
 		restaurant.updateRatingCount(newRatingCount);
 		restaurant.updateAvgRating(newRatingSum / newRatingCount);
 		restaurantRepository.save(restaurant);
-		return new ReviewResponse.Create(review.getId());
+		return ReviewResponse.Create.builder()
+			.reviewId(review.getId())
+			.build();
 	}
 
 	// 특정 음식점에 대한 페이징 처리된 리뷰 목록 조회
 	public ReviewResponse.ReviewPageResponse getReviewsByRestaurant(UUID restaurantId, Pageable pageable) {
 		Page<Review> page = reviewRepository.findByRestaurantId(restaurantId, pageable);
-		List<ReviewResponse.Summary> reviews = page.getContent().stream().map(review -> {
-			// 리뷰 내용이 50자 이상이면 50자까지만 표시
-			String fullText = review.getContent() != null ? review.getContent() : "";
-			String summary = fullText.length() > 50 ? fullText.substring(0, 50) + "..." : fullText;
-			String nickname = getUserNickname(review.getUserId());
-			return ReviewResponse.Summary.builder()
-				.reviewId(review.getId())
-				.userNickname(nickname)
-				.rating(review.getRating())
-				.contentSummary(summary)
-				.createdAt(review.getCreatedAt())
-				.build();
-		}).toList();
-		return new ReviewResponse.ReviewPageResponse(reviews, page.getNumber() + 1, page.getTotalPages(),
-			page.getTotalElements());
+		List<ReviewResponse.Summary> reviews = page.getContent()
+			.stream()
+			.map(this::mapToReviewSummary) // 메서드로 추출
+			.toList();
+
+		return ReviewResponse.ReviewPageResponse.builder()
+			.reviews(reviews)
+			.currentPage(page.getNumber() + 1)
+			.totalPages(page.getTotalPages())
+			.totalElements(page.getTotalElements())
+			.build();
 	}
 
 	// 리뷰 상세 조회: 특정 리뷰의 전체 정보를 반환, 주문 상세 정보(주문 ID, 주문 날짜, 주문 상품) 포함
@@ -185,7 +183,7 @@ public class ReviewService {
 		}
 
 		Restaurant restaurant = review.getRestaurant();
-		review.softDelete(currentUsername);
+		review.deleteSoftly(currentUsername);
 
 		// 음식점 평점 집계 업데이트
 		Double newRatingSum = restaurant.getRatingSum() - review.getRating();
@@ -207,6 +205,24 @@ public class ReviewService {
 	private String getUserNickname(UUID userId) {
 		User user = userClient.getUser(userId);
 		return user.getNickname();
+	}
+
+	// 리뷰를 ReviewResponse.Summary로 매핑
+	private ReviewResponse.Summary mapToReviewSummary(Review review) {
+		final int CONTENT_SUMMARY_LENGTH = 50;
+		String contentSummary = (review.getContent() == null || review.getContent().length() <= CONTENT_SUMMARY_LENGTH)
+			? review.getContent()
+			: review.getContent().substring(0, CONTENT_SUMMARY_LENGTH) + "...";
+
+		String nickname = getUserNickname(review.getUserId());
+
+		return ReviewResponse.Summary.builder()
+			.reviewId(review.getId())
+			.userNickname(nickname)
+			.rating(review.getRating())
+			.contentSummary(contentSummary)
+			.createdAt(review.getCreatedAt())
+			.build();
 	}
 
 }

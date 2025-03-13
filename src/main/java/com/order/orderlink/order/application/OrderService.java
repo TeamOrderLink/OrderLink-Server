@@ -14,21 +14,22 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.order.orderlink.common.auth.UserDetailsImpl;
+import com.order.orderlink.common.client.FoodClient;
 import com.order.orderlink.common.client.RestaurantClient;
 import com.order.orderlink.common.client.UserClient;
 import com.order.orderlink.common.enums.ErrorCode;
 import com.order.orderlink.common.exception.AuthException;
-import com.order.orderlink.common.exception.OrderException;
+import com.order.orderlink.food.domain.Food;
 import com.order.orderlink.order.application.dtos.OrderDTO;
 import com.order.orderlink.order.application.dtos.OrderFoodDTO;
 import com.order.orderlink.order.application.dtos.OrderRequest;
 import com.order.orderlink.order.application.dtos.OrderResponse;
 import com.order.orderlink.order.application.dtos.RestaurantOrderDTO;
 import com.order.orderlink.order.domain.Order;
+import com.order.orderlink.order.domain.OrderItem;
 import com.order.orderlink.order.domain.OrderStatus;
 import com.order.orderlink.order.domain.repository.OrderRepository;
-import com.order.orderlink.order.domain.repository.OrderRepositoryImpl;
-import com.order.orderlink.orderitem.domain.OrderItem;
+import com.order.orderlink.order.exception.OrderException;
 import com.order.orderlink.payment.domain.Payment;
 import com.order.orderlink.restaurant.domain.Restaurant;
 import com.order.orderlink.user.domain.User;
@@ -44,8 +45,8 @@ public class OrderService {
 
 	private final OrderRepository orderRepository;
 	private final UserClient userClient;
-	private final OrderRepositoryImpl orderRepositoryImpl;
 	private final RestaurantClient restaurantClient;
+	private final FoodClient foodClient;
 
 	public OrderResponse.Create createOrder(UserDetailsImpl userDetails, OrderRequest.Create request) {
 		UUID userId = getUserId(userDetails);
@@ -59,24 +60,29 @@ public class OrderService {
 			.orderType(request.getOrderType())
 			.orderItems(new ArrayList<>())
 			.build();
-
-		request.getFoods().forEach(food -> order.addOrderItem(
-			OrderItem.builder()
-				.order(order)
-				.foodName(food.getFoodName())
-				.price(food.getPrice())
-				.quantity(food.getCount())
-				.build()
-		));
+		request.getFoods().forEach(foodDTO -> {
+			Food food = getFood(foodDTO.getFoodId());
+			order.addOrderItem(
+				OrderItem.builder()
+					.order(order)
+					.foodName(food.getName())
+					.price(food.getPrice())
+					.quantity(foodDTO.getCount())
+					.build()
+			);
+		});
 
 		orderRepository.save(order);
 
-		return new OrderResponse.Create(order.getId());
+		return OrderResponse.Create.builder().orderId(order.getId()).build();
 	}
 
-	private static UUID getUserId(UserDetailsImpl userDetails) {
-		UUID userId = userDetails.getUser().getId();
-		return userId;
+	private UUID getUserId(UserDetailsImpl userDetails) {
+		return userDetails.getUser().getId();
+	}
+
+	private Food getFood(UUID foodId) {
+		return foodClient.getFood(foodId);
 	}
 
 	@Transactional(readOnly = true)
@@ -122,8 +128,7 @@ public class OrderService {
 	}
 
 	private Restaurant getRestaurant(UUID restaurantId) {
-		Restaurant restaurant = restaurantClient.getRestaurant(restaurantId);
-		return restaurant;
+		return restaurantClient.getRestaurant(restaurantId);
 	}
 
 	@Transactional(readOnly = true)
@@ -157,8 +162,7 @@ public class OrderService {
 		String paymentBank = (payment != null) ? payment.getBank() : "N/A";
 		String cardNumber = (payment != null) ? maskCardNumber(payment.getCardNumber()) : "N/A";
 		String paymentStatus = (payment != null) ? payment.getStatus().getValue() : "N/A";
-		Result paymentNullCheck = new Result(paymentPrice, paymentBank, cardNumber, paymentStatus);
-		return paymentNullCheck;
+		return new Result(paymentPrice, paymentBank, cardNumber, paymentStatus);
 	}
 
 	private record Result(int paymentPrice, String paymentBank, String cardNumber, String paymentStatus) {
@@ -226,9 +230,8 @@ public class OrderService {
 
 	@Transactional(readOnly = true)
 	public Order getOrderById(UUID orderId) {
-		Order order = orderRepository.findById(orderId)
+		return orderRepository.findById(orderId)
 			.orElseThrow(() -> new OrderException(ErrorCode.ORDER_NOT_FOUND));
-		return order;
 	}
 
 	@Transactional(readOnly = true)
@@ -241,7 +244,7 @@ public class OrderService {
 		Sort sort = Sort.by(Sort.Order.desc("createdAt"), Sort.Order.desc("updatedAt"));
 		Pageable pageable = PageRequest.of(page - 1, size, sort);
 
-		Page<Order> searchedOrdersPage = orderRepositoryImpl.searchOrdersWithItems(request.getStatus(),
+		Page<Order> searchedOrdersPage = orderRepository.searchOrdersWithItems(request.getStatus(),
 			request.getRestaurantName(), request.getFoodName(), request.getStartDate(), request.getEndDate(), pageable);
 
 		List<OrderDTO> searchedOrders = getOrderDTOS(searchedOrdersPage);

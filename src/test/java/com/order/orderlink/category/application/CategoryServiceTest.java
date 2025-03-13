@@ -19,12 +19,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.order.orderlink.category.application.dtos.CategoryRequest;
 import com.order.orderlink.category.domain.Category;
-import com.order.orderlink.category.domain.RestaurantCategory;
 import com.order.orderlink.category.domain.repository.CategoryRepository;
-import com.order.orderlink.category.domain.repository.RestaurantCategoryRepository;
 import com.order.orderlink.common.auth.util.JwtUtil;
 import com.order.orderlink.common.client.RestaurantClient;
 import com.order.orderlink.restaurant.domain.Restaurant;
+import com.order.orderlink.restaurant.domain.RestaurantCategory;
+import com.order.orderlink.restaurant.domain.repository.RestaurantCategoryRepository;
 import com.order.orderlink.restaurant.domain.repository.RestaurantRepository;
 
 @TestPropertySource("classpath:application-test.properties")

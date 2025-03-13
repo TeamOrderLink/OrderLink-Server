@@ -6,19 +6,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.order.orderlink.common.auth.UserDetailsImpl;
 import com.order.orderlink.common.enums.ErrorCode;
-import com.order.orderlink.common.exception.RegionException;
 import com.order.orderlink.region.application.dtos.RegionDTO;
 import com.order.orderlink.region.application.dtos.RegionRequest;
 import com.order.orderlink.region.application.dtos.RegionResponse;
 import com.order.orderlink.region.domain.Region;
 import com.order.orderlink.region.domain.repository.RegionRepository;
+import com.order.orderlink.region.exception.RegionException;
 
 import lombok.RequiredArgsConstructor;
 
@@ -78,9 +77,8 @@ public class RegionService {
 	}
 
 	private Region getRegion(UUID regionId) {
-		Region region = regionRepository.findById(regionId)
+		return regionRepository.findById(regionId)
 			.orElseThrow(() -> new RegionException(ErrorCode.REGION_NOT_FOUND));
-		return region;
 	}
 
 	public void deleteRegion(UserDetailsImpl userDetails, UUID regionId) {
@@ -93,7 +91,7 @@ public class RegionService {
 		for (Region child : childRegions) {
 			child.updateParent(grandParent);
 		}
-		region.softDelete(userDetails.getUser().getUsername());
+		region.deleteSoftly(userDetails.getUser().getUsername());
 	}
 
 	@Transactional(readOnly = true)
@@ -112,12 +110,13 @@ public class RegionService {
 
 	private List<RegionResponse.GetTreeRegions> buildTree(UUID parentId, Map<UUID, List<Region>> childMap) {
 		return childMap.getOrDefault(parentId, Collections.emptyList()).stream()
-			.map(region -> new RegionResponse.GetTreeRegions(
-				region.getId(),
-				region.getName(),
-				parentId,
-				buildTree(region.getId(), childMap)
-			))
-			.collect(Collectors.toList());
+			.map(region -> RegionResponse.GetTreeRegions.builder()
+				.regionId(region.getId())
+				.name(region.getName())
+				.parentId(parentId)
+				.regions(buildTree(region.getId(), childMap))
+				.build()
+			)
+			.toList();
 	}
 }

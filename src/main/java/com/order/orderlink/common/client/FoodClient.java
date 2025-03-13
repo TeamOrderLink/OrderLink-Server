@@ -1,9 +1,11 @@
 package com.order.orderlink.common.client;
 
+import java.util.UUID;
+
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import com.order.orderlink.common.dtos.FoodRequest;
+import com.order.orderlink.food.domain.Food;
 
 import lombok.RequiredArgsConstructor;
 
@@ -22,13 +24,11 @@ public class FoodClient {
 			.block(); // 동기 호출
 	}
 
-	public String createFood(FoodRequest.Create request) {
-		return webClient.post()
-			.uri(FOODS_URI)
-			.bodyValue(request)
+	public Food getFood(UUID foodId) {
+		return webClient.get()
+			.uri(uriBuilder -> uriBuilder.path(FOODS_URI + "/{foodId}/getFood").build(foodId))
 			.retrieve()
-			.bodyToMono(String.class)
-			.block(); // 동기 호출
+			.bodyToMono(Food.class)
+			.block();
 	}
-
 }
