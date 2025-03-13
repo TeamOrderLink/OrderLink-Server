@@ -107,7 +107,7 @@ public class User extends BaseTimeEntity {
 		this.password = newEncodedPassword;
 	}
 
-	public void softDelete(String deletedBy) {
+	public void deleteSoftly(String deletedBy) {
 		super.softDelete(deletedBy);
 		addresses.forEach(address -> address.softDelete(deletedBy));
 	}

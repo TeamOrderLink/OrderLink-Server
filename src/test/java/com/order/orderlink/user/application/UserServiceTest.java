@@ -24,12 +24,12 @@ import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import com.order.orderlink.user.exception.UserException;
 import com.order.orderlink.user.application.dtos.UserRequest;
 import com.order.orderlink.user.application.dtos.UserResponse;
 import com.order.orderlink.user.domain.User;
 import com.order.orderlink.user.domain.UserRoleEnum;
 import com.order.orderlink.user.domain.repository.UserRepository;
+import com.order.orderlink.user.exception.UserException;
 
 @ExtendWith(MockitoExtension.class)
 public class UserServiceTest {
@@ -59,13 +59,14 @@ public class UserServiceTest {
 	@DisplayName("회원가입 성공")
 	public void testSignup_Success() {
 		// Given
-		UserRequest.Create request = new UserRequest.Create();
-		request.setUsername("testuser");
-		request.setNickname("Test Nick");
-		request.setEmail("test@example.com");
-		request.setPhone("01012345678");
-		request.setPassword("password");
-		request.setRole("CUSTOMER");
+		UserRequest.Create request = UserRequest.Create.builder()
+			.username("testuser")
+			.nickname("Test Nick")
+			.email("test@example.com")
+			.phone("01012345678")
+			.password("password")
+			.role("CUSTOMER")
+			.build();
 
 		when(userRepository.existsByUsername("testuser")).thenReturn(false);
 		when(userRepository.existsByEmail("test@example.com")).thenReturn(false);
@@ -90,13 +91,14 @@ public class UserServiceTest {
 	@DisplayName("회원가입 실패: 중복된 아이디")
 	public void testSignup_Duplicate() {
 		// Given
-		UserRequest.Create request = new UserRequest.Create();
-		request.setUsername("testuser");
-		request.setNickname("Test Nick");
-		request.setEmail("test@example.com");
-		request.setPhone("01012345678");
-		request.setPassword("password");
-		request.setRole("USER");
+		UserRequest.Create request = UserRequest.Create.builder()
+			.username("testuser")
+			.nickname("Test Nick")
+			.email("test@example.com")
+			.phone("01012345678")
+			.password("password")
+			.role("CUSTOMER")
+			.build();
 
 		when(userRepository.existsByUsername("testuser")).thenReturn(true);
 
@@ -149,11 +151,12 @@ public class UserServiceTest {
 	@Test
 	public void testUpdateInfo() {
 		// Given
-		UserRequest.Update request = new UserRequest.Update();
-		request.setEmail("new@example.com");
-		request.setPhone("01098765432");
-		request.setNickname("New Nick");
-		request.setIsPublic(false);
+		UserRequest.Update request = UserRequest.Update.builder()
+			.email("new@example.com")
+			.phone("01098765432")
+			.nickname("New Nick")
+			.isPublic(false)
+			.build();
 
 		when(userRepository.findById(dummyUserId)).thenReturn(Optional.of(dummyUser));
 
@@ -172,12 +175,13 @@ public class UserServiceTest {
 	@DisplayName("회원 정보 수정 (관리자): 성공")
 	public void testUpdateInfoByAdmin_WithRole() {
 		// Given
-		UserRequest.UpdateByAdmin request = new UserRequest.UpdateByAdmin();
-		request.setEmail("adminupdate@example.com");
-		request.setPhone("01011112222");
-		request.setNickname("Admin Nick");
-		request.setIsPublic(true);
-		request.setRole("OWNER");
+		UserRequest.UpdateByAdmin request = UserRequest.UpdateByAdmin.builder()
+			.email("adminupdate@example.com")
+			.phone("01011112222")
+			.nickname("Admin Nick")
+			.isPublic(true)
+			.role("OWNER")
+			.build();
 
 		when(userRepository.findById(dummyUserId)).thenReturn(Optional.of(dummyUser));
 
@@ -197,10 +201,11 @@ public class UserServiceTest {
 	@DisplayName("비밀번호 변경 성공")
 	public void testUpdatePassword_Success() {
 		// Given
-		UserRequest.UpdatePassword request = new UserRequest.UpdatePassword();
-		request.setCurrentPassword("currentPass");
-		request.setNewPassword("newPass");
-		request.setNewPasswordConfirm("newPass");
+		UserRequest.UpdatePassword request = UserRequest.UpdatePassword.builder()
+			.currentPassword("currentPass")
+			.newPassword("newPass")
+			.newPasswordConfirm("newPass")
+			.build();
 
 		when(userRepository.findById(dummyUserId)).thenReturn(Optional.of(dummyUser));
 		when(passwordEncoder.matches("currentPass", dummyUser.getPassword())).thenReturn(true);
@@ -218,10 +223,11 @@ public class UserServiceTest {
 	@DisplayName("비밀번호 변경 실패: 현재 비밀번호 불일치")
 	public void testUpdatePassword_CurrentPasswordMismatch() {
 		// Given
-		UserRequest.UpdatePassword request = new UserRequest.UpdatePassword();
-		request.setCurrentPassword("wrongPass");
-		request.setNewPassword("newPass");
-		request.setNewPasswordConfirm("newPass");
+		UserRequest.UpdatePassword request = UserRequest.UpdatePassword.builder()
+			.currentPassword("wrongPass")
+			.newPassword("newPass")
+			.newPasswordConfirm("newPass")
+			.build();
 
 		when(userRepository.findById(dummyUserId)).thenReturn(Optional.of(dummyUser));
 		when(passwordEncoder.matches("wrongPass", dummyUser.getPassword())).thenReturn(false);
@@ -234,10 +240,11 @@ public class UserServiceTest {
 	@DisplayName("비밀번호 변경 실패: 새 비밀번호와 확인 비밀번호 불일치")
 	public void testUpdatePassword_ConfirmationMismatch() {
 		// Given
-		UserRequest.UpdatePassword request = new UserRequest.UpdatePassword();
-		request.setCurrentPassword("currentPass");
-		request.setNewPassword("newPass");
-		request.setNewPasswordConfirm("differentPass");
+		UserRequest.UpdatePassword request = UserRequest.UpdatePassword.builder()
+			.currentPassword("currentPass")
+			.newPassword("newPass")
+			.newPasswordConfirm("differentPass")
+			.build();
 
 		when(userRepository.findById(dummyUserId)).thenReturn(Optional.of(dummyUser));
 		when(passwordEncoder.matches("currentPass", dummyUser.getPassword())).thenReturn(true);
@@ -248,10 +255,11 @@ public class UserServiceTest {
 
 	@Test
 	@DisplayName("회원 탈퇴 성공")
-	public void testSoftDeleteUser_Success() {
+	public void testDeleteSoftlyUser_Success() {
 		// Given
-		UserRequest.Delete deleteRequest = new UserRequest.Delete();
-		deleteRequest.setPassword("deletePass");
+		UserRequest.Delete deleteRequest = UserRequest.Delete.builder()
+			.password("deletePass")
+			.build();
 
 		when(userRepository.findById(dummyUserId)).thenReturn(Optional.of(dummyUser));
 		when(passwordEncoder.matches("deletePass", dummyUser.getPassword())).thenReturn(true);
@@ -268,10 +276,11 @@ public class UserServiceTest {
 
 	@Test
 	@DisplayName("회원 탈퇴 실패: 비밀번호 불일치")
-	public void testSoftDeleteUser_PasswordMismatch() {
+	public void testDeleteSoftlyUser_PasswordMismatch() {
 		// Given
-		UserRequest.Delete deleteRequest = new UserRequest.Delete();
-		deleteRequest.setPassword("wrongPass");
+		UserRequest.Delete deleteRequest = UserRequest.Delete.builder()
+			.password("wrongPass")
+			.build();
 
 		when(userRepository.findById(dummyUserId)).thenReturn(Optional.of(dummyUser));
 		when(passwordEncoder.matches("wrongPass", dummyUser.getPassword())).thenReturn(false);

@@ -12,10 +12,10 @@ import org.springframework.web.bind.annotation.RestController;
 import com.order.orderlink.ai.application.AiApiService;
 import com.order.orderlink.ai.application.dtos.AiApiRequest;
 import com.order.orderlink.ai.application.dtos.AiApiResponse;
+import com.order.orderlink.ai.exception.AiApiException;
 import com.order.orderlink.common.auth.UserDetailsImpl;
 import com.order.orderlink.common.dtos.SuccessResponse;
 import com.order.orderlink.common.enums.SuccessCode;
-import com.order.orderlink.ai.exception.AiApiException;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

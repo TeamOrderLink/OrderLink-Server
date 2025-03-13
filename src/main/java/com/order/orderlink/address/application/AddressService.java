@@ -12,8 +12,8 @@ import com.order.orderlink.address.application.dtos.AddressRequest;
 import com.order.orderlink.address.application.dtos.AddressResponse;
 import com.order.orderlink.address.domain.Address;
 import com.order.orderlink.address.domain.repository.AddressRepository;
-import com.order.orderlink.common.enums.ErrorCode;
 import com.order.orderlink.address.exception.AddressException;
+import com.order.orderlink.common.enums.ErrorCode;
 import com.order.orderlink.user.domain.User;
 
 import lombok.RequiredArgsConstructor;
@@ -41,7 +41,7 @@ public class AddressService {
 			.isDefault(Boolean.TRUE.equals(request.getIsDefault()))
 			.build();
 		addressRepository.save(address);
-		return new AddressResponse.Create(address.getId());
+		return AddressResponse.Create.builder().id(address.getId()).build();
 	}
 
 	// 배송지 목록 조회
@@ -49,30 +49,35 @@ public class AddressService {
 	public AddressResponse.ReadAll getAddresses(UUID userId, Pageable pageable) {
 		Page<Address> page = addressRepository.findByUserIdAndDeletedAtIsNull(userId, pageable);
 		List<AddressResponse.Read> addresses = page.getContent().stream()
-			.map(address -> new AddressResponse.Read(
-				address.getId(),
-				address.getAddress(),
-				address.getIsDefault(),
-				address.getCreatedAt()
-			))
+			.map(address -> AddressResponse.Read.builder()
+				.id(address.getId())
+				.address(address.getAddress())
+				.isDefault(address.getIsDefault())
+				.createdAt(address.getCreatedAt())
+				.build())
 			.toList();
-		return new AddressResponse.ReadAll(addresses, page.getNumber() + 1, page.getTotalPages(),
-			page.getTotalElements());
+		return AddressResponse.ReadAll.builder()
+			.addresses(addresses)
+			.currentPage(page.getNumber() + 1)
+			.totalPages(page.getTotalPages())
+			.totalElements(page.getTotalElements())
+			.build();
 	}
 
 	// 배송지 상세 조회
 	@Transactional(readOnly = true)
 	public AddressResponse.Read getAddressInfo(UUID addressId, UUID currentUserId) {
 		Address address = getAddressInstance(addressId, currentUserId);
-		return new AddressResponse.Read(
-			address.getId(),
-			address.getAddress(),
-			address.getIsDefault(),
-			address.getCreatedAt()
-		);
+		return AddressResponse.Read.builder()
+			.id(address.getId())
+			.address(address.getAddress())
+			.isDefault(address.getIsDefault())
+			.createdAt(address.getCreatedAt())
+			.build();
 	}
 
 	// 배송지 수정
+	@Transactional
 	public AddressResponse.Update updateAddress(UUID addressId, UUID currentUserId, AddressRequest.Update request) {
 		Address address = getAddressInstance(addressId, currentUserId);
 
@@ -87,13 +92,17 @@ public class AddressService {
 		}
 
 		address.update(request.getAddress(), request.getIsDefault());
-		return new AddressResponse.Update(address.getId(), address.getAddress(), address.getIsDefault());
+		return AddressResponse.Update.builder()
+			.id(address.getId())
+			.address(address.getAddress())
+			.isDefault(address.getIsDefault())
+			.build();
 	}
 
 	// 배송지 삭제 (soft delete)
 	public void deleteAddress(UUID addressId, UUID currentUserId, String username) {
 		Address address = getAddressInstance(addressId, currentUserId);
-		address.softDelete(username);
+		address.deleteSoftly(username);
 	}
 
 	//

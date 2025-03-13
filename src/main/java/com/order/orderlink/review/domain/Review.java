@@ -71,7 +71,7 @@ public class Review extends BaseTimeEntity {
 		}
 	}
 
-	public void softDelete(String deletedBy) {
+	public void deleteSoftly(String deletedBy) {
 		super.softDelete(deletedBy);
 	}
 
